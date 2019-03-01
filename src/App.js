@@ -19,7 +19,6 @@ import ReservationsView from './Components/ReservationsView/ReservationsView'
 import SponsorBox from './Components/SponsorBox'
 import DetailCartView from './Components/DetailCartView'
 import BannerRotator from './Components/BannerRotator'
-import './Components/LoginView/settings'
 const dotenv = require('dotenv').config()
 const SERVER_URL = process.env.ORIGIN_URL
 const ACCESS_URL = process.env.ACCESS_URL
