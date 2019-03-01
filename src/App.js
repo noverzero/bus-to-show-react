@@ -20,8 +20,9 @@ import SponsorBox from './Components/SponsorBox'
 import DetailCartView from './Components/DetailCartView'
 import BannerRotator from './Components/BannerRotator'
 const dotenv = require('dotenv').config()
-const SERVER_URL = process.env.ORIGIN_URL
-const ACCESS_URL = process.env.ACCESS_URL
+const SERVER_URL = process.env.REACT_APP_SERVER_URL
+const ACCESS_URL = process.env.REACT_APP_ACCESS_URL
+
 
 
 class App extends Component {
@@ -125,7 +126,7 @@ class App extends Component {
     })
 
     this.setState({ shows: newState })
-
+    console.log('SERVER_URL', SERVER_URL)
     const pickups = await fetch(`https://${SERVER_URL}/${ACCESS_URL}/pickup_locations`)
     const pickupLocations = await pickups.json()
     this.setState({ pickupLocations })
