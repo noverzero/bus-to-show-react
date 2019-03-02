@@ -4,6 +4,7 @@ import ShowDetailView from './Shows/ShowDetailView'
 import Cart from './Cart/Cart'
 import MediaQuery from 'react-responsive';
 import ShowList from '../Components/Shows/ShowList'
+import ExternalShowDetail from './Shows/ExternalShowDetail'
 import logo from '../Images/Logos/bts-logo-gray.png'
 
 const DetailCartView = (props) => {
@@ -14,6 +15,10 @@ const DetailCartView = (props) => {
     <div className="DetailCartView">
       {/* // Desktop View */}
       <MediaQuery minWidth={800}>
+      {props.displayExternalShowDetails ?
+      <ExternalShowDetail
+        displayShow={props.displayShow}
+      /> :
         <React.Fragment>
           <div className='container'>
             <ul className="nav nav-tabs" id="myTab" role="tablist">
@@ -107,6 +112,7 @@ const DetailCartView = (props) => {
             </div>
           </div>
         </React.Fragment>
+      }
       </MediaQuery>
       {/* // End DesktopView */}
 
