@@ -1115,7 +1115,7 @@ class App extends Component {
                       </div>
                     </div>
                   </div>
-                  : <h1>Mobile View Error</h1>}
+                  : ''}
             </div>
           </MediaQuery>
           {/* End Mobile View */}
