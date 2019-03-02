@@ -19,9 +19,9 @@ import ReservationsView from './Components/ReservationsView/ReservationsView'
 import SponsorBox from './Components/SponsorBox'
 import DetailCartView from './Components/DetailCartView'
 import BannerRotator from './Components/BannerRotator'
-const dotenv = require('dotenv').config()
-const SERVER_URL = process.env.REACT_APP_SERVER_URL
-const ACCESS_URL = process.env.REACT_APP_ACCESS_URL
+// const dotenv = require('dotenv').config()
+// const SERVER_URL = process.env.REACT_APP_SERVER_URL
+// const ACCESS_URL = process.env.REACT_APP_ACCESS_URL
 
 
 
@@ -99,7 +99,7 @@ class App extends Component {
 
 
   async componentDidMount() {
-    const response = await fetch(`https://${SERVER_URL}/${ACCESS_URL}/events`)
+    const response = await fetch(`https://something-innocuous.herokuapp.com/events`)
     const allShows = await response.json()
 
     //filters out expired shows and shows that don't meet criteria, and shows that are denied.
@@ -126,12 +126,11 @@ class App extends Component {
     })
 
     this.setState({ shows: newState })
-    console.log('SERVER_URL', SERVER_URL)
-    const pickups = await fetch(`https://${SERVER_URL}/${ACCESS_URL}/pickup_locations`)
+    const pickups = await fetch(`https://something-innocuous.herokuapp.com/pickup_locations`)
     const pickupLocations = await pickups.json()
     this.setState({ pickupLocations })
 
-    const getPickupParties = await fetch(`https://${SERVER_URL}/${ACCESS_URL}/pickup_parties`)
+    const getPickupParties = await fetch(`https://something-innocuous.herokuapp.com/pickup_parties`)
     //const getPickupParties = await fetch('http://localhost:3000/pickup_parties')
     const pickupParties = await getPickupParties.json()
     this.setState({ pickupParties })
@@ -254,7 +253,7 @@ class App extends Component {
 
   getReservations = async userId => {
     if (userId) {
-      const reservations = await fetch(`https://${SERVER_URL}/${ACCESS_URL}/reservations/${userId}`)
+      const reservations = await fetch(`https://something-innocuous.herokuapp.com/reservations/${userId}`)
       const userReservations = await reservations.json()
       const newState = { ...this.State }
       newState.userId = userId
@@ -501,7 +500,7 @@ class App extends Component {
     newState.startTimer = true
     this.setState(newState)
 
-    fetch(`https://${SERVER_URL}/${ACCESS_URL}/pickup_parties`, {
+    fetch(`https://something-innocuous.herokuapp.com/pickup_parties`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -513,7 +512,7 @@ class App extends Component {
       }
     })
 
-    setTimeout(fetch(`https://${SERVER_URL}/${ACCESS_URL}/pickup_parties`, {
+    setTimeout(fetch(`https://something-innocuous.herokuapp.com/pickup_parties`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -547,7 +546,7 @@ class App extends Component {
 
     const cartObj = this.state.cartToSend
     //const ordersResponse = await fetch('http://localhost:3000/orders', {
-    const ordersResponse = await fetch(`https://${SERVER_URL}/${ACCESS_URL}/orders`, {
+    const ordersResponse = await fetch(`https://something-innocuous.herokuapp.com/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
       headers: {
@@ -556,7 +555,7 @@ class App extends Component {
     })
     const orderJson = await ordersResponse.json()
     if (this.state.userId) {
-      await fetch(`https://${SERVER_URL}/${ACCESS_URL}/reservations/users/${this.state.userId}`, {
+      await fetch(`https://something-innocuous.herokuapp.com/reservations/users/${this.state.userId}`, {
         method: 'POST',
         body: JSON.stringify({ reservationId: orderJson.id }),
         headers: {
