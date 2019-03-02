@@ -70,6 +70,7 @@ const DetailCartView = (props) => {
                   pickupPartyId={props.pickupPartyId}
                   purchase={props.purchase}
                   purchaseClick={props.purchaseClick}
+                  purchaseFailed={props.purchaseFailed}
                   purchasePending={props.purchasePending}
                   purchaseSuccessful={props.purchaseSuccessful}
                   quantityChange={props.quantityChange}
@@ -233,6 +234,7 @@ const DetailCartView = (props) => {
               pickupParties={props.pickupParties}
               purchase={props.purchase}
               purchaseClick={props.purchaseClick}
+              purchaseFailed={props.purchaseFailed}
               purchasePending={props.purchasePending}
               purchaseSuccessful={props.purchaseSuccessful}
               quantityChange={props.quantityChange}
