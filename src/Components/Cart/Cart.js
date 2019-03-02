@@ -213,6 +213,7 @@ const Cart = (props) => {
                           <div>
                             <button onClick={props.removeFromCart} type="button" className="btn btn-outline-danger mr-1">Cancel</button>
                             <Checkout
+                              cartToSend={props.cartToSend}
                               makePurchase={props.makePurchase}
                               purchasePending={props.purchasePending}
                               validated={props.validated}

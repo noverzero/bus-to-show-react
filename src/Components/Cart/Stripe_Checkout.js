@@ -3,12 +3,14 @@ import StripeCheckout from 'react-stripe-checkout'
 
 export default class Checkout extends React.Component {
   onToken = (token) => {
+    const orderInfo = this.props.cartToSend 
     fetch('https://something-innocuous.herokuapp.com/orders/charge', {
       method: 'POST',
       body: JSON.stringify({
         stripeEmail: token.email,
         stripeToken: token,
         amount: this.props.totalCost * 100,
+        metadata: orderInfo
       }),
       headers: {
         "Content-Type": "application/json",
@@ -25,13 +27,15 @@ export default class Checkout extends React.Component {
 
 
   render() {
+    const {email} = this.props.cartToSend
     return (
       <React.Fragment>
         <StripeCheckout
           token={this.onToken}
           stripeKey="pk_test_J0CdRMCGmBlrlOiGKnGgUEwT"
           name='Bus To Show'
-          description='fun times'
+          description='Receipt will be emailed after purchase'
+          email={email}
           amount={this.props.totalCost * 100}
           currency='USD'>
 
