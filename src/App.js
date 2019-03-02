@@ -58,6 +58,7 @@ class App extends Component {
     displayCart: false,
     displayConfirmRemove: false,
     displayDetailCartView: false,
+    displayExternalShowDetails: false,
     displayLoadingScreen: true,
     displayLoginView: false,
     displayShow: null,
@@ -394,31 +395,48 @@ class App extends Component {
       pickupPartyId: newState.pickupPartyId
     })
     const clickedShow = newState.shows.find(show => (parseInt(show.id) === parseInt(event.target.id)))
-    //return array of pickupParties assigned to this event
-    const assignedPickupParties = this.state.pickupParties.filter(party => clickedShow.id === party.eventId)
-    const pickupLocations = newState.pickupLocations
-    assignedPickupParties.map(party => pickupLocations.map(location => {
-      if (location.id === party.pickupLocationId) {
-        party.LocationName = location.locationName
+    console.log('clickedShow', clickedShow.external)
+    if(clickedShow.external){
+    console.log('monkey')
+      newState.displayShowDetails = false
+      newState.displayExternalShowDetails = true
+      newState.displayShow = clickedShow
+      this.setState({
+        displayShowDetails: newState.displayShowDetails,
+        displayExternalShowDetails: newState.displayExternalShowDetails,
+        displayShow: newState.displayShow
+      })
+
+
+    } else {
+      //return array of pickupParties assigned to this event
+        const assignedPickupParties = this.state.pickupParties.filter(party => clickedShow.id === party.eventId)
+        const pickupLocations = newState.pickupLocations
+        assignedPickupParties.map(party => pickupLocations.map(location => {
+          if (location.id === party.pickupLocationId) {
+            party.LocationName = location.locationName
+          }
+        })
+        )
+      //set initial state of show details view
+      newState.displayQuantity = false
+      newState.displayDetailCartView = true
+      newState.displaySuccess = false
+      newState.displayShowDetails = true
+      newState.displayExternalShowDetails = false
+      newState.displayShow = clickedShow
+      newState.assignedParties = assignedPickupParties
+      this.setState({
+        displayQuantity: newState.displayQuantity,
+        displayExternalShowDetails: newState.displayExternalShowDetails,
+        displayDetailCartView: newState.displayDetailCartView,
+        displaySuccess: newState.displaySuccess,
+        displayShow: newState.displayShow,
+        assignedParties: newState.assignedParties
+      })
+      if (document.querySelector('#departureOption')) {
+        document.querySelector('#departureOption').value = "Select a Departure Option..."
       }
-    })
-    )
-    //set initial state of show details view
-    newState.displayQuantity = false
-    newState.displayDetailCartView = true
-    newState.displaySuccess = false
-    newState.displayShowDetails = true
-    newState.displayShow = clickedShow
-    newState.assignedParties = assignedPickupParties
-    this.setState({
-      displayQuantity: newState.displayQuantity,
-      displayDetailCartView: newState.displayDetailCartView,
-      displaySuccess: newState.displaySuccess,
-      displayShow: newState.displayShow,
-      assignedParties: newState.assignedParties
-    })
-    if (document.querySelector('#departureOption')) {
-      document.querySelector('#departureOption').value = "Select a Departure Option..."
     }
   }
 
@@ -924,7 +942,7 @@ class App extends Component {
                         <div className='col-md-6 float-right' >
                           {this.state.displayShow ? '' :
                             <BannerRotator displayShow={this.state.displayShow} />}
-                          {this.state.displayCart || this.state.displayShow ?
+                          {this.state.displayCart || this.state.displayShow || this.state.displayExternalShowDetails ?
                             <DetailCartView
                               afterDiscountObj={this.state.afterDiscountObj}
                               assignedParties={this.state.assignedParties}
@@ -937,6 +955,7 @@ class App extends Component {
                               displayBorder={this.state.displayBorder}
                               displayCart={this.state.displayCart}
                               displayConfirmRemove={this.state.displayConfirmRemove}
+                              displayExternalShowDetails={this.state.displayExternalShowDetails}
                               displayQuantity={this.state.displayQuantity}
                               displayShow={this.state.displayShow}
                               displaySuccess={this.state.displaySuccess}
