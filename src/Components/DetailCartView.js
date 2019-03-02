@@ -205,7 +205,8 @@ const DetailCartView = (props) => {
               updateDiscountCode={props.updateDiscountCode}
               totalCost={props.totalCost}
               viewCart={props.viewCart} />
-            : ''}
+            :
+            ''}
 
         </div>
         {props.displayCart ?
