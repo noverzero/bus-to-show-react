@@ -20,14 +20,14 @@ export default class Checkout extends React.Component {
       if (json.status == "succeeded") {
         this.props.purchase()
       } else {
-        alert("Credit Card Declined")
+        this.props.purchase(json)
       }
     })
   }
 
 
   render() {
-    const {email} = this.props.cartToSend
+    const email = this.props.cartToSend.email
     return (
       <React.Fragment>
         <StripeCheckout

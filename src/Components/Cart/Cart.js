@@ -77,7 +77,11 @@ const Cart = (props) => {
                         <button onClick={props.closeAlert} type="button" className="btn btn-sm btn-success">Continue With Order</button>
                       </div>
                     </div> : ''}
-                    {props.purchasePending ? <div className="alert alert-primary" role="alert"> Purchase Pending... </div> : ''}
+                    {(props.purchasePending && !props.purchaseFailed) ? 
+                    <div className="alert alert-primary" role="alert"> Purchase Pending... </div> 
+                    : 
+                    (props.purchasePending && props.purchaseFailed ? 
+                      <div className="alert alert-danger" role="alert"> Payment Declined, Please Try Another Card </div> : '')}
                     {props.displayConfirmRemove ? <div className="alert alert-danger" role="alert">
                       Are you sure you want to remove item from cart?
                     <button onClick={props.confirmedRemove} type="button" className="btn btn-danger ml-1">Remove</button>
@@ -318,7 +322,11 @@ const Cart = (props) => {
                           <button onClick={props.closeAlert} type="button" className="btn btn-sm btn-success">Continue With Order</button>
                         </div>
                       </div> : ''}
-                      {props.purchasePending ? <div className="alert alert-primary" role="alert"> Purchase Pending... </div> : ''}
+                      {(props.purchasePending && !props.purchaseFailed) ? 
+                    <div className="alert alert-primary" role="alert"> Purchase Pending... </div> 
+                    : 
+                    (props.purchasePending && props.purchaseFailed ? 
+                      <div className="alert alert-danger" role="alert"> Payment Declined, Please Try Another Card </div> : '')}
                       {props.displayConfirmRemove ? <div className="alert alert-danger" role="alert">
                         Are you sure you want to remove item from cart?
                     <button onClick={props.confirmedRemove} type="button" className="btn btn-danger ml-1">Remove</button>
@@ -433,6 +441,7 @@ const Cart = (props) => {
                             <div>
                               <button onClick={props.removeFromCart} type="button" className="btn btn-outline-danger mr-1">Cancel</button>
                               <Checkout
+                                cartToSend={props.cartToSend}
                                 makePurchase={props.makePurchase}
                                 purchasePending={props.purchasePending}
                                 validated={props.validated}
