@@ -77,6 +77,7 @@ class App extends Component {
     myReservationsView: false,
     pickupLocationId: null,
     pickupPartyId: null,
+    purchaseFailed: false,
     purchasePending: false,
     purchaseSuccessful: false,
     showBios: false,
@@ -542,7 +543,8 @@ class App extends Component {
     this.setState({ checked: newState.checked })
   }
 
-  purchase = async () => {
+  purchase = async (err) => {
+    if (err) return this.setState({purchaseFailed: true})
 
     const cartObj = this.state.cartToSend
     //const ordersResponse = await fetch('http://localhost:3000/orders', {
@@ -758,8 +760,10 @@ class App extends Component {
     newState.displayQuantity = false
     newState.displayAddBtn = false
     newState.purchasePending = true
+    newState.purchaseFailed = false
 
     this.setState({
+      purchaseFailed: newState.purchaseFailed,
       purchasePending: newState.purchasePending,
       displayQuantity: newState.displayQuantity,
       displayAddBtn: newState.displayAddBtn
@@ -953,6 +957,7 @@ class App extends Component {
                               pickupParties={this.state.pickupParties}
                               purchase={this.purchase}
                               purchaseClick={this.purchaseClick}
+                              purchaseFailed={this.state.purchaseFailed}
                               purchasePending={this.state.purchasePending}
                               purchaseSuccessful={this.state.purchaseSuccessful}
                               quantityChange={this.quantityChange}
@@ -1064,6 +1069,7 @@ class App extends Component {
                           pickupParties={this.state.pickupParties}
                           purchase={this.purchase}
                           purchaseClick={this.purchaseClick}
+                          purchaseFailed={this.state.purchaseFailed}
                           purchasePending={this.state.purchasePending}
                           purchaseSuccessful={this.state.purchaseSuccessful}
                           quantityChange={this.quantityChange}
