@@ -27,9 +27,14 @@ body {
   min-height: 45vh;
 } */
 
-.mobile-view{
-  overflow: scroll;
+mobile-height{
+  height: 90vh;
+}
+
+.mobile-view {
+  height: 100vh;
   width: 100vw;
+  overflow: scroll;
 }
 
 li {
@@ -426,11 +431,6 @@ p {
 
 .add-top-margin {
   margin-top: 4.5vh;
-}
-
-.mobile-view {
-  height: 100vh;
-  width: 100vw;
 }
 
 
