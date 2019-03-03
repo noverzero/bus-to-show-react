@@ -6,7 +6,7 @@ const ExternalShowDetail = (props) => {
   return (
     <div className="border bts-orange-border bts-white-bg p-4 m-2">
       <h4> {`${displayShow.headliner} + ${displayShow.support1}`}</h4>
-      {console.log('displayShow inside ExternalShowDetial Component:', displayShow)}
+      {console.log('displayShow inside ExternalShowDetail Component:', displayShow)}
       <div>
         <iframe
           title="external-event"
