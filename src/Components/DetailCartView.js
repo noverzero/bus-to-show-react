@@ -70,7 +70,6 @@ const DetailCartView = (props) => {
                   pickupPartyId={props.pickupPartyId}
                   purchase={props.purchase}
                   purchaseClick={props.purchaseClick}
-                  purchaseFailed={props.purchaseFailed}
                   purchasePending={props.purchasePending}
                   purchaseSuccessful={props.purchaseSuccessful}
                   quantityChange={props.quantityChange}
@@ -132,6 +131,7 @@ const DetailCartView = (props) => {
                 aria-controls="showList"
                 aria-selected="true">Show List</a>
             </li>
+            {props.displayExternalShowDetails ? '' :
             <li className="nav-item">
               <a
                 onClick={props.mobileTabClicked}
@@ -143,6 +143,8 @@ const DetailCartView = (props) => {
                 aria-controls="showDetails"
                 aria-selected="false">Show Detail</a>
             </li>
+            }
+            {props.displayExternalShowDetails ? '' :
             <li className="nav-item">
               <a
                 onClick={props.mobileTabClicked}
@@ -154,6 +156,7 @@ const DetailCartView = (props) => {
                 aria-controls="cart"
                 aria-selected="false">My Cart</a>
             </li>
+            }
           </ul>
           <div className="tab-content" id="mobile-tab-content">
 
@@ -177,6 +180,13 @@ const DetailCartView = (props) => {
               ''
             }
           </div>
+          {props.displayExternalShowDetails
+            ?
+            <ExternalShowDetail
+              displayShow={props.displayShow}
+            />
+            :
+          <div>
           {(props.displayShow || props.displayShowDetails) && !props.displayCart ?
             <ShowDetailView
               addToCart={props.addToCart}
@@ -206,9 +216,9 @@ const DetailCartView = (props) => {
               updateDiscountCode={props.updateDiscountCode}
               totalCost={props.totalCost}
               viewCart={props.viewCart} />
-            :
-            ''}
-
+            : ''}
+          </div>
+          }
         </div>
         {props.displayCart ?
           <div className="mobile-view">
@@ -234,7 +244,6 @@ const DetailCartView = (props) => {
               pickupParties={props.pickupParties}
               purchase={props.purchase}
               purchaseClick={props.purchaseClick}
-              purchaseFailed={props.purchaseFailed}
               purchasePending={props.purchasePending}
               purchaseSuccessful={props.purchaseSuccessful}
               quantityChange={props.quantityChange}

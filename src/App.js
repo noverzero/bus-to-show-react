@@ -397,7 +397,6 @@ class App extends Component {
     const clickedShow = newState.shows.find(show => (parseInt(show.id) === parseInt(event.target.id)))
     console.log('clickedShow', clickedShow.external)
     if(clickedShow.external){
-    console.log('monkey')
       newState.displayShowDetails = false
       newState.displayExternalShowDetails = true
       newState.displayShow = clickedShow
@@ -814,24 +813,41 @@ class App extends Component {
       pickupPartyId: newState.pickupPartyId
     })
     const clickedShow = newState.shows.find(show => (parseInt(show.id) === parseInt(event.target.id)))
+    console.log('clickedShow', clickedShow.external)
+    if(clickedShow.external){
+      console.log('chicken')
+      newState.displayShowDetails = false
+      newState.displayExternalShowDetails = true
+      newState.displayShow = clickedShow
+      newState.displayShowList = false
+      this.setState({
+        displayShowDetails: newState.displayShowDetails,
+        displayExternalShowDetails: newState.displayExternalShowDetails,
+        displayShow: newState.displayShow,
+        displayShowList: newState.displayShowList
+      })
 
-    //return array of pickupParties assigned to this event
-    const assignedPickupParties = this.state.pickupParties.filter(party => clickedShow.id === party.eventId)
 
-    //add location Name from pickupLocations to assigned pickupParties objects.
-    const pickupLocations = newState.pickupLocations
-    assignedPickupParties.map(party => pickupLocations.map(location => {
-      if (location.id === party.pickupLocationId) {
-        party.LocationName = location.locationName
-      }
-    })
-    )
+    } else {
+      console.log('goat')
+      //return array of pickupParties assigned to this event
+        const assignedPickupParties = this.state.pickupParties.filter(party => clickedShow.id === party.eventId)
+        //add location Name from pickupLocations to assigned pickupParties objects.
+        const pickupLocations = newState.pickupLocations
+        assignedPickupParties.map(party => pickupLocations.map(location => {
+          if (location.id === party.pickupLocationId) {
+            party.LocationName = location.locationName
+          }
+        })
+        )
+
     //set initial state of show details view
     newState.displayShowList = false
     newState.displayQuantity = false
     newState.displayDetailCartView = true
     newState.displaySuccess = false
     newState.displayCart = false
+    newState.displayExternalShowDetails = false
     newState.displayShowDetails = true
     newState.displayShow = clickedShow
     newState.assignedParties = assignedPickupParties
@@ -849,6 +865,7 @@ class App extends Component {
       document.querySelector('#departureLocation').value = "Select a Departure Option..."
     }
   }
+}
 
 
   mobileTabClicked = event => {
@@ -866,12 +883,14 @@ class App extends Component {
         newState.displayCart = false
         newState.displayShowDetails = true
         newState.displayShowList = false
+        newState.displayExternalShowDetails = false
         // console.log('if deets cart/deets/list', newState.displayCart, newState.displayShowDetails, newState.displayShowList)
       }
       else if (id === 'showList-tab') {
         newState.displayCart = false
         newState.displayShowDetails = false
         newState.displayShowList = true
+        newState.displayExternalShowDetails = false
         // console.log('if list cart/deets/list', newState.displayCart, newState.displayShowDetails, newState.displayShowList)
       }
     }
@@ -885,7 +904,9 @@ class App extends Component {
     this.setState({
       displayCart: newState.displayCart,
       displayShowDetails: newState.displayShowDetails,
-      displayShowList: newState.displayShowList
+      displayShowList: newState.displayShowList,
+      displayExternalShowDetails: newState.displayExternalShowDetails
+
     })
   }
 
@@ -1062,6 +1083,7 @@ class App extends Component {
                           displayBorder={this.state.displayBorder}
                           displayCart={this.state.displayCart}
                           displayConfirmRemove={this.state.displayConfirmRemove}
+                          displayExternalShowDetails={this.state.displayExternalShowDetails}
                           displayQuantity={this.state.displayQuantity}
                           displayShow={this.state.displayShow}
                           displayShowDetails={this.state.displayShowDetails}
