@@ -7,7 +7,8 @@ import logo from '../../Images/Logos/bts-logo-gray.png'
 import moment from 'moment'
 
 const Cart = (props) => {
-  // console.log('Cart', props)
+   console.log('Cart', props)
+
 
   let cTSendId;
 
@@ -25,6 +26,8 @@ const Cart = (props) => {
   const pickupTime = props.lastDepartureTime
   const firstBusLoad = props.firstBusLoad
   const pickupLocation = props.pickupLocations.find(location => parseInt(location.id) === parseInt(props.pickupLocationId))
+  const pickupSpot= pickupLocation[0]
+  console.log('pickupSpot', pickupSpot)
 
   let time1 = pickupTime.split(':')
   let time2 = time1[1].split(' PM')[0] - 15
@@ -35,6 +38,12 @@ const Cart = (props) => {
   }
   // console.log('showsINcart--------', props.showsInCart[0])
   const defaultFirstBus = moment(time3, 'hmm').format('h:mm')
+
+
+  // const receiptDescription = `${props.ticketQuantity} Roundtrip Bus Spot(s) on ${moment(props.showsInCart[0].date, "MM-DD-YYYY").format("dddd")}, ${props.showsInCart[0].date} For: ${props.showsInCart[0].headliner} at ${props.showsInCart[0].venue.split(' Amphitheatre')[0]} Departing From: ${pickupLocation.locationName} ${pickupLocation.streetAddress} with last call currently scheduled at ${pickupTime} (check website for most recent time updates.)`
+
+  // const receiptDescription = `${props.ticketQuantity} reservations on ${props.showsInCart[0].date} from ${pickupSpot} to ${props.showsInCart[0].headliner} at ${props.showsInCart[0].venue} with last call currently scheduled at ${pickupTime} (check website for most recent time updates.)`
+   //console.log('receipt description', receiptDescription)
 
   return (
     <div className='Cart'>
@@ -77,10 +86,10 @@ const Cart = (props) => {
                         <button onClick={props.closeAlert} type="button" className="btn btn-sm btn-success">Continue With Order</button>
                       </div>
                     </div> : ''}
-                    {(props.purchasePending && !props.purchaseFailed) ? 
-                    <div className="alert alert-primary" role="alert"> Purchase Pending... </div> 
-                    : 
-                    (props.purchasePending && props.purchaseFailed ? 
+                    {(props.purchasePending && !props.purchaseFailed) ?
+                    <div className="alert alert-primary" role="alert"> Purchase Pending... </div>
+                    :
+                    (props.purchasePending && props.purchaseFailed ?
                       <div className="alert alert-danger" role="alert"> Payment Declined, Please Try Another Card </div> : '')}
                     {props.displayConfirmRemove ? <div className="alert alert-danger" role="alert">
                       Are you sure you want to remove item from cart?
@@ -322,10 +331,10 @@ const Cart = (props) => {
                           <button onClick={props.closeAlert} type="button" className="btn btn-sm btn-success">Continue With Order</button>
                         </div>
                       </div> : ''}
-                      {(props.purchasePending && !props.purchaseFailed) ? 
-                    <div className="alert alert-primary" role="alert"> Purchase Pending... </div> 
-                    : 
-                    (props.purchasePending && props.purchaseFailed ? 
+                      {(props.purchasePending && !props.purchaseFailed) ?
+                    <div className="alert alert-primary" role="alert"> Purchase Pending... </div>
+                    :
+                    (props.purchasePending && props.purchaseFailed ?
                       <div className="alert alert-danger" role="alert"> Payment Declined, Please Try Another Card </div> : '')}
                       {props.displayConfirmRemove ? <div className="alert alert-danger" role="alert">
                         Are you sure you want to remove item from cart?
