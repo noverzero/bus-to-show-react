@@ -3,7 +3,7 @@ import StripeCheckout from 'react-stripe-checkout'
 
 export default class Checkout extends React.Component {
   onToken = (token) => {
-    const orderInfo = this.props.cartToSend 
+    const orderInfo = this.props.cartToSend
     fetch('https://something-innocuous.herokuapp.com/orders/charge', {
       method: 'POST',
       body: JSON.stringify({
@@ -44,7 +44,6 @@ export default class Checkout extends React.Component {
             className={`btn mr-1 ${this.props.validated ? 'btn-outline-success' : 'btn-secondary'}`}
             disabled={this.props.validated ? '' : 'disabled'}>
             Purchase</button>
-          <div>By purchasing tickets, you agree to our Terms & Conditions</div>
         </StripeCheckout>
 
       </React.Fragment>
