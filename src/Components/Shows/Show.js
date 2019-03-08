@@ -21,7 +21,7 @@ const Show = (props) => {
   return (
     <div className='Shows'>
       {/* Desktop View */}
-      <MediaQuery minWidth={800}>
+      <MediaQuery minWidth={8}>
         {filterShows.length > 0 ? filterShows.map(show =>
           <li className="list-group-item highlightOnHover show-list-item" key={show.id} id={show.id}>
             <div className="row" id={show.id}>
@@ -67,7 +67,7 @@ const Show = (props) => {
       {/* End Desktop */}
 
       {/* Mobile View */}
-      <MediaQuery maxWidth={799}>
+      <MediaQuery maxWidth={7}>
         {filterShows.length > 0 ? filterShows.map(show =>
           <li className="list-group-item highlightOnHover show-list-item" key={show.id} id={show.id}>
             <div className="row" id={show.id}>

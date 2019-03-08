@@ -9,7 +9,7 @@ const ShowList = (props) => {
   return (
     <div className='ShowList'>
       {/* Desktop View */}
-      <MediaQuery minWidth={800}>
+      <MediaQuery minWidth={8}>
         <div className='container'>
           <div className="list-group">
             <div className="list-group-item show-header">
@@ -62,7 +62,7 @@ const ShowList = (props) => {
       {/* End Desktop View */}
 
       {/* Mobile View */}
-      <MediaQuery maxWidth={799}>
+      <MediaQuery maxWidth={7}>
         <div className="list-group">
           <div className="list-group-item show-header">
             <div className="row show-list-flex">

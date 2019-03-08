@@ -364,7 +364,7 @@ class App extends Component {
   tabClicked = event => {
 
     const newState = { ...this.state }
-    if (event.target.id === 'cart-tab') {
+    if (event.target.id === 'cart-tab' && newState.inCart.length > 0) {
       newState.displayCart = true
     }
     if (event.target.innerHTML === 'Details' && newState.inCart.length === 0) {
@@ -385,7 +385,26 @@ class App extends Component {
     })
   }
 
-
+  backToCalendar = event => {
+    const newState = { ...this.state }
+    console.log('back to calendar');
+    newState.displayExternalShowDetails = false
+    newState.displayDetailCartView = false
+    newState.displayShow = null
+    newState.displaySuccess = false
+    newState.displayShowList = true
+    newState.displayShowDetails = false
+    newState.displayCart = false
+    this.setState({
+      displayExternalShowDetails: newState.displayExternalShowDetails,
+      displayDetailCartView: newState.displayDetailCartView,
+      displayShow: newState.displayShow,
+      displaySuccess: newState.displaySuccess,
+      displayShowList: newState.displayShowList,
+      displayShowDetails: newState.displayShowDetails,
+      displayCart: newState.displayCart
+    })
+  }
   // Show Functions
   showsExpandClick = event => {
     const newState = { ...this.state }
@@ -399,11 +418,13 @@ class App extends Component {
     if(clickedShow.external){
       newState.displayShowDetails = false
       newState.displayExternalShowDetails = true
+      newState.displayShowList= false
       newState.displayShow = clickedShow
       this.setState({
         displayShowDetails: newState.displayShowDetails,
         displayExternalShowDetails: newState.displayExternalShowDetails,
-        displayShow: newState.displayShow
+        displayShow: newState.displayShow,
+        displayShowList: newState.displayShowList
       })
 
 
@@ -425,13 +446,15 @@ class App extends Component {
       newState.displayExternalShowDetails = false
       newState.displayShow = clickedShow
       newState.assignedParties = assignedPickupParties
+      newState.displayShowList = false
       this.setState({
         displayQuantity: newState.displayQuantity,
         displayExternalShowDetails: newState.displayExternalShowDetails,
         displayDetailCartView: newState.displayDetailCartView,
         displaySuccess: newState.displaySuccess,
         displayShow: newState.displayShow,
-        assignedParties: newState.assignedParties
+        assignedParties: newState.assignedParties,
+        displayShowList: newState.displayShowList
       })
       if (document.querySelector('#departureOption')) {
         document.querySelector('#departureOption').value = "Select a Departure Option..."
@@ -655,7 +678,7 @@ class App extends Component {
       this.setState({ validated: newState.validated })
     }
     else {
-      console.log('ERROR!')
+      console.log('Please continue to complete the form!')
     }
   }
 
@@ -772,7 +795,7 @@ class App extends Component {
       newState.cartToSend.willCallLastName = newState.cartToSend.lastName
       this.setState({ cartToSend: newState.cartToSend })
     }
-    console.log('CTS', newState.cartToSend)
+    //console.log('CTS', newState.cartToSend)
 
     newState.displayQuantity = false
     newState.displayAddBtn = false
@@ -917,12 +940,13 @@ class App extends Component {
       <React.Fragment>
         <div className="App">
           {/* Desktop View */}
-          <MediaQuery minWidth={800}>
+          <MediaQuery minWidth={8}>
             {this.state.displayLoadingScreen ?
               <Loading
                 onLoad={this.onLoad}
-                handleBus={this.handleBus} /> : ""}
-
+                handleBus={this.handleBus} />
+                :
+              <div>
             <Header
               getReservations={this.getReservations}
               googleResponse={this.state.googleResponse}
@@ -964,9 +988,11 @@ class App extends Component {
                           {this.state.displayShow ? '' :
                             <BannerRotator displayShow={this.state.displayShow} />}
                           {this.state.displayCart || this.state.displayShow || this.state.displayExternalShowDetails ?
+                            <div>
                             <DetailCartView
                               afterDiscountObj={this.state.afterDiscountObj}
                               assignedParties={this.state.assignedParties}
+                              backToCalendar={this.backToCalendar}
                               closeAlert={this.closeAlert}
                               addToCart={this.addToCart}
                               checked={this.state.checked}
@@ -1018,37 +1044,63 @@ class App extends Component {
                               updatePurchaseField={this.updatePurchaseField}
                               validated={this.state.validated}
                               validatedElements={this.state.validatedElements} />
+                              </div>
                             :
                             <SponsorBox
                               showAboutus={this.showAboutus}
                               displayAboutus={this.state.displayAboutus} />}
                         </div>
-
+                        <MediaQuery maxWidth={799}>
                         <div className='col-md-6 float-left'>
-                          <ShowList
-                            addBorder={this.addBorder}
-                            displayShow={this.state.displayShow}
-                            filterString={this.state.filterString}
-                            handleWarning={this.handleWarning}
-                            inCart={this.state.inCart}
-                            searchShows={this.searchShows}
-                            shows={this.state.shows}
-                            showsExpandClick={this.showsExpandClick}
-                            sortByArtist={this.sortByArtist}
-                            sortByDate={this.sortByDate}
-                            sortedByArtist={this.state.artistIcon}
-                            sortedByDate={this.state.dateIcon}
-                            tabClicked={this.tabClicked}
-                            ticketsAvailable={this.state.ticketsAvailable} />
+                        {this.state.displayExternalShowDetails || this.state.displayDetailCartView ?
+                          ""
+                        :
+                        <ShowList
+                          addBorder={this.addBorder}
+                          displayShow={this.state.displayShow}
+                          filterString={this.state.filterString}
+                          handleWarning={this.handleWarning}
+                          inCart={this.state.inCart}
+                          searchShows={this.searchShows}
+                          shows={this.state.shows}
+                          showsExpandClick={this.showsExpandClick}
+                          sortByArtist={this.sortByArtist}
+                          sortByDate={this.sortByDate}
+                          sortedByArtist={this.state.artistIcon}
+                          sortedByDate={this.state.dateIcon}
+                          tabClicked={this.tabClicked}
+                          ticketsAvailable={this.state.ticketsAvailable} />
+                      }
                         </div>
+                      </MediaQuery>
+                      <MediaQuery minWidth={800}>
+                        <ShowList
+                          addBorder={this.addBorder}
+                          displayShow={this.state.displayShow}
+                          filterString={this.state.filterString}
+                          handleWarning={this.handleWarning}
+                          inCart={this.state.inCart}
+                          searchShows={this.searchShows}
+                          shows={this.state.shows}
+                          showsExpandClick={this.showsExpandClick}
+                          sortByArtist={this.sortByArtist}
+                          sortByDate={this.sortByDate}
+                          sortedByArtist={this.state.artistIcon}
+                          sortedByDate={this.state.dateIcon}
+                          tabClicked={this.tabClicked}
+                          ticketsAvailable={this.state.ticketsAvailable} />
+                      </MediaQuery>
+
                       </div>
                     </React.Fragment> : <Loading />
             }
+            </div>
+          }
           </MediaQuery>
           {/* End Desktop View */}
 
           {/* Mobile View */}
-          <MediaQuery maxWidth={799}>
+          <MediaQuery maxWidth={7}>
             <div className="mobile-view">
               {this.state.displayLoadingScreen ?
                 <Loading
@@ -1075,6 +1127,7 @@ class App extends Component {
                           addToCart={this.addToCart}
                           afterDiscountObj={this.state.afterDiscountObj}
                           assignedParties={this.state.assignedParties}
+                          backToCalendar={this.backToCalendar}
                           cartToSend={this.state.cartToSend}
                           checked={this.state.checked}
                           closeAlert={this.closeAlert}

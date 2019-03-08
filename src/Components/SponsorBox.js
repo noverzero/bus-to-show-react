@@ -1,12 +1,14 @@
 import React from 'react'
 import '../App.css';
 import logo from '../Images/Logos/bts-logo-orange.png'
+import MediaQuery from 'react-responsive'
 
 const SponsorBox = (props) => {
 
 
   return (
     <div className='SponsorBox container mt-2'>
+    <MediaQuery minWidth={800}>
       <div className="row">
         <div className="col-md-6 col-centered offset-md-4">
           <img className='' src={logo} alt="bts-logo" width="125" />
@@ -22,6 +24,7 @@ const SponsorBox = (props) => {
           </div>
         </div>
       </div>
+    </MediaQuery>
     </div>
 
 

@@ -14,9 +14,10 @@ const DetailCartView = (props) => {
   return (
     <div className="DetailCartView">
       {/* // Desktop View */}
-      <MediaQuery minWidth={800}>
+      <MediaQuery minWidth={8}>
       {props.displayExternalShowDetails ?
       <ExternalShowDetail
+        backToCalendar={props.backToCalendar}
         displayShow={props.displayShow}
       /> :
         <React.Fragment>
@@ -50,6 +51,7 @@ const DetailCartView = (props) => {
               {props.displayCart ?
                 <Cart
                   afterDiscountObj={props.afterDiscountObj}
+                  backToCalendar={props.backToCalendar}
                   cartToSend={props.cartToSend}
                   checked={props.checked}
                   confirmedRemove={props.confirmedRemove}
@@ -86,6 +88,7 @@ const DetailCartView = (props) => {
                 <ShowDetailView
                   addToCart={props.addToCart}
                   assignedParties={props.assignedParties}
+                  backToCalendar={props.backToCalendar}
                   displayAddBtn={props.displayAddBtn}
                   displayBorder={props.displayBorder}
                   displayCart={props.displayCart}
@@ -117,7 +120,7 @@ const DetailCartView = (props) => {
       {/* // End DesktopView */}
 
       {/* // Mobile View */}
-      <MediaQuery maxWidth={799}>
+      <MediaQuery maxWidth={7}>
         <div className="mobile-DetailViewCart mt-2">
           <ul className="nav nav-tabs" id="myTab" role="tablist">
             <li className="nav-item">
@@ -183,6 +186,7 @@ const DetailCartView = (props) => {
           {props.displayExternalShowDetails
             ?
             <ExternalShowDetail
+              backToCalendar={props.backToCalendar}
               displayShow={props.displayShow}
             />
             :
@@ -191,6 +195,7 @@ const DetailCartView = (props) => {
             <ShowDetailView
               addToCart={props.addToCart}
               assignedParties={props.assignedParties}
+              backToCalendar={props.backToCalendar}
               displayAddBtn={props.displayAddBtn}
               displayBorder={props.displayBorder}
               displayCart={props.displayCart}
@@ -224,6 +229,7 @@ const DetailCartView = (props) => {
           <div className="mobile-view">
             <Cart
               afterDiscountObj={props.afterDiscountObj}
+              backToCalendar={props.backToCalendar}
               cartToSend={props.cartToSend}
               checked={props.checked}
               confirmedRemove={props.confirmedRemove}
