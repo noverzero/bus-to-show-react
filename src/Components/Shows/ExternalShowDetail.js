@@ -6,7 +6,16 @@ const ExternalShowDetail = (props) => {
   const displayShow = props.displayShow
   return (
     <div>
-      <MediaQuery minWidth={800}>
+      <div>
+        <MediaQuery maxWidth={799}>
+          <button
+            id='backToCalendar'
+            onClick={props.backToCalendar}
+            type="button"
+            className='btn detail-btn my-4 col-md-2'>Back to Calendar</button>
+        </MediaQuery>
+      </div>
+      <MediaQuery minWidth={8}>
         <div className="border bts-orange-border bts-white-bg p-4 m-2">
           <h4> {`${displayShow.headliner} ${displayShow.date}`} </h4>
           {displayShow.support1 ?
@@ -29,7 +38,7 @@ const ExternalShowDetail = (props) => {
           </div>
         </div>
       </MediaQuery>
-      <MediaQuery maxWidth={800}>
+      <MediaQuery maxWidth={7}>
         <div className="border bts-orange-border bts-white-bg p-2 m-2">
           <h4> {`${displayShow.headliner} ${displayShow.date}`} </h4>
           {displayShow.support1 ?

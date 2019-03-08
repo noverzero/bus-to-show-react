@@ -28,7 +28,7 @@ const CartItem = (props) => {
   const defaultFirstBus = moment(time3, 'hmm').format('h:mm')
   return (
     <div className='CartItem'>
-      <MediaQuery minWidth={800}>
+      <MediaQuery minWidth={8}>
         {props.displayConfirmRemove ? '' :
           props.showsInCart.map(show =>
             <li className="px-4 py-2 list-item" key={show.id} id={show.id}>
@@ -58,8 +58,8 @@ const CartItem = (props) => {
             </li>)
         }
       </MediaQuery>
-      <MediaQuery maxWidth={799}>
-    
+      <MediaQuery maxWidth={7}>
+
       </MediaQuery>
     </div>
   )

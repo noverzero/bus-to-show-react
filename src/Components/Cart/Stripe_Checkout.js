@@ -5,7 +5,7 @@ export default class Checkout extends React.Component {
 
   onToken = (token) => {
     const orderInfo = this.props.cartToSend
-    //orderInfo.receiptDescription = this.props.receiptDescription
+    orderInfo.receiptDescription = this.props.receiptDescription
     fetch('https://something-innocuous.herokuapp.com/orders/charge', {
       method: 'POST',
       body: JSON.stringify({

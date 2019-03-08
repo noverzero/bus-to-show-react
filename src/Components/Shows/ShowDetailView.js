@@ -27,7 +27,7 @@ const ShowDetailView = (props) => {
   return (
     <div className='ShowDetailView'>
       {/* Desktop View */}
-      <MediaQuery minWidth={800}>
+      <MediaQuery minWidth={8}>
         {props.displayShow && !props.displayCart ?
           <div className={`content-section-details ${props.displayBorder ? 'add-border' : 'remove-border'}`}>
             <h3>Bus Rides to {show.headliner}</h3>
@@ -35,6 +35,7 @@ const ShowDetailView = (props) => {
             <div className="list-group">
               <div className="list-group-item">
                 <div className='row container justify-content-center'>
+                  <MediaQuery minWidth="800">
                   <div className="col-md-8 artist-info bio-font">
                     {show.headlinerBio ? headlinerBio :
                       <div>
@@ -56,6 +57,7 @@ const ShowDetailView = (props) => {
                         </div>
                       </div>}
                   </div>
+                </MediaQuery>
                   <div className="col-md-4 artist-image">
                     <div className="row bts-logo-flex">
                       {show.headlinerImgLink ?
@@ -144,7 +146,7 @@ const ShowDetailView = (props) => {
               </div>
               <div className="list-group-item">
                 <div className='row col-md-12'>
-                  <button type="button" onClick={props.returnToShows} className="btn btn-outline-danger return-btn float-right">Cancel</button>
+                  <button type="button" onClick={props.backToCalendar} className="btn btn-outline-danger return-btn float-right">Cancel</button>
                   {props.displayAddBtn ?
                     <button role="tabpanel" aria-labelledby="cart-tab" type="button" onClick={props.addToCart} className="btn btn-outline-primary return-btn ml-2 float-right">Add to Cart</button> : ''}
                   {props.displayViewCartBtn ?
@@ -158,7 +160,7 @@ const ShowDetailView = (props) => {
       {/* End Desktop View */}
 
       {/* Mobile View */}
-      <MediaQuery maxWidth={799}>
+      <MediaQuery maxWidth={7}>
       <div className="list-group-mobile pb-4">
         {props.displayShowDetails && !props.displayShow ?
           <div className="nothing-in-cart">
