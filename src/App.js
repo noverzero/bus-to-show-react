@@ -101,6 +101,7 @@ class App extends Component {
 
 
   async componentDidMount() {
+    console.log(process.env.REACT_APP_API_URL)
     const response = await fetch(`https://something-innocuous.herokuapp.com/events`)
     const allShows = await response.json()
 
