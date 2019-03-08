@@ -101,8 +101,7 @@ class App extends Component {
 
 
   async componentDidMount() {
-    console.log(process.env.REACT_APP_API_URL)
-    const response = await fetch(`https://something-innocuous.herokuapp.com/events`)
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/events`)
     const allShows = await response.json()
 
     //filters out expired shows and shows that don't meet criteria, and shows that are denied.
@@ -129,17 +128,16 @@ class App extends Component {
     })
 
     this.setState({ shows: newState })
-    const pickups = await fetch(`https://something-innocuous.herokuapp.com/pickup_locations`)
+    const pickups = await fetch(`${process.env.REACT_APP_API_URL}/pickup_locations`)
     const pickupLocations = await pickups.json()
     this.setState({ pickupLocations })
 
-    const getPickupParties = await fetch(`https://something-innocuous.herokuapp.com/pickup_parties`)
-    //const getPickupParties = await fetch('http://localhost:3000/pickup_parties')
+    const getPickupParties = await fetch(`${process.env.REACT_APP_API_URL}/pickup_parties`)
     const pickupParties = await getPickupParties.json()
     this.setState({ pickupParties })
   }
 
-  //status: over-ridden by onclick event in the "ride with bus button".  where. called in "loading.js"
+  //status: over-ridden by onclick event in the "ride with us button".  where. called in "loading.js"
   onLoad = () => {
 
     const newState = { ...this.state }
@@ -256,7 +254,7 @@ class App extends Component {
 
   getReservations = async userId => {
     if (userId) {
-      const reservations = await fetch(`https://something-innocuous.herokuapp.com/reservations/${userId}`)
+      const reservations = await fetch(`${process.env.REACT_APP_API_URL}/reservations/${userId}`)
       const userReservations = await reservations.json()
       const newState = { ...this.State }
       newState.userId = userId
@@ -269,7 +267,7 @@ class App extends Component {
 
     const ticketQuantity = this.state.ticketQuantity
     const eventId = this.state.inCart[0].id
-    const response = await fetch(`http://localhost:3000/discount_codes/${this.state.discountCode}`)
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/discount_codes/${this.state.discountCode}`)
     const json = await response.json()
 
     const result = json.filter((discountObj) => discountObj.eventsId === eventId)[0]
@@ -520,7 +518,7 @@ class App extends Component {
     newState.startTimer = true
     this.setState(newState)
 
-    fetch(`https://something-innocuous.herokuapp.com/pickup_parties`, {
+    fetch(`${process.env.REACT_APP_API_URL}/pickup_parties`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -532,7 +530,7 @@ class App extends Component {
       }
     })
 
-    setTimeout(fetch(`https://something-innocuous.herokuapp.com/pickup_parties`, {
+    setTimeout(fetch(`${process.env.REACT_APP_API_URL}/pickup_parties`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -566,8 +564,7 @@ class App extends Component {
     if (err) return this.setState({purchaseFailed: true})
 
     const cartObj = this.state.cartToSend
-    //const ordersResponse = await fetch('http://localhost:3000/orders', {
-    const ordersResponse = await fetch(`https://something-innocuous.herokuapp.com/orders`, {
+    const ordersResponse = await fetch(`${process.env.REACT_APP_API_URL}/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
       headers: {
@@ -576,7 +573,7 @@ class App extends Component {
     })
     const orderJson = await ordersResponse.json()
     if (this.state.userId) {
-      await fetch(`https://something-innocuous.herokuapp.com/reservations/users/${this.state.userId}`, {
+      await fetch(`${process.env.REACT_APP_API_URL}/reservations/users/${this.state.userId}`, {
         method: 'POST',
         body: JSON.stringify({ reservationId: orderJson.id }),
         headers: {
