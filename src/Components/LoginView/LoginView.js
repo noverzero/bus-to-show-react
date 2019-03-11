@@ -1,11 +1,11 @@
 import React from 'react'
 import '../../App.css'
-import moment from 'moment'
+// import moment from 'moment'
 // import MediaQuery from 'react-responsive'
 import { GoogleLogin } from 'react-google-login'
 import SpotifyLogin from 'react-spotify-login'
-//const { spotifyClientId, redirectUri, googleClientId } from './settings'
-const dotenv = require('dotenv').config()
+// import { spotifyClientId, redirectUri, googleClientId } from './settings'
+// const dotenv = require('dotenv').config()
 const spotifyClientId = process.env.spotifyClientId
 const redirectUri = process.env.redirectUri
 const googleClientId = process.env.googleClientId

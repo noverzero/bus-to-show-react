@@ -17,14 +17,18 @@ export default class FacebookButton extends React.Component {
             name: response.name,
             email:response.email,
             picture:response.picture.data.url,
+            isStaff: response.isStaff,
+            isDriver: response.isDriver, 
+            isAdmin: response.isAdmin, 
+            isDeactivated: response.isDeactivated
         })
         this.props.toggleLoggedIn(true)
-        const usersInfo = await fetch(`${process.env.REACT_APP_API_URL}/users`, {  
+        const usersInfo = await fetch(`http://${process.env.REACT_APP_API_URL}/users`, {  
                 method: 'POST',
                 body: JSON.stringify({
                     firstName: response.name.split(" ")[0],
                     lastName: response.name.split(" ")[1],
-                    email: response.email,
+                    email: response.email
                 }),
                 headers: {
                     'Content-Type': 'application/json'
@@ -65,7 +69,7 @@ export default class FacebookButton extends React.Component {
           callback={this.responseFacebook}
           cssClass="my-facebook-button-class"
           icon="fab fa-facebook-square"
-           />
+        />
       )
     }
     return (

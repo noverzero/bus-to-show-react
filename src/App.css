@@ -233,6 +233,11 @@ li {
   color: white;
 }
 
+.bts-admin-purple {
+  background-color: #460088;
+  color: white; 
+}
+
 .bts-white-bg {
   background-color: white;
   color: #ff420f;

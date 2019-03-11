@@ -4,7 +4,7 @@ import StripeCheckout from 'react-stripe-checkout'
 export default class Checkout extends React.Component {
   onToken = (token) => {
     const orderInfo = this.props.cartToSend 
-    fetch('${process.env.REACT_APP_API_URL}/orders/charge', {
+    fetch(`${process.env.REACT_APP_API_URL}/orders/charge`, {
       method: 'POST',
       body: JSON.stringify({
         stripeEmail: token.email,
