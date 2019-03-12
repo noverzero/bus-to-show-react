@@ -2,8 +2,10 @@ import React from 'react';
 import StripeCheckout from 'react-stripe-checkout'
 
 export default class Checkout extends React.Component {
+
   onToken = (token) => {
     const orderInfo = this.props.cartToSend 
+    orderInfo.receiptDescription = this.props.receiptDescription
     fetch(`${process.env.REACT_APP_API_URL}/orders/charge`, {
       method: 'POST',
       body: JSON.stringify({
@@ -32,7 +34,8 @@ export default class Checkout extends React.Component {
       <React.Fragment>
         <StripeCheckout
           token={this.onToken}
-          stripeKey="pk_test_J0CdRMCGmBlrlOiGKnGgUEwT"
+          //stripeKey="pk_test_J0CdRMCGmBlrlOiGKnGgUEwT"
+          stripeKey="pk_live_WZRwtpLAFcufugeQKbtwKobm"
           name='Bus To Show'
           description='Receipt will be emailed after purchase'
           email={email}
@@ -44,7 +47,6 @@ export default class Checkout extends React.Component {
             className={`btn mr-1 ${this.props.validated ? 'btn-outline-success' : 'btn-secondary'}`}
             disabled={this.props.validated ? '' : 'disabled'}>
             Purchase</button>
-          <div>By purchasing tickets, you agree to our Terms & Conditions</div>
         </StripeCheckout>
 
       </React.Fragment>

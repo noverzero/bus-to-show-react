@@ -14,9 +14,10 @@ const DetailCartView = (props) => {
   return (
     <div className="DetailCartView">
       {/* // Desktop View */}
-      <MediaQuery minWidth={800}>
+      <MediaQuery minWidth={8}>
       {props.displayExternalShowDetails ?
       <ExternalShowDetail
+        backToCalendar={props.backToCalendar}
         displayShow={props.displayShow}
       /> :
         <React.Fragment>
@@ -50,6 +51,7 @@ const DetailCartView = (props) => {
               {props.displayCart ?
                 <Cart
                   afterDiscountObj={props.afterDiscountObj}
+                  backToCalendar={props.backToCalendar}
                   cartToSend={props.cartToSend}
                   checked={props.checked}
                   confirmedRemove={props.confirmedRemove}
@@ -70,7 +72,6 @@ const DetailCartView = (props) => {
                   pickupPartyId={props.pickupPartyId}
                   purchase={props.purchase}
                   purchaseClick={props.purchaseClick}
-                  purchaseFailed={props.purchaseFailed}
                   purchasePending={props.purchasePending}
                   purchaseSuccessful={props.purchaseSuccessful}
                   quantityChange={props.quantityChange}
@@ -87,6 +88,7 @@ const DetailCartView = (props) => {
                 <ShowDetailView
                   addToCart={props.addToCart}
                   assignedParties={props.assignedParties}
+                  backToCalendar={props.backToCalendar}
                   displayAddBtn={props.displayAddBtn}
                   displayBorder={props.displayBorder}
                   displayCart={props.displayCart}
@@ -118,7 +120,7 @@ const DetailCartView = (props) => {
       {/* // End DesktopView */}
 
       {/* // Mobile View */}
-      <MediaQuery maxWidth={799}>
+      <MediaQuery maxWidth={7}>
         <div className="mobile-DetailViewCart mt-2">
           <ul className="nav nav-tabs" id="myTab" role="tablist">
             <li className="nav-item">
@@ -132,6 +134,7 @@ const DetailCartView = (props) => {
                 aria-controls="showList"
                 aria-selected="true">Show List</a>
             </li>
+            {props.displayExternalShowDetails ? '' :
             <li className="nav-item">
               <a
                 onClick={props.mobileTabClicked}
@@ -143,6 +146,8 @@ const DetailCartView = (props) => {
                 aria-controls="showDetails"
                 aria-selected="false">Show Detail</a>
             </li>
+            }
+            {props.displayExternalShowDetails ? '' :
             <li className="nav-item">
               <a
                 onClick={props.mobileTabClicked}
@@ -154,6 +159,7 @@ const DetailCartView = (props) => {
                 aria-controls="cart"
                 aria-selected="false">My Cart</a>
             </li>
+            }
           </ul>
           <div className="tab-content" id="mobile-tab-content">
 
@@ -177,10 +183,19 @@ const DetailCartView = (props) => {
               ''
             }
           </div>
+          {props.displayExternalShowDetails
+            ?
+            <ExternalShowDetail
+              backToCalendar={props.backToCalendar}
+              displayShow={props.displayShow}
+            />
+            :
+          <div>
           {(props.displayShow || props.displayShowDetails) && !props.displayCart ?
             <ShowDetailView
               addToCart={props.addToCart}
               assignedParties={props.assignedParties}
+              backToCalendar={props.backToCalendar}
               displayAddBtn={props.displayAddBtn}
               displayBorder={props.displayBorder}
               displayCart={props.displayCart}
@@ -206,14 +221,15 @@ const DetailCartView = (props) => {
               updateDiscountCode={props.updateDiscountCode}
               totalCost={props.totalCost}
               viewCart={props.viewCart} />
-            :
-            ''}
-
+            : ''}
+          </div>
+          }
         </div>
         {props.displayCart ?
           <div className="mobile-view">
             <Cart
               afterDiscountObj={props.afterDiscountObj}
+              backToCalendar={props.backToCalendar}
               cartToSend={props.cartToSend}
               checked={props.checked}
               confirmedRemove={props.confirmedRemove}
@@ -234,7 +250,6 @@ const DetailCartView = (props) => {
               pickupParties={props.pickupParties}
               purchase={props.purchase}
               purchaseClick={props.purchaseClick}
-              purchaseFailed={props.purchaseFailed}
               purchasePending={props.purchasePending}
               purchaseSuccessful={props.purchaseSuccessful}
               quantityChange={props.quantityChange}
