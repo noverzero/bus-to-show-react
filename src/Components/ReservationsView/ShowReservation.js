@@ -8,7 +8,7 @@ import logo from '../../Images/Logos/bts-logo-gray.png'
 const ShowReservation = (props) => {
 
   return (
-    <div className='Shows contianer '>
+    <div className='Shows container'>
       <ul>
         {props.reservations.length > 0 ? props.reservations.map(show =>
           <li className="list-group-item highlightOnHover show-list-item" key={show.orderId} id={show.orderId}>

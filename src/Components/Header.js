@@ -20,6 +20,19 @@ const Header = (props) => {
       </div>
 
       <div className="mr-5 row inline-block" style={{ textAlign: 'center' }}>
+
+        <button
+            onClick={props.toggleAdminView}
+            type="button"
+            className="btn btn-outline-light login-btn">Admin</button>
+      </div>
+    </nav>
+
+  )
+}
+
+export default Header;
+
         {/* {props.googleResponse ?
           <GoogleLogout
             buttonText="Logout"
@@ -39,14 +52,3 @@ const Header = (props) => {
             type="button"
             className="btn btn-outline-light login-btn">Login</button>
         } */}
-        <button
-            onClick={props.toggleAdminView}
-            type="button"
-            className="btn btn-outline-light login-btn">Admin</button>
-      </div>
-    </nav>
-
-  )
-}
-
-export default Header;

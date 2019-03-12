@@ -161,6 +161,7 @@ class App extends Component {
   selectPickupLocationId = async event => {
     const newState = { ...this.state }
     // console.log('change in selectPickupLocationId')
+    
     if (parseInt(event.target.value) !== newState.pickupPartyId) {
       newState.ticketQuantity = null
       newState.displayQuantity = false
@@ -398,7 +399,6 @@ class App extends Component {
     const clickedShow = newState.shows.find(show => (parseInt(show.id) === parseInt(event.target.id)))
     console.log('clickedShow', clickedShow.external)
     if(clickedShow.external){
-    console.log('monkey')
       newState.displayShowDetails = false
       newState.displayExternalShowDetails = true
       newState.displayShow = clickedShow
@@ -893,9 +893,9 @@ class App extends Component {
   }
 
   toggleAdminView = () => {
-    let newState = this.state.adminView
-    newState = !newState
-    this.setState({adminView: newState})
+    let adminView = this.state.adminView
+    adminView = !adminView
+    this.setState({ adminView })
   }
 
   render() {
@@ -924,9 +924,10 @@ class App extends Component {
               adminView={this.state.adminView} />
 
             {this.state.adminView ?
-              <AdminView /> 
-              :
-  
+            <AdminView 
+              shows={this.state.shows}
+              showsExpandClick={this.showsExpandClick} /> 
+            :
               this.state.displayLoginView ?
               <LoginView
                 responseGoogle={this.responseGoogle}
@@ -941,7 +942,6 @@ class App extends Component {
                   filterString={this.state.filterString}
                   showsExpandClick={this.showsExpandClick} />
                 :
-
                 this.state.displayAboutus ?
                   <Aboutus
                     dismissBios={this.dismissBios}
@@ -951,7 +951,6 @@ class App extends Component {
                   :
                   this.state.shows ?
                     <React.Fragment>
-
                       <div className='content-section pt-4'>
                         <div className='col-md-6 float-right' >
                           {this.state.displayShow ? '' :
@@ -1046,9 +1045,9 @@ class App extends Component {
               {this.state.displayLoadingScreen ?
                 <Loading
                   onLoad={this.onLoad}
-                  handleBus={this.handleBus} /> :
-
-                this.state.shows ?
+                  handleBus={this.handleBus} /> 
+                  :
+                  this.state.shows ?
                   <div className="mobile-content">
                     <Header
                       getReservations={this.getReservations}
@@ -1059,10 +1058,17 @@ class App extends Component {
                       myReservationsView={this.state.myReservationsView}
                       spotifyResponse={this.state.spotifyResponse}
                       toggleLoggedIn={this.toggleLoggedIn}
-                      userDashboard={this.userDashboard} />
+                      userDashboard={this.userDashboard}
+                      toggleAdminView={this.toggleAdminView}
+                      adminView={this.state.adminView} />
 
                     <div className="mobile row ">
                       <div className="col-sm-12">
+                        {this.state.adminView ?
+                        <AdminView 
+                        shows={this.state.shows}
+                        showsExpandClick={this.showsExpandClick} /> 
+                        :
                         <DetailCartView
                           addBorder={this.addBorder}
                           addToCart={this.addToCart}
@@ -1125,7 +1131,7 @@ class App extends Component {
                           updateDiscountCode={this.updateDiscountCode}
                           updatePurchaseField={this.updatePurchaseField}
                           validated={this.state.validated}
-                          validatedElements={this.state.validatedElements} />
+                          validatedElements={this.state.validatedElements} /> }
                       </div>
                     </div>
                   </div>
