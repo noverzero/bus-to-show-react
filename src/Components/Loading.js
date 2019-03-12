@@ -3,6 +3,9 @@ import '../App.css';
 import spacebus from '../Images/bus-to-show-space-bus-forward.png'
 import Zoom from 'react-reveal/Zoom'
 import MediaQuery from 'react-responsive'
+import ReactGA from 'react-ga';
+ReactGA.initialize('UA-17782248-2');
+ReactGA.pageview('/loading');
 
 
 const Loading = (props) => {

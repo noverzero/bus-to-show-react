@@ -21,7 +21,7 @@ import DetailCartView from './Components/DetailCartView'
 import BannerRotator from './Components/BannerRotator'
 import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
-ReactGA.pageview('/homepage');
+ReactGA.pageview('/app');
 
 // const dotenv = require('dotenv').config()
 // const SERVER_URL = process.env.REACT_APP_SERVER_URL
