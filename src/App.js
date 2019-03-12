@@ -19,6 +19,10 @@ import ReservationsView from './Components/ReservationsView/ReservationsView'
 import SponsorBox from './Components/SponsorBox'
 import DetailCartView from './Components/DetailCartView'
 import BannerRotator from './Components/BannerRotator'
+import ReactGA from 'react-ga';
+ReactGA.initialize('UA-17782248-2');
+ReactGA.pageview('/homepage');
+
 // const dotenv = require('dotenv').config()
 // const SERVER_URL = process.env.REACT_APP_SERVER_URL
 // const ACCESS_URL = process.env.REACT_APP_ACCESS_URL
@@ -155,6 +159,8 @@ class App extends Component {
       this.setState({ displayBus: newState.displayBus })
     }
   }
+
+
 
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
   selectPickupLocationId = async event => {
