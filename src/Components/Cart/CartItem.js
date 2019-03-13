@@ -58,9 +58,6 @@ const CartItem = (props) => {
             </li>)
         }
       </MediaQuery>
-      <MediaQuery maxWidth={7}>
-
-      </MediaQuery>
     </div>
   )
 }

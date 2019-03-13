@@ -19,8 +19,8 @@ export default class FacebookButton extends React.Component {
             picture:response.picture.data.url,
         })
         this.props.toggleLoggedIn(true)
-        // const usersInfo = await fetch('https://something-innocuous.herokuapp.com/users', {
-        const usersInfo = await fetch('https://something-innocuous.herokuapp.com/users', {  
+         const usersInfo = await fetch('http://localhost:3000/users', {
+        //const usersInfo = await fetch('https://something-innocuous.herokuapp.com/users', {  
                 method: 'POST',
                 body: JSON.stringify({
                     firstName: response.name.split(" ")[0],
@@ -33,7 +33,7 @@ export default class FacebookButton extends React.Component {
         })
         const json = await usersInfo.json()
         this.props.getReservations(json.id)
-    
+
     }
 
     componentClicked = () => {
