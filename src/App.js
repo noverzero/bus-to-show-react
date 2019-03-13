@@ -420,7 +420,7 @@ class App extends Component {
     if(clickedShow.external){
       newState.displayShowDetails = false
       newState.displayExternalShowDetails = true
-      newState.displayShowList= false
+      newState.displayShowList = false
       newState.displayShow = clickedShow
       this.setState({
         displayShowDetails: newState.displayShowDetails,
@@ -842,11 +842,10 @@ class App extends Component {
     const clickedShow = newState.shows.find(show => (parseInt(show.id) === parseInt(event.target.id)))
     console.log('clickedShow', clickedShow.external)
     if(clickedShow.external){
-      console.log('chicken')
       newState.displayShowDetails = false
       newState.displayExternalShowDetails = true
-      newState.displayShow = clickedShow
       newState.displayShowList = false
+      newState.displayShow = clickedShow
       this.setState({
         displayShowDetails: newState.displayShowDetails,
         displayExternalShowDetails: newState.displayExternalShowDetails,
@@ -970,7 +969,9 @@ class App extends Component {
               adminView={this.state.adminView} />
 
             {this.state.adminView ?
-            <AdminView 
+            <AdminView
+              pickupLocations={this.state.pickupLocations}
+              searchShows={this.searchShows}
               shows={this.state.shows}
               showsExpandClick={this.showsExpandClick} /> 
             :
