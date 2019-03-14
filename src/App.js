@@ -416,7 +416,6 @@ class App extends Component {
       pickupPartyId: newState.pickupPartyId
     })
     const clickedShow = newState.shows.find(show => (parseInt(show.id) === parseInt(event.target.id)))
-    console.log('clickedShow', clickedShow.external)
     if(clickedShow.external){
       newState.displayShowDetails = false
       newState.displayExternalShowDetails = true
@@ -525,8 +524,6 @@ class App extends Component {
       cartToSend: newState.cartToSend,
       validatedElements: newState.validatedElements
     })
-    // console.log(' newState.cartToSend ', newState.cartToSend)
-    // console.log(' newState.validatedElements ', newState.validatedElements)
 
     this.setState({ lastDepartureTime, firstBusLoad })
 
