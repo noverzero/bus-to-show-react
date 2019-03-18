@@ -13,18 +13,21 @@ padding: 0px;
 
 /* Admin Styling */
 
-.admin-list-item {
-/* color: #ff420f; */
-color: #460088;
-border-color: #ff420f;
-
+.admin-list-header {
+  color: #FF420F;
+  font-size: 20px;
+  font-weight: bold;
 }
+
+.admin-list-item {
+  color: #460088;
+  border-color: #ff420f;
+  }
 
 .admin-list-item:nth-child(odd) {
-color: #460088;
-background-color: #fac5b5;
-/* background-color: rgba(255, 66, 15, 0.75) */
-}
+  color: #460088;
+  background-color: #fac5b5;
+  }
 
 .bts-admin-purple {
 background-color: #460088;
@@ -37,6 +40,11 @@ border-color: #ff420f;
 color: #460088;
 }
 
+.admin-detail-btn:hover {
+color: #ff420f;
+}
+
+
 .hidden {
 display: none;
 }
@@ -47,7 +55,7 @@ display: none;
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
+  width: 65px;
   height: 34px;
   float:right;
 }
@@ -89,9 +97,9 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+  -webkit-transform: translateX(31px);
+  -ms-transform: translateX(31px);
+  transform: translateX(31px);
 }
 
 .slider.round {
