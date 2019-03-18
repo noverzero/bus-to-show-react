@@ -7,6 +7,8 @@ import logo from '../../Images/Logos/bts-logo-gray.png'
 
 const ShowReservation = (props) => {
 
+  console.log('props.reservations in ShowReservation', props.reservations)
+
   return (
     <div className='Shows contianer '>
       <ul>

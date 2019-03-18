@@ -13,21 +13,21 @@ const ReservationsView = (props) => {
         <div className="list-group">
           <div className="list-group-item show-header">
 
-            <div className="row show-list-flex">
+            <div className="row">
 
-              <div className="col-2 mb-3 ml-5" >
+              <div className="col-2" >
                 <strong>Date  </strong>
               </div>
-              <div className="col-2 mb-3" >
+              <div className="col-2" >
                 <strong>Event  </strong>
               </div>
-              <div className="col-2 mb-3" >
+              <div className="col-2" >
                 <strong>Start Time  </strong>
               </div>
-              <div className="col-2 mb-3 mr-2" >
+              <div className="col-2" >
                 <strong>Will Call Name  </strong>
               </div>
-              <div className="col-2 mb-3 mr-2" >
+              <div className="col-2" >
                 <strong>Pickup Location  </strong>
               </div>
               <div className="col-2 mr-2">

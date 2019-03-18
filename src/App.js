@@ -19,6 +19,7 @@ import ReservationsView from './Components/ReservationsView/ReservationsView'
 import SponsorBox from './Components/SponsorBox'
 import DetailCartView from './Components/DetailCartView'
 import BannerRotator from './Components/BannerRotator'
+import Facebook from './Components/Facebook'
 import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
@@ -78,8 +79,8 @@ class App extends Component {
     firstBusLoad: null,
     googleResponse: null,
     inCart: [],
-    loggedIn: false,
-    myReservationsView: false,
+    displayReservations: false,
+    loggedIn: null,
     pickupLocationId: null,
     pickupPartyId: null,
     purchaseFailed: false,
@@ -91,8 +92,9 @@ class App extends Component {
     ticketsAvailable: [],
     ticketQuantity: null,
     totalCost: 0,
+    userDetails: {},
+    userId: 9,
     userReservations: [],
-    userId: null,
     validated: false,
     validatedElements: {
       fName: null,
@@ -259,16 +261,21 @@ class App extends Component {
     this.setState({ discountCode: newState.discountCode })
   }
 
-  getReservations = async userId => {
+  getReservations = async () => {
+    const userId = this.state.userId
     if (userId) {
-      const reservations = await fetch(`https://something-innocuous.herokuapp.com/reservations/${userId}`)
+      const reservations = await fetch(`http://localhost:3000/orders/${userId}`)
+      //const reservations = await fetch(`https://something-innocuous.herokuapp.com/reservations/${userId}`)
       const userReservations = await reservations.json()
       const newState = { ...this.State }
-      newState.userId = userId
+      //newState.userId = userId
       newState.userReservations = userReservations
-      this.setState({ userId: newState.userId, userReservations: newState.userReservations })
+      this.setState({ userReservations: newState.userReservations })
+      console.log('userReservations', this.state.userReservations)
     }
   }
+
+
 
   findDiscountCode = async () => {
 
@@ -322,14 +329,14 @@ class App extends Component {
   // Header Functions
   userDashboard = () => {
     const newState = { ...this.state }
-    newState.myReservationsView = !this.state.myReservationsView
-    this.setState({ myReservationsView: newState.myReservationsView })
+    newState.displayReservations = !this.state.displayReservations
+    this.setState({ displayReservations: newState.displayReservations })
   }
 
   returnHome = () => {
     const newState = { ...this.state }
-    newState.myReservationsView = false
-    this.setState({ myReservationsView: newState.myReservationsView })
+    newState.displayReservations = false
+    this.setState({ displayReservations: newState.displayReservations })
   }
 
   searchShows = event => {
@@ -338,16 +345,37 @@ class App extends Component {
     this.setState({ filterString: newState.filterString })
   }
 
-  toggleLoggedIn = (boolean) => {
+  toggleReservationView = () => {
+    console.log('click on toggleReservationView')
     const newState = { ...this.state }
-    newState.loggedIn = !newState.loggedIn
-    newState.myReservationsView = !newState.myReservationsView
-    this.setState({ loggedIn: newState.loggedIn, myReservationsView: newState.myReservationsView })
+    console.log('userDetails', this.state.userDetails)
+    console.log('userObj', this.state.userObj)
+    console.log('userId', this.state.userId)
+
+
+
+    this.getReservations(9)
+    newState.displayReservations = !newState.displayReservations
+    this.setState({ displayReservations: newState.displayReservations })
+
   }
 
-  loginClick = () => {
+  toggleLoggedIn = (boolean) => {
+      const newState = { ...this.state }
+      newState.loggedIn = boolean
+      if (boolean === false) {
+        this.setState({
+          loggedIn: newState.loggedIn,
+         })
+      }
+      this.setState({
+        loggedIn: newState.loggedIn,
+       })
+    }
+
+  profileClick = () => {
     const newState = { ...this.state }
-    newState.displayLoginView = true
+    newState.displayLoginView = !newState.displayLoginView
     this.setState({
       displayLoginView: newState.displayLoginView
     })
@@ -610,17 +638,17 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
-    const orderJson = await ordersResponse.json()
-    if (this.state.userId) {
-      await fetch(`https://something-innocuous.herokuapp.com/reservations/users/${this.state.userId}`, {
-        method: 'POST',
-        body: JSON.stringify({ reservationId: orderJson.id }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      this.getReservations(this.state.userId)
-    }
+    // const orderJson = await ordersResponse.json()
+    // if (this.state.userId) {
+    //   await fetch(`https://something-innocuous.herokuapp.com/reservations/users/${this.state.userId}`, {
+    //     method: 'POST',
+    //     body: JSON.stringify({ reservationId: orderJson.id }),
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     }
+    //   })
+    //   this.getReservations(this.state.userId)
+    // }
 
     this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [] })
 
@@ -851,19 +879,23 @@ class App extends Component {
               getReservations={this.getReservations}
               googleResponse={this.state.googleResponse}
               loggedIn={this.state.loggedIn}
-              loginClick={this.loginClick}
+              profileClick={this.profileClick}
               logout={this.logout}
-              myReservationsView={this.state.myReservationsView}
               spotifyResponse={this.state.spotifyResponse}
-              toggleLoggedIn={this.toggleLoggedIn}
               userDashboard={this.userDashboard} />
 
             {this.state.displayLoginView ?
               <LoginView
+                displayReservations={this.state.displayReservations}
                 responseGoogle={this.responseGoogle}
-                responseSpotify={this.responseSpotify} />
+                responseSpotify={this.responseSpotify}
+                toggleLoggedIn={this.toggleLoggedIn}
+                userDetails={this.state.userDetails}
+                loggedIn={this.state.loggedIn}
+                profileClick={this.profileClick}
+                toggleReservationView={this.toggleReservationView}/>
               :
-              this.state.myReservationsView ?
+              this.state.displayReservations ?
                 <ReservationsView
                   returnHome={this.returnHome}
                   reservations={this.state.userReservations}

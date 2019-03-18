@@ -3,7 +3,9 @@ import '../../App.css'
 import moment from 'moment'
 // import MediaQuery from 'react-responsive'
 import { GoogleLogin } from 'react-google-login'
+import FacebookButton from '../Facebook';
 import SpotifyLogin from 'react-spotify-login'
+import ReservationsView from '../ReservationsView/ReservationsView'
 //const { spotifyClientId, redirectUri, googleClientId } from './settings'
 const dotenv = require('dotenv').config()
 const spotifyClientId = process.env.spotifyClientId
@@ -16,27 +18,43 @@ const LoginView = (props) => {
 
 
   return (
-    <div className='row container login-flex'>
-      <div className="col-md-8">
-        <p>Image Section</p>
-      </div>
-      <div className="col-md-4">
-        <div className="googleLoginBtn">
-          <GoogleLogin
-            clientId={googleClientId}
-            redirectUri={redirectUri}
-            buttonText="Login with Google"
-            onSuccess={props.responseGoogle}
-            onFailure={props.responseGoogle} />
+    <div className='container-fluid'>
+        <div className='row p-2'>
+        {!props.loggedIn ?
+          <div className='col-12 text-center'>
+            Continue as a Guest or Click below to Sign-In to (or create) your own account using Facebook:
+          </div>
+        : ""}
         </div>
-        <div className="spotifyLoginBtn">
-          <SpotifyLogin
-            clientId={spotifyClientId}
-            redirectUri={redirectUri}
-            onSuccess={props.responseSpotify}
-            onFailure={props.responseSpotify} />
+        <div className='row'>
+          <div className='col-12 text-center'>
+            <FacebookButton
+              userDashboard={props.userDashboard}
+              toggleLoggedIn={props.toggleLoggedIn}
+              userDetails={props.userDetails}
+              loggedIn={props.loggedIn}
+              profileClick={props.profileClick}/>
+          </div>
         </div>
-      </div>
+        <div className='row'>
+        {props.loggedIn ?
+          <div className='col-12 text-center'>
+            {props.displayReservations ?
+              <div>
+                <div className="btn-lg border border-success" onClick={props.toggleReservationView}>
+                 Back to User Dashboard
+                </div>
+                <ReservationsView />
+              </div>
+             :
+             <div className="btn-lg border border-success" onClick={props.toggleReservationView}>
+              My Upcoming Reservations
+             </div>
+            }
+          </div>
+        :''
+        }
+        </div>
     </div>
   )
 
