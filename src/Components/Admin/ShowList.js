@@ -4,7 +4,7 @@ import moment from 'moment'
 // import MediaQuery from 'react-responsive';
 
 const ShowList = (props) => {
-  let { filterString, shows, makeSelection } = props
+  let { filterString, shows, makeSelection, searchBar } = props
 
   filterString = filterString.toLowerCase()
   let filterShows = shows.filter(show => show.headliner.toLowerCase().includes(filterString))
@@ -30,7 +30,7 @@ const ShowList = (props) => {
                 </div>
                   <button
                     id={show.id}
-                    onClick={e => makeSelection('eventId', show.id, 'PickupsList')}
+                    onClick={e=> { searchBar.value = ''; makeSelection('eventId', show.id, 'PickupsList') }}
                     type="button"
                     className='btn admin-detail-btn my-4 col-md-2'>Select</button>
               </div>

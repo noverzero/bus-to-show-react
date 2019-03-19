@@ -3,8 +3,8 @@ import '../../App.css';
 
 
 const PickupsList = (props) => {
-  let { pickupLocations, makeSelection } = props
-  // console.log(pickupLocations)
+  let { pickupLocations, makeSelection, searchBar } = props
+
   return (
     <div className='Pickups'>
       {pickupLocations.map(location =>
@@ -20,7 +20,7 @@ const PickupsList = (props) => {
             </div>
               <button
                 id={location.id}
-                onClick={e => makeSelection('pickupLocationId', location.id, 'ReservationsList')}
+                onClick={e => { searchBar.value = ''; makeSelection('pickupLocationId', location.id, 'ReservationsList') }}
                 type="button"
                 className='btn admin-detail-btn my-4 col-md-2'>
                 Select

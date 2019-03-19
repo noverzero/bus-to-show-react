@@ -37,6 +37,7 @@ class AdminView extends React.Component {
   
   toggleProperty = async (property) => {
     let newState = {...this.state}
+    newState.filterString = ''
     if (property === 'displayUserCheckin') {
     newState.displayUserCheckin = !newState.displayUserCheckin
     newState.displayList = 'ShowList'
@@ -48,8 +49,10 @@ class AdminView extends React.Component {
   }
 
   makeSelection = async (target, targetId, next) => {
+    this.setState({filterString: ''})
     let newState = {...this.state}
     newState[target] = targetId
+    newState.filterString = ''
     await this.setState(newState)
     this.toggleProperty(next)
     if (next === 'PickupsList') this.findShow(targetId)
@@ -84,7 +87,7 @@ class AdminView extends React.Component {
   }
 
   toggleCheckedIn = async (isCheckedIn, reservation) => {
-    let newStatus = isCheckedIn ? 1 : 0
+    let newStatus = isCheckedIn ? 2 : 1
     await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/${reservation.id}`, {
         method: 'PATCH',
         body: JSON.stringify({

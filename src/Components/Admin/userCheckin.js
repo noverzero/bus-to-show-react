@@ -33,6 +33,8 @@ const UserCheckin = (props) => {
     else return ''
   }
 
+  const searchBar = document.getElementById('search')
+
   return (
     
     <div className='ShowList mt-2'>
@@ -42,11 +44,11 @@ const UserCheckin = (props) => {
           <div className="list-group-item show-header">
             <div className="row show-list-flex">
               <div className="col-3 mb-3" >
-                <button type="button" className="btn btn-outline-light" onClick={e=>toggleProperty(previousProperty)}>Back</button>
+                <button type="button" className="btn btn-outline-light" onClick={e=>{searchBar.value = ''; toggleProperty(previousProperty, searchBar)}}>Back</button>
               </div>
               <div className="col-9 mb-3" >
                 <form className="form-inline float-right">
-                  <input onChange={searchItems} className="form-control search-bar" type="search" placeholder="Search..." aria-label="Search"></input>
+                  <input onChange={searchItems} className="form-control search-bar" type="search" placeholder="Search..." aria-label="Search" id="search"></input>
                 </form>
               </div>
             </div>
@@ -57,6 +59,7 @@ const UserCheckin = (props) => {
                   filterString={filterString}
                   makeSelection={makeSelection}
                   toggleProperty={toggleProperty}
+                  searchBar={searchBar}
                 />
               </div>  
               <div className={displayList === 'PickupsList' ? '' : 'hidden'}>
@@ -64,11 +67,13 @@ const UserCheckin = (props) => {
                   filterString={filterString}
                   pickupLocations={pickupLocations}
                   makeSelection={makeSelection}
+                  searchBar={searchBar}
                 />  
               </div>
-              <div >
+              <div>
               {displayList === 'ReservationsList' ? 
                 <ReservationsList
+                filterString={filterString}
                 reservations={reservations}
                 toggleCheckedIn={toggleCheckedIn}
               /> : '' }

@@ -3,7 +3,7 @@ import '../../App.css';
 
 
 const ReservationsList = (props) => {
-  let { reservations, toggleCheckedIn } = props
+  let { filterString, reservations, toggleCheckedIn } = props
   
   reservations = reservations.sort((a, b) => {
     if(a.willCallLastName < b.willCallLastName) {return -1}
@@ -12,16 +12,19 @@ const ReservationsList = (props) => {
     return 0
   })
 
+  filterString = filterString.toLowerCase()
+  let filterRezzies = reservations.filter(rezzy => rezzy.willCallLastName.toLowerCase().includes(filterString) || rezzy.willCallFirstName.toLowerCase().includes(filterString))
+
   return (
     <div className='Reservations'>
-      {reservations.length > 0 ?
+      {filterRezzies.length > 0 ?
         
         reservations.map(reservation => {
           const { willCallFirstName, willCallLastName, orderedByFirstName, orderedByLastName } = reservation
           const lastName = willCallLastName
           const firstName = willCallFirstName
 
-          if (reservation.status === '2') return null
+          if (reservation.status === '3') return null
 
           return <li className="list-group-item admin-list-item" 
             key={reservation.id} 
@@ -37,7 +40,7 @@ const ReservationsList = (props) => {
               <label className="switch">
                 <input type="checkbox" 
                 className="default" 
-                checked={reservation.status === 1 ? 'checked' : ''}
+                checked={reservation.status === 2 ? 'checked' : ''}
                 onChange={event=>toggleCheckedIn(event.target.checked, reservation)} />
                 <span className="slider round"></span>
               </label>
@@ -46,7 +49,7 @@ const ReservationsList = (props) => {
         </li>
         }
         )
-        : 'Nobody to pick up!'}
+        : 'Reservations not found'}
     </div>
   )
 }
