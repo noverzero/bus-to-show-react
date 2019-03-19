@@ -83,6 +83,9 @@ const LoginView = (props) => {
                <div className="btn-lg border border-success" onClick={props.profileClick}>
                All Events
                </div>
+               <div className="btn-lg border border-success" onClick={props.profileClick}>
+               About Us
+               </div>
              </div>
             }
           </div>

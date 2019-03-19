@@ -10,32 +10,20 @@ const ReservationsView = (props) => {
 
   return (
     <div className=''>
-      <div className='container mt-3'>
-        <div className="list-group">
-          <div className="list-group-item">
-
-            <div className="row">
-              <div className="col-md-12">
-                upcoming reservations
-              </div>
-            </div>
-
-            <ul className="list-group">
-
-              {props.userReservations ?
-                <div>
-                  <div className="row ">
-                    <div className="col-md-12">
-                      <ShowReservation
-                        userReservations={props.userReservations} />
-                    </div>
-                  </div>
+      <div className='container-fluid mt-3'>
+      <div className="col-12">
+        <ul className="list-group">
+          {props.userReservations ?
+            <div>
+                  upcoming reservations
+                  <ShowReservation
+                    userReservations={props.userReservations} />
                 </div>
-                : ''}
-            </ul>
-
-          </div>
+            : ''}
+        </ul>
         </div>
+
+
       </div>
     </div>)
 }

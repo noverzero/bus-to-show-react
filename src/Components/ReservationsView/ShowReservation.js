@@ -9,43 +9,39 @@ const ShowReservation = (props) => {
 
   console.log('props.userReservations in ShowReservation', props.userReservations)
 
+  //get Ticket Quantity for Each Pickup Party
+
   return (
-    <div className=' '>
-      <ul>
+    <div className=''>
+
         {props.userReservations.length > 0 ? props.userReservations.map(show =>
-          <li className="list-group-item highlightOnHover show-list-item" key={show.orderId} id={show.orderId}>
+          <div className="list-group-item highlightOnHover show-list-item" key={show.id} id={show.orderId}>
             <div className="row" id={show.orderId}>
-
-              <div className="col-md-2 list-item-font" id={show.orderId}>{show.date} <br /> {moment(show.date, "MM-DD-YYYY").format("dddd")}</div>
-              <div className="col-md-3 list-item-font" id={show.orderId}>
-                <strong>{show.headliner}</strong> <br />
-                {show.support1 ? <React.Fragment> with {show.support1} <br /> </React.Fragment> : ''}
-                {show.support2 ? <React.Fragment> and more! <br /> </React.Fragment> : ''}
-                {show.venue}
+            <div className="col-md-12 list-item-font" id={show.orderId}>1 Tix For: {show.willCallFirstName} {show.willCallLastName}</div>
+              <div className="col-md-12 list-item-font" id={show.orderId}>On: {moment(show.date, "MM-DD-YYYY").format("dddd")} <strong>{show.date}</strong>
               </div>
-            
-              <div className="col-md-2 list-item-font" id={show.orderId}>{show.willCallFirstName} {show.willCallLastName}</div>
-              <div className="col-md-2 list-item-font" id={show.orderId}>{show.locationName} </div>
-
-
+              <div className="col-md-12 list-item-font" id={show.orderId}>
+                Event: <strong>{show.headliner}</strong> <br />
+                Venue: {show.venue}
+              </div>
+              <div className="col-md-12 list-item-font" id={show.orderId}>Departing From: {show.locationName} by: {show.lastBusDepartureTime}</div>
 
             </div>
-
-          </li>) :
+            </div>
+          ) :
           <li className="list-group-item ">
             <div className="row justify-content-center" style={{ textAlign: "center" }}>
-              <div className="col-md-12 col-xs-12 ">
+              <div className="col-12 ">
                 <h5 className='black-text'>No reservations for this user.</h5>
                 <img
                   className='nothing-in-cart-image'
                   src={logo}
                   alt="bts-logo"
-                  width="233"
-                  height="100" />
+                  width="50" />
               </div>
             </div>
           </li>}
-      </ul>
+
     </div>
   )
 }
