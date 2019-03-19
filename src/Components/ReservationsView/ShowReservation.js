@@ -7,12 +7,12 @@ import logo from '../../Images/Logos/bts-logo-gray.png'
 
 const ShowReservation = (props) => {
 
-  console.log('props.reservations in ShowReservation', props.reservations)
+  console.log('props.userReservations in ShowReservation', props.userReservations)
 
   return (
-    <div className='Shows contianer '>
+    <div className=' '>
       <ul>
-        {props.reservations.length > 0 ? props.reservations.map(show =>
+        {props.userReservations.length > 0 ? props.userReservations.map(show =>
           <li className="list-group-item highlightOnHover show-list-item" key={show.orderId} id={show.orderId}>
             <div className="row" id={show.orderId}>
 
@@ -23,7 +23,7 @@ const ShowReservation = (props) => {
                 {show.support2 ? <React.Fragment> and more! <br /> </React.Fragment> : ''}
                 {show.venue}
               </div>
-              <div className="col-md-2 list-item-font" id={show.orderId}>{moment(show.startTime, "hh:mm:ss ").format('h:mm A')} </div>
+            
               <div className="col-md-2 list-item-font" id={show.orderId}>{show.willCallFirstName} {show.willCallLastName}</div>
               <div className="col-md-2 list-item-font" id={show.orderId}>{show.locationName} </div>
 

@@ -50,7 +50,8 @@ class App extends Component {
       willCallLastName: '',
       ticketQuantity: 0,
       totalCost: 0,
-      discountCode: null
+      discountCode: null,
+      userId: null,
     },
     checked: false,
     confirmRemove: false,
@@ -75,12 +76,19 @@ class App extends Component {
     displayWarning: false,
     displayQuantity: false,
     displayTimes: false,
+    facebook: {
+      isLoggedIn: false,
+      userID: '',
+      name: '',
+      email:'',
+      picture:'',
+      userDetails: {},
+    },
     filterString: '',
     firstBusLoad: null,
     googleResponse: null,
     inCart: [],
     displayReservations: false,
-    loggedIn: null,
     pickupLocationId: null,
     pickupPartyId: null,
     purchaseFailed: false,
@@ -93,7 +101,6 @@ class App extends Component {
     ticketQuantity: null,
     totalCost: 0,
     userDetails: {},
-    userId: 9,
     userReservations: [],
     validated: false,
     validatedElements: {
@@ -262,7 +269,8 @@ class App extends Component {
   }
 
   getReservations = async () => {
-    const userId = this.state.userId
+    const userId = this.state.facebook.userDetails.id
+    console.log('userId inside getReservations:::: ', userId)
     if (userId) {
       const reservations = await fetch(`http://localhost:3000/orders/${userId}`)
       //const reservations = await fetch(`https://something-innocuous.herokuapp.com/reservations/${userId}`)
@@ -348,30 +356,34 @@ class App extends Component {
   toggleReservationView = () => {
     console.log('click on toggleReservationView')
     const newState = { ...this.state }
-    console.log('userDetails', this.state.userDetails)
-    console.log('userObj', this.state.userObj)
-    console.log('userId', this.state.userId)
-
-
-
-    this.getReservations(9)
+    this.getReservations()
     newState.displayReservations = !newState.displayReservations
     this.setState({ displayReservations: newState.displayReservations })
-
   }
 
   toggleLoggedIn = (boolean) => {
-      const newState = { ...this.state }
-      newState.loggedIn = boolean
-      if (boolean === false) {
-        this.setState({
-          loggedIn: newState.loggedIn,
-         })
-      }
+    if (boolean === false){
       this.setState({
-        loggedIn: newState.loggedIn,
-       })
+        ...this.state,
+        facebook: {
+          isLoggedIn: false,
+          userID: '',
+          name: '',
+          email:'',
+          picture:'',
+          userDetails: {},
+        }
+      })
+    } else {
+      this.setState({
+        ...this.state,
+          facebook: {
+          ...this.state.facebook,
+          isLoggedIn: boolean,
+        }
+      })
     }
+  }
 
   profileClick = () => {
     const newState = { ...this.state }
@@ -379,6 +391,63 @@ class App extends Component {
     this.setState({
       displayLoginView: newState.displayLoginView
     })
+  }
+
+  continueAsGuest = () => {
+    this.setState({
+      ...this.state,
+        facebook: {
+          isLoggedIn: false,
+          userID: '',
+          name: '',
+          email:'',
+          picture:'',
+          userDetails: {},
+        }
+    })
+  }
+
+
+  responseFacebook = async (response) => {
+
+      this.setState({
+        ...this.state,
+          //isLoggedIn: true,
+          facebook: {
+            ...this.state.facebook,
+            userID: response.id,
+            name: response.name,
+            email:response.email,
+            picture:response.picture.data.url
+          }
+
+      })
+      this.toggleLoggedIn(true)
+      const usersInfo = await fetch('http://localhost:3000/users', {
+      //const usersInfo = await fetch('https://something-innocuous.herokuapp.com/users', {
+        method: 'POST',
+        body: JSON.stringify({
+            firstName: response.name.split(" ")[0],
+            lastName: response.name.split(" ")[1],
+            email: response.email,
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+      })
+      const userObj = await usersInfo.json()
+      const newState = { ...this.State }
+      newState.userDetails = userObj
+      this.setState({
+        ...this.state,
+        facebook: {
+          ...this.state.facebook,
+          userDetails: newState.userDetails
+        }
+      })
+      console.log('userObj response to work with', userObj)
+      console.log('this.state.facebook.userDetails::::', this.state.facebook.userDetails)
+      //this.props.getReservations(json.id)
   }
 
   responseGoogle = response => {
@@ -530,7 +599,6 @@ class App extends Component {
 
   addToCart = async () => {
     const newState = { ...this.state }
-
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const basePrice = Number(pickupLocation.basePrice)
     const ticketQuantity = parseInt(this.state.ticketQuantity)
@@ -554,6 +622,7 @@ class App extends Component {
     newState.cartToSend.ticketQuantity = 0
     newState.cartToSend.totalCost = 0
     newState.cartToSend.discountCode = null
+    newState.cartToSend.userId = newState.facebook.userDetails.userId
     newState.validatedElements = {
       fName: null,
       lName: null,
@@ -630,8 +699,10 @@ class App extends Component {
     if (err) return this.setState({purchaseFailed: true})
 
     const cartObj = this.state.cartToSend
-    //const ordersResponse = await fetch('http://localhost:3000/orders', {
-    const ordersResponse = await fetch(`https://something-innocuous.herokuapp.com/orders`, {
+    cartObj.userId = this.state.facebook.userDetails.id
+    console.log('cartObj inside purchase.....', cartObj)
+    const ordersResponse = await fetch('http://localhost:3000/orders', {
+    //const ordersResponse = await fetch(`https://something-innocuous.herokuapp.com/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
       headers: {
@@ -684,7 +755,7 @@ class App extends Component {
       return 'Please input valid items'
     }
 
-    this.setState({ validatedElement: newState.validatedElements })
+    this.setState({ validatedElements: newState.validatedElements })
 
     // Populates cartToSend
     if (this.state.validatedElements.fName
@@ -702,6 +773,7 @@ class App extends Component {
       cTS.pickupLocationId = parseInt(this.state.pickupLocationId)
       cTS.totalCost = Number(this.state.totalCost)
       cTS.discountCode = discountCode
+      cTS.userId = newState.facebook.userDetails.userId
 
       if (this.state.validatedElements.wCFName) {
         cTS.willCallFirstName = this.state.validatedElements.wCFName
@@ -875,113 +947,111 @@ class App extends Component {
                 handleBus={this.handleBus} />
                 :
               <div>
-            <Header
-              getReservations={this.getReservations}
-              googleResponse={this.state.googleResponse}
-              loggedIn={this.state.loggedIn}
-              profileClick={this.profileClick}
-              logout={this.logout}
-              spotifyResponse={this.state.spotifyResponse}
-              userDashboard={this.userDashboard} />
-
-            {this.state.displayLoginView ?
-              <LoginView
-                displayReservations={this.state.displayReservations}
-                responseGoogle={this.responseGoogle}
-                responseSpotify={this.responseSpotify}
-                toggleLoggedIn={this.toggleLoggedIn}
-                userDetails={this.state.userDetails}
-                loggedIn={this.state.loggedIn}
+              <Header
+                getReservations={this.getReservations}
+                googleResponse={this.state.googleResponse}
+                facebook={this.state.facebook}
                 profileClick={this.profileClick}
-                toggleReservationView={this.toggleReservationView}/>
-              :
-              this.state.displayReservations ?
-                <ReservationsView
-                  returnHome={this.returnHome}
-                  reservations={this.state.userReservations}
-                  addBorder={this.addBorder}
-                  displayShow={this.state.displayShow}
-                  filterString={this.state.filterString}
-                  showsExpandClick={this.showsExpandClick} />
-                :
+                logout={this.logout}
+                spotifyResponse={this.state.spotifyResponse}
+                userDashboard={this.userDashboard} />
 
-                this.state.displayAboutus ?
-                  <Aboutus
-                    dismissBios={this.dismissBios}
-                    readBios={this.readBios}
-                    displayBios={this.state.displayBios}
-                    hideAboutus={this.hideAboutus} />
+                {this.state.displayLoginView ?
+                  <LoginView
+                    displayReservations={this.state.displayReservations}
+                    responseGoogle={this.responseGoogle}
+                    responseSpotify={this.responseSpotify}
+                    toggleLoggedIn={this.toggleLoggedIn}
+                    userDetails={this.state.userDetails}
+                    profileClick={this.profileClick}
+                    toggleReservationView={this.toggleReservationView}
+                    userReservations={this.state.userReservations}
+                    addBorder={this.addBorder}
+                    displayShow={this.state.displayShow}
+                    filterString={this.state.filterString}
+                    showsExpandClick={this.showsExpandClick}
+                    responseFacebook={this.responseFacebook}
+                    continueAsGuest={this.continueAsGuest}
+                    facebook={this.state.facebook}/>
                   :
-                  this.state.shows ?
-                    <React.Fragment>
 
-                      <div className='content-section pt-4'>
-                        <div className='col-md-6 float-right' >
-                          {this.state.displayShow ? '' :
-                            <BannerRotator displayShow={this.state.displayShow} />}
-                          {this.state.displayCart || this.state.displayShow || this.state.displayExternalShowDetails ?
-                            <div>
-                            <DetailCartView
-                              afterDiscountObj={this.state.afterDiscountObj}
-                              assignedParties={this.state.assignedParties}
-                              backToCalendar={this.backToCalendar}
-                              closeAlert={this.closeAlert}
-                              addToCart={this.addToCart}
-                              checked={this.state.checked}
-                              confirmedRemove={this.confirmedRemove}
-                              cartToSend={this.state.cartToSend}
-                              displayAddBtn={this.state.displayAddBtn}
-                              displayBorder={this.state.displayBorder}
-                              displayCart={this.state.displayCart}
-                              displayConfirmRemove={this.state.displayConfirmRemove}
-                              displayExternalShowDetails={this.state.displayExternalShowDetails}
-                              displayQuantity={this.state.displayQuantity}
-                              displayShow={this.state.displayShow}
-                              displaySuccess={this.state.displaySuccess}
-                              displayViewCartBtn={this.state.displayViewCartBtn}
-                              displayWarning={this.state.displayWarning}
-                              filterString={this.state.filterString}
-                              findDiscountCode={this.findDiscountCode}
-                              firstBusLoad={this.state.firstBusLoad}
-                              getPickupParty={this.getPickupParty}
-                              handleCheck={this.handleCheck}
-                              handleSubmit={this.handleSubmit}
-                              inCart={this.state.inCart}
-                              lastDepartureTime={this.state.lastDepartureTime}
-                              makePurchase={this.makePurchase}
-                              pickupLocations={this.state.pickupLocations}
-                              pickupLocationId={this.state.pickupLocationId}
-                              pickupPartyId={this.state.pickupPartyId}
-                              pickupParties={this.state.pickupParties}
-                              purchase={this.purchase}
-                              purchaseClick={this.purchaseClick}
-                              purchaseFailed={this.state.purchaseFailed}
-                              purchasePending={this.state.purchasePending}
-                              purchaseSuccessful={this.state.purchaseSuccessful}
-                              quantityChange={this.quantityChange}
-                              removeFromCart={this.removeFromCart}
-                              returnToShows={this.returnToShows}
-                              selectPickupLocationId={this.selectPickupLocationId}
-                              selectTicketQuantity={this.selectTicketQuantity}
-                              shows={this.state.shows}
-                              showsExpandClick={this.showsExpandClick}
-                              showsInCart={this.state.inCart}
-                              startTimer={this.state.startTimer}
-                              tabClicked={this.tabClicked}
-                              ticketsAvailable={this.state.ticketsAvailable}
-                              ticketQuantity={this.state.ticketQuantity}
-                              timeLeftInCart={this.state.timeLeftInCart}
-                              totalCost={this.state.totalCost}
-                              updateDiscountCode={this.updateDiscountCode}
-                              updatePurchaseField={this.updatePurchaseField}
-                              validated={this.state.validated}
-                              validatedElements={this.state.validatedElements} />
-                              </div>
-                            :
-                            <SponsorBox
-                              showAboutus={this.showAboutus}
-                              displayAboutus={this.state.displayAboutus} />}
-                        </div>
+                    this.state.displayAboutus ?
+                      <Aboutus
+                        dismissBios={this.dismissBios}
+                        readBios={this.readBios}
+                        displayBios={this.state.displayBios}
+                        hideAboutus={this.hideAboutus} />
+                      :
+                      this.state.shows ?
+                        <React.Fragment>
+
+                          <div className='content-section pt-4'>
+                            <div className='col-md-6 float-right' >
+                              {this.state.displayShow ? '' :
+                                <BannerRotator displayShow={this.state.displayShow} />}
+                              {this.state.displayCart || this.state.displayShow || this.state.displayExternalShowDetails ?
+                                <div>
+                                <DetailCartView
+                                  afterDiscountObj={this.state.afterDiscountObj}
+                                  assignedParties={this.state.assignedParties}
+                                  backToCalendar={this.backToCalendar}
+                                  closeAlert={this.closeAlert}
+                                  addToCart={this.addToCart}
+                                  checked={this.state.checked}
+                                  confirmedRemove={this.confirmedRemove}
+                                  cartToSend={this.state.cartToSend}
+                                  displayAddBtn={this.state.displayAddBtn}
+                                  displayBorder={this.state.displayBorder}
+                                  displayCart={this.state.displayCart}
+                                  displayConfirmRemove={this.state.displayConfirmRemove}
+                                  displayExternalShowDetails={this.state.displayExternalShowDetails}
+                                  displayQuantity={this.state.displayQuantity}
+                                  displayShow={this.state.displayShow}
+                                  displaySuccess={this.state.displaySuccess}
+                                  displayViewCartBtn={this.state.displayViewCartBtn}
+                                  displayWarning={this.state.displayWarning}
+                                  filterString={this.state.filterString}
+                                  findDiscountCode={this.findDiscountCode}
+                                  firstBusLoad={this.state.firstBusLoad}
+                                  getPickupParty={this.getPickupParty}
+                                  handleCheck={this.handleCheck}
+                                  handleSubmit={this.handleSubmit}
+                                  inCart={this.state.inCart}
+                                  lastDepartureTime={this.state.lastDepartureTime}
+                                  makePurchase={this.makePurchase}
+                                  pickupLocations={this.state.pickupLocations}
+                                  pickupLocationId={this.state.pickupLocationId}
+                                  pickupPartyId={this.state.pickupPartyId}
+                                  pickupParties={this.state.pickupParties}
+                                  purchase={this.purchase}
+                                  purchaseClick={this.purchaseClick}
+                                  purchaseFailed={this.state.purchaseFailed}
+                                  purchasePending={this.state.purchasePending}
+                                  purchaseSuccessful={this.state.purchaseSuccessful}
+                                  quantityChange={this.quantityChange}
+                                  removeFromCart={this.removeFromCart}
+                                  returnToShows={this.returnToShows}
+                                  selectPickupLocationId={this.selectPickupLocationId}
+                                  selectTicketQuantity={this.selectTicketQuantity}
+                                  shows={this.state.shows}
+                                  showsExpandClick={this.showsExpandClick}
+                                  showsInCart={this.state.inCart}
+                                  startTimer={this.state.startTimer}
+                                  tabClicked={this.tabClicked}
+                                  ticketsAvailable={this.state.ticketsAvailable}
+                                  ticketQuantity={this.state.ticketQuantity}
+                                  timeLeftInCart={this.state.timeLeftInCart}
+                                  totalCost={this.state.totalCost}
+                                  updateDiscountCode={this.updateDiscountCode}
+                                  updatePurchaseField={this.updatePurchaseField}
+                                  validated={this.state.validated}
+                                  validatedElements={this.state.validatedElements} />
+                                  </div>
+                                :
+                                <SponsorBox
+                                  showAboutus={this.showAboutus}
+                                  displayAboutus={this.state.displayAboutus} />}
+                          </div>
                         <MediaQuery maxWidth={799}>
                         <div className='col-md-6 float-left'>
                         {this.state.displayExternalShowDetails || this.state.displayDetailCartView ?

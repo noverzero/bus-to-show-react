@@ -3,7 +3,7 @@ import '../../App.css'
 import moment from 'moment'
 // import MediaQuery from 'react-responsive'
 import { GoogleLogin } from 'react-google-login'
-import FacebookButton from '../Facebook';
+import Facebook from '../Facebook';
 import SpotifyLogin from 'react-spotify-login'
 import ReservationsView from '../ReservationsView/ReservationsView'
 //const { spotifyClientId, redirectUri, googleClientId } from './settings'
@@ -20,7 +20,7 @@ const LoginView = (props) => {
   return (
     <div className='container-fluid'>
         <div className='row p-2'>
-        {!props.loggedIn ?
+        {!props.facebook.isLoggedIn ?
           <div className='col-12 text-center'>
             Continue as a Guest or Click below to Sign-In to (or create) your own account using Facebook:
           </div>
@@ -28,27 +28,61 @@ const LoginView = (props) => {
         </div>
         <div className='row'>
           <div className='col-12 text-center'>
-            <FacebookButton
+            <Facebook
               userDashboard={props.userDashboard}
               toggleLoggedIn={props.toggleLoggedIn}
               userDetails={props.userDetails}
-              loggedIn={props.loggedIn}
-              profileClick={props.profileClick}/>
+              profileClick={props.profileClick}
+              responseFacebook={props.responseFacebook}
+              continueAsGuest={props.continueAsGuest}
+              facebook={props.facebook}/>
           </div>
         </div>
         <div className='row'>
-        {props.loggedIn ?
+        {props.facebook.isLoggedIn ?
           <div className='col-12 text-center'>
             {props.displayReservations ?
               <div>
                 <div className="btn-lg border border-success" onClick={props.toggleReservationView}>
                  Back to User Dashboard
                 </div>
-                <ReservationsView />
+                  <ReservationsView
+                    userReservations={props.userReservations}
+                    addBorder={props.addBorder}
+                    displayShow={props.displayShow}
+                    filterString={props.filterString}
+                    showsExpandClick={props.showsExpandClick} />
+
               </div>
              :
-             <div className="btn-lg border border-success" onClick={props.toggleReservationView}>
-              My Upcoming Reservations
+             <div>
+              {props.facebook.userDetails.isStaff || props.facebook.userDetails.isAdmin ?
+                <div className="btn-lg border border-success" onClick={props.profileClick}>
+                 Check In Riders
+                </div>
+              : ''
+              }
+              {props.facebook.userDetails.isDriver || props.facebook.userDetails.isAdmin ?
+                <div className="btn-lg border border-success" onClick={props.profileClick}>
+                 View Driver Shifts
+                </div>
+              : ''
+              }
+              {props.facebook.userDetails.isAdmin ?
+                <div className="btn-lg border border-success" onClick={props.profileClick}>
+                 Admin Panel
+                </div>
+              : ''
+              }
+               <div className="btn-lg border border-success" onClick={props.toggleReservationView}>
+                My Upcoming Reservations
+               </div>
+               <div className="btn-lg border border-success" onClick={props.profileClick}>
+                Fuel Savings Calculator
+               </div>
+               <div className="btn-lg border border-success" onClick={props.profileClick}>
+               All Events
+               </div>
              </div>
             }
           </div>

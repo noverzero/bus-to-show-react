@@ -5,45 +5,29 @@ import logo from '../../Images/Logos/bts-logo-orange.png'
 import ShowReservation from './ShowReservation'
 
 const ReservationsView = (props) => {
+  console.log(props.userReservations)
 
 
   return (
-    <div className='Shows'>
+    <div className=''>
       <div className='container mt-3'>
         <div className="list-group">
-          <div className="list-group-item show-header">
+          <div className="list-group-item">
 
             <div className="row">
-
-              <div className="col-2" >
-                <strong>Date  </strong>
-              </div>
-              <div className="col-2" >
-                <strong>Event  </strong>
-              </div>
-              <div className="col-2" >
-                <strong>Start Time  </strong>
-              </div>
-              <div className="col-2" >
-                <strong>Will Call Name  </strong>
-              </div>
-              <div className="col-2" >
-                <strong>Pickup Location  </strong>
-              </div>
-              <div className="col-2 mr-2">
+              <div className="col-md-12">
+                upcoming reservations
               </div>
             </div>
 
             <ul className="list-group">
 
-              {props.reservations ?
+              {props.userReservations ?
                 <div>
                   <div className="row ">
                     <div className="col-md-12">
                       <ShowReservation
-                        addBorder={props.addBorder}
-                        displayShow={props.displayShow}
-                        reservations={props.reservations} />
+                        userReservations={props.userReservations} />
                     </div>
                   </div>
                 </div>

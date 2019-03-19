@@ -7,7 +7,7 @@ import Facebook from './Facebook'
 import { GoogleLogout } from 'react-google-login';
 
 const Header = (props) => {
-  // console.log('Header', props)
+  //console.log('Header', props)
   // let logout = console.log('Success')
 
   return (
@@ -21,7 +21,7 @@ const Header = (props) => {
         <div
           onClick={props.profileClick}
           className="border-0 bts-orange-bg p-2 mr-2">
-          {!props.loggedIn ?
+          {!props.facebook.isLoggedIn ?
           <i className="fas fa-user fa-lg"></i>
           :
           <i className="fas fa-user-check fa-lg"></i>
