@@ -381,9 +381,19 @@ class App extends Component {
     // this.getHeadliners()
     const newState = { ...this.state }
     newState.displayLoginView = !newState.displayLoginView
-    this.setState({
-      displayLoginView: newState.displayLoginView
-    })
+    
+    if (newState.adminView) {
+      newState.adminView = !newState.adminView
+      this.setState({
+        displayLoginView: newState.displayLoginView,
+        adminView: newState.adminView
+      })
+    }
+    else {
+      this.setState({
+        displayLoginView: newState.displayLoginView
+      })
+    }
   }
 
   continueAsGuest = () => {

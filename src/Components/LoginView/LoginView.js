@@ -9,16 +9,16 @@ const LoginView = (props) => {
         facebook, displayReservations, toggleReservationView, addBorder, displayShow, 
         filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
 
-  const renderEmployeeButton = () => {
-    let { isStaff, isAdmin, isDriver } = facebook.userDetails
-    console.log(facebook.userDetails);
-    if (isStaff || isAdmin || isDriver) return (
-      <div className="btn-lg border border-success" onClick={toggleAdminView()}>
-      Employees
-      </div>
-    )
-  }
-
+  // const renderEmployeeButton = () => {
+    //   console.log(facebook.userDetails);
+    //   if (isStaff || isAdmin || isDriver) return (
+      //     <div className="btn-lg border border-success" onClick={toggleAdminView()}>
+      //     Employees
+      //     </div>
+      //   )
+      // }
+  let { isStaff, isAdmin, isDriver } = facebook.userDetails
+      
   return (
     <div className='container-fluid'>
       <div className='row p-2'>
@@ -58,7 +58,10 @@ const LoginView = (props) => {
               />
             </div>
             : '' }
-            {}
+            {isStaff || isAdmin || isDriver ? 
+            <div className="btn-lg border border-success" onClick={toggleAdminView}>
+            Employees
+            </div> : ''}
             <div className="btn-lg border border-success" onClick={toggleReservationView}>
             My Upcoming Reservations
             </div>
@@ -72,7 +75,7 @@ const LoginView = (props) => {
             About Us
             </div>
           </div>
-        :''
+        : ''
         }
         </div>
     </div>

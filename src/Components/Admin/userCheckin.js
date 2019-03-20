@@ -34,6 +34,7 @@ const UserCheckin = (props) => {
   }
 
   const searchBar = document.getElementById('search')
+  console.log(searchBar)
 
   return (
     

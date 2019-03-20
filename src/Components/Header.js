@@ -20,7 +20,7 @@ const Header = (props) => {
       <div className="col-2">
         <div
           onClick={props.profileClick}
-          className="border-0 bts-orange-bg p-2 mr-2">
+          className={props.adminView ? "border-0 bts-admin-purple p-2 mr-2" : "border-0 bts-orange-bg p-2 mr-2"}>
           {!props.facebook.isLoggedIn ?
           <i className="fas fa-user fa-lg"></i>
           :
