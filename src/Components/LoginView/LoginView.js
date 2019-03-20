@@ -5,9 +5,19 @@ import ReservationsView from '../ReservationsView/ReservationsView'
 
 const LoginView = (props) => {
 
-const { userDashboard, toggleLoggedIn, userDetails, profileClick, responseFacebook, 
-      facebook, displayReservations, toggleReservationView, addBorder, displayShow, 
-      filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
+  const { userDashboard, toggleLoggedIn, userDetails, profileClick, responseFacebook, 
+        facebook, displayReservations, toggleReservationView, addBorder, displayShow, 
+        filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
+
+  const renderEmployeeButton = () => {
+    let { isStaff, isAdmin, isDriver } = facebook.userDetails
+    console.log(facebook.userDetails);
+    if (isStaff || isAdmin || isDriver) return (
+      <div className="btn-lg border border-success" onClick={toggleAdminView()}>
+      Employees
+      </div>
+    )
+  }
 
   return (
     <div className='container-fluid'>
