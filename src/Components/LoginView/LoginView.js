@@ -7,7 +7,7 @@ const LoginView = (props) => {
 
 const { userDashboard, toggleLoggedIn, userDetails, profileClick, responseFacebook, 
       facebook, displayReservations, toggleReservationView, addBorder, displayShow, 
-      filterString, showsExpandClick, continueAsGuest, userReservations } = props
+      filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
 
   return (
     <div className='container-fluid'>
@@ -48,6 +48,7 @@ const { userDashboard, toggleLoggedIn, userDetails, profileClick, responseFacebo
               />
             </div>
             : '' }
+            {}
             <div className="btn-lg border border-success" onClick={toggleReservationView}>
             My Upcoming Reservations
             </div>
