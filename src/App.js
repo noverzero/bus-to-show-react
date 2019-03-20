@@ -14,21 +14,12 @@ import Header from './Components/Header'
 import ShowList from './Components/Shows/ShowList'
 import LoginView from './Components/LoginView/LoginView'
 import Loading from './Components/Loading'
-import ReservationsView from './Components/ReservationsView/ReservationsView'
-// import Footer from './Components/Footer'
 import SponsorBox from './Components/SponsorBox'
 import DetailCartView from './Components/DetailCartView'
 import BannerRotator from './Components/BannerRotator'
-import Facebook from './Components/Facebook'
 import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
-
-// const dotenv = require('dotenv').config()
-// const SERVER_URL = process.env.REACT_APP_SERVER_URL
-// const ACCESS_URL = process.env.REACT_APP_ACCESS_URL
-
-
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -386,6 +377,7 @@ class App extends Component {
   }
 
   profileClick = () => {
+    this.getHeadliners()
     const newState = { ...this.state }
     newState.displayLoginView = !newState.displayLoginView
     this.setState({
@@ -932,7 +924,68 @@ class App extends Component {
   showAboutus = () => {
     this.setState({ displayAboutus: true })
   }
+  getEventbriteData2 = async (continuationString, val, previousFuelDataArr) => {
+    console.log('val 2', val )
+    console.log('continuationString', continuationString)
+    const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&page=${val}&expand=ticket_classes3F${continuationString}`)
+    const fuelData = await response.json()
+    const continuation = await fuelData.pagination.continuation
+    const fuelDataArr = await fuelData.events
+    const newFuelDataArr = await previousFuelDataArr.concat(fuelDataArr).flat()
 
+    // if(fuelData.pagination.has_more_items){
+    //   const continuationString = `continuation${continuation}`
+    //   this.getEventbriteData2(continuationString, val+=1, newFuelDataArr)
+    // }
+
+    console.log('seeingDouble', fuelData)
+    console.log('seeingDoubleArr', newFuelDataArr)
+    return newFuelDataArr
+  }
+
+  getEventbriteData = async (continuationString, val, previousFuelDataArr) => {
+    console.log('val 1', val )
+    console.log('get Eventbrite Data fired')
+    const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&page=${val}expand=ticket_classes${continuationString}`)
+
+    const fuelData = await response.json()
+    const continuation = await fuelData.pagination.continuation
+    const fuelDataArr = await fuelData.events
+    const newFuelDataArr = await previousFuelDataArr.concat(fuelDataArr).flat()
+
+    if(fuelData.pagination.has_more_items && val <5 ){
+      const continuationString = `continuation${continuation}`
+      this.getEventbriteData(continuationString, val+=1, newFuelDataArr)
+    } else {
+      console.log('fuelData1', fuelData)
+      console.log('seeingDoubleArr', newFuelDataArr)
+      return newFuelDataArr
+    }
+  }
+
+ getHeadliners = async () => {
+  const eventsArr = await this.getEventbriteData(null, 1, [])
+  let newEventsArr = []
+  for(let ii = 0; ii < eventsArr.length; ii++){
+    newEventsArr[ii] = {}
+    let ticketClasses = []
+    ticketClasses = eventsArr[ii].ticket_classes
+      let eventTotal = 0
+      let departures = {}
+      for(let jj = 0; jj < ticketClasses.length; jj++){
+        eventTotal += ticketClasses[jj].quantity_sold
+        departures[ticketClasses[jj].name] = ticketClasses[jj].quantity_sold
+      }
+    newEventsArr[ii].headliner = eventsArr[ii].name.text.substring((0), eventsArr[ii].name.text.indexOf("*")-1)
+    newEventsArr[ii].date = eventsArr[ii].start.local.substring(0, 10)
+    newEventsArr[ii].venue =  eventsArr[ii].name.text.substring((eventsArr[ii].name.text.lastIndexOf("*")+5), eventsArr[ii].name.text.lastIndexOf("(")-1)
+    newEventsArr[ii].totalSales = eventTotal
+    newEventsArr[ii].departures = departures
+
+  }
+  console.log('headlinersArr', newEventsArr)
+}
+//console.log("getHeadliners():::" , getHeadliners())
 
   render() {
     return (

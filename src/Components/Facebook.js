@@ -3,6 +3,9 @@ import FacebookLogin from 'react-facebook-login';
 
 export default class FacebookButton extends React.Component {
 
+
+
+
   render() {
     let fbContent;
 
@@ -40,7 +43,7 @@ export default class FacebookButton extends React.Component {
                 appId="244004823142378"
                 autoLoad={false}
                 fields="name,email,picture"
-                onClick={this.componentClicked}
+                //onClick={this.componentClicked}
                 callback={this.props.responseFacebook}
                 //cssClass="my-facebook-button-class"
                 icon="fab fa-facebook-square"

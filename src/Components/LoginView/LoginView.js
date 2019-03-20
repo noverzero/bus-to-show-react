@@ -1,21 +1,9 @@
 import React from 'react'
 import '../../App.css'
-import moment from 'moment'
-// import MediaQuery from 'react-responsive'
-import { GoogleLogin } from 'react-google-login'
 import Facebook from '../Facebook';
-import SpotifyLogin from 'react-spotify-login'
 import ReservationsView from '../ReservationsView/ReservationsView'
-//const { spotifyClientId, redirectUri, googleClientId } from './settings'
-const dotenv = require('dotenv').config()
-const spotifyClientId = process.env.spotifyClientId
-const redirectUri = process.env.redirectUri
-const googleClientId = process.env.googleClientId
-
 
 const LoginView = (props) => {
-
-
 
   return (
     <div className='container-fluid'>
@@ -55,39 +43,19 @@ const LoginView = (props) => {
                 showsExpandClick={props.showsExpandClick} 
               />
             </div>
-            :
-              <div>
-              {props.facebook.userDetails.isStaff || props.facebook.userDetails.isAdmin ?
-                <div className="btn-lg border border-success" onClick={props.profileClick}>
-                  Check In Riders
-                </div>
-              : ''
-              }
-              {props.facebook.userDetails.isDriver || props.facebook.userDetails.isAdmin ?
-                <div className="btn-lg border border-success" onClick={props.profileClick}>
-                  View Driver Shifts
-                </div>
-              : ''
-              }
-              {props.facebook.userDetails.isAdmin ?
-              <div className="btn-lg border border-success" onClick={props.profileClick}>
-                Admin Panel
-              </div>
             : '' }
-              <div className="btn-lg border border-success" onClick={props.toggleReservationView}>
-              My Upcoming Reservations
-              </div>
-              <div className="btn-lg border border-success" onClick={props.profileClick}>
-              Fuel Savings Calculator
-              </div>
-              <div className="btn-lg border border-success" onClick={props.profileClick}>
-              All Events
-              </div>
-              <div className="btn-lg border border-success" onClick={props.profileClick}>
-              About Us
-              </div>
+            <div className="btn-lg border border-success" onClick={props.toggleReservationView}>
+            My Upcoming Reservations
             </div>
-            }
+            <div className="btn-lg border border-success" onClick={props.profileClick}>
+            Fuel Savings Calculator
+            </div>
+            <div className="btn-lg border border-success" onClick={props.profileClick}>
+            All Events
+            </div>
+            <div className="btn-lg border border-success" onClick={props.profileClick}>
+            About Us
+            </div>
           </div>
         :''
         }
@@ -98,4 +66,3 @@ const LoginView = (props) => {
 }
 
 export default LoginView
-
