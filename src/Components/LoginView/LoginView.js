@@ -55,6 +55,24 @@ const LoginView = (props) => {
                 showsExpandClick={props.showsExpandClick} 
               />
             </div>
+            :
+              <div>
+              {props.facebook.userDetails.isStaff || props.facebook.userDetails.isAdmin ?
+                <div className="btn-lg border border-success" onClick={props.profileClick}>
+                  Check In Riders
+                </div>
+              : ''
+              }
+              {props.facebook.userDetails.isDriver || props.facebook.userDetails.isAdmin ?
+                <div className="btn-lg border border-success" onClick={props.profileClick}>
+                  View Driver Shifts
+                </div>
+              : ''
+              }
+              {props.facebook.userDetails.isAdmin ?
+              <div className="btn-lg border border-success" onClick={props.profileClick}>
+                Admin Panel
+              </div>
             : '' }
               <div className="btn-lg border border-success" onClick={props.toggleReservationView}>
               My Upcoming Reservations
@@ -81,21 +99,3 @@ const LoginView = (props) => {
 
 export default LoginView
 
-// :
-//               <div>
-//               {props.facebook.userDetails.isStaff || props.facebook.userDetails.isAdmin ?
-//                 <div className="btn-lg border border-success" onClick={props.profileClick}>
-//                   Check In Riders
-//                 </div>
-//               : ''
-//               }
-//               {props.facebook.userDetails.isDriver || props.facebook.userDetails.isAdmin ?
-//                 <div className="btn-lg border border-success" onClick={props.profileClick}>
-//                   View Driver Shifts
-//                 </div>
-//               : ''
-//               }
-//               {props.facebook.userDetails.isAdmin ?
-//               <div className="btn-lg border border-success" onClick={props.profileClick}>
-//                 Admin Panel
-//               </div>

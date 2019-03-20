@@ -2,54 +2,6 @@ import React from 'react';
 import FacebookLogin from 'react-facebook-login';
 
 export default class FacebookButton extends React.Component {
-    // state = {
-    //     isLoggedIn: false,
-    //     userID: '',
-    //     name: '',
-    //     email:'',
-    //     picture:'',
-    //     userDetails: {},
-    // }
-    //
-    // responseFacebook = async (response) => {
-    //     this.setState({
-    //         //isLoggedIn: true,
-    //         userID: response.id,
-    //         name: response.name,
-    //         email:response.email,
-    //         picture:response.picture.data.url,
-    //     })
-    //      this.props.toggleLoggedIn(true)
-    //
-    //
-    //      const usersInfo = await fetch('http://localhost:3000/users', {
-    //     //const usersInfo = await fetch('https://something-innocuous.herokuapp.com/users', {
-    //             method: 'POST',
-    //             body: JSON.stringify({
-    //                 firstName: response.name.split(" ")[0],
-    //                 lastName: response.name.split(" ")[1],
-    //                 email: response.email,
-    //             }),
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             }
-    //     })
-    //     const userObj = await usersInfo.json()
-    //     const newState = { ...this.State }
-    //     newState.userDetails = userObj
-    //     this.setState({
-    //       userDetails: newState.userDetails
-    //     })
-    //     console.log('userObj response to work with', userObj)
-    //     console.log('userDetails::::', this.props.facebook.userDetails)
-    //     //this.props.getReservations(json.id)
-    //
-    // }
-
-    componentClicked = () => {
-    }
-
-
 
   render() {
     let fbContent;
