@@ -940,7 +940,7 @@ class App extends Component {
     const fuelData = await response.json()
     const continuation = await fuelData.pagination.continuation
     const fuelDataArr = await fuelData.events
-    const newFuelDataArr = await [...previousFuelDataArr, fuelDataArr]
+    const newFuelDataArr = await previousFuelDataArr.concat(fuelDataArr).flat()
 
     // if(fuelData.pagination.has_more_items){
     //   const continuationString = `continuation${continuation}`
@@ -948,8 +948,8 @@ class App extends Component {
     // }
 
     console.log('seeingDouble', fuelData)
-    console.log('seeingDoubleArr', fuelDataArr)
-    return fuelDataArr
+    console.log('seeingDoubleArr', newFuelDataArr)
+    return newFuelDataArr
   }
 
   getEventbriteData = async (continuationString, val, previousFuelDataArr) => {
@@ -960,15 +960,16 @@ class App extends Component {
     const fuelData = await response.json()
     const continuation = await fuelData.pagination.continuation
     const fuelDataArr = await fuelData.events
-    const newFuelDataArr = await [...previousFuelDataArr, fuelDataArr]
+    const newFuelDataArr = await previousFuelDataArr.concat(fuelDataArr).flat()
 
-    if(fuelData.pagination.has_more_items){
+    if(fuelData.pagination.has_more_items && val <5 ){
       const continuationString = `continuation${continuation}`
-      this.getEventbriteData2(continuationString, val+=1, newFuelDataArr)
+      this.getEventbriteData(continuationString, val+=1, newFuelDataArr)
+    } else {
+      console.log('fuelData1', fuelData)
+      console.log('seeingDoubleArr', newFuelDataArr)
+      return newFuelDataArr
     }
-
-    console.log('fuelData', fuelData)
-    return fuelDataArr
   }
 
  getHeadliners = async () => {
