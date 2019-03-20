@@ -5,10 +5,9 @@ export default class Checkout extends React.Component {
 
   onToken = (token) => {
     const orderInfo = this.props.cartToSend
-    console.log('orderInfo (CTS) inside onToken (Checkout) ', orderInfo)
+    // console.log('orderInfo (CTS) inside onToken (Checkout) ', orderInfo)
     orderInfo.receiptDescription = this.props.receiptDescription
-    fetch('http://localhost:3000/orders/charge', {
-    //fetch('https://something-innocuous.herokuapp.com/orders/charge', {
+    fetch(`${process.env.REACT_APP_API_URL}/orders/charge`, {
       method: 'POST',
       body: JSON.stringify({
         stripeEmail: token.email,
@@ -43,15 +42,16 @@ export default class Checkout extends React.Component {
           email={email}
           amount={this.props.totalCost * 100}
           currency='USD'
-          metadata={this.props.cartToSend}>
-
+          metadata={this.props.cartToSend} 
+        >
           <button
             onClick={(event) => this.props.makePurchase(event)}
             className={`btn mr-1 ${this.props.validated ? 'btn-outline-success' : 'btn-secondary'}`}
-            disabled={this.props.validated ? '' : 'disabled'}>
-            Purchase</button>
+            disabled={this.props.validated ? '' : 'disabled'}
+          >
+            Purchase
+          </button>
         </StripeCheckout>
-
       </React.Fragment>
     )
   }
