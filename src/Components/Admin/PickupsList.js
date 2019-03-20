@@ -3,7 +3,7 @@ import '../../App.css';
 
 
 const PickupsList = (props) => {
-  let { pickupLocations, makeSelection, searchBar } = props
+  let { pickupLocations, makeSelection, resetStuff } = props
 
   return (
     <div className='Pickups'>
@@ -20,7 +20,7 @@ const PickupsList = (props) => {
             </div>
               <button
                 id={location.id}
-                onClick={e => { searchBar.value = ''; makeSelection('pickupLocationId', location.id, 'ReservationsList') }}
+                onClick={e => {resetStuff(); makeSelection('pickupLocationId', location.id, 'ReservationsList') }}
                 type="button"
                 className='btn admin-detail-btn my-4 col-md-2'>
                 Select

@@ -33,7 +33,12 @@ const UserCheckin = (props) => {
     else return ''
   }
 
-  const searchBar = document.getElementById('search')
+  const resetStuff = () => {
+    const searchBar = document.getElementById('search')
+    const adminList = document.getElementById('adminList')
+    searchBar.value = ''
+    adminList.scrollTop = 0
+  }
 
   return (
     
@@ -44,7 +49,7 @@ const UserCheckin = (props) => {
           <div className="list-group-item show-header">
             <div className="row show-list-flex">
               <div className="col-3 mb-3" >
-                <button type="button" className="btn btn-outline-light" onClick={e=>{searchBar.value = ''; toggleProperty(previousProperty, searchBar)}}>Back</button>
+                <button type="button" className="btn btn-outline-light" onClick={e=>{resetStuff(); toggleProperty(previousProperty)}}>Back</button>
               </div>
               <div className="col-9 mb-3" >
                 <form className="form-inline float-right">
@@ -52,14 +57,14 @@ const UserCheckin = (props) => {
                 </form>
               </div>
             </div>
-            <ul className="list-group">
+            <ul className="list-group" id="adminList">
               <div className={displayList === 'ShowList' ? '' : 'hidden'}>
                 <ShowList
                   shows={shows}
                   filterString={filterString}
                   makeSelection={makeSelection}
                   toggleProperty={toggleProperty}
-                  searchBar={searchBar}
+                  resetStuff={resetStuff}
                 />
               </div>  
               <div className={displayList === 'PickupsList' ? '' : 'hidden'}>
@@ -67,7 +72,7 @@ const UserCheckin = (props) => {
                   filterString={filterString}
                   pickupLocations={pickupLocations}
                   makeSelection={makeSelection}
-                  searchBar={searchBar}
+                  resetStuff={resetStuff}
                 />  
               </div>
               <div>
