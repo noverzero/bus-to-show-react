@@ -19,7 +19,7 @@ const UserCheckin = (props) => {
       null)
 
   const shortName = (locationName) => {
-    return locationName = locationName.split('- ')[1]
+    if (locationName) return locationName = locationName.split('- ')[1]
   }
 
   const headerLabel = (displayList) => {
@@ -28,16 +28,22 @@ const UserCheckin = (props) => {
       thisShow = thisShow.headliner
     }
     if(thisPickup) thisPickup = thisPickup.locationName
-    if (displayList === 'ShowList') return 'Select a Show'
-    else if (displayList === 'PickupsList') return `${thisDate} ${thisShow}`
-    else if (displayList === 'ReservationsList' && thisCapacity) {
-      return (<div>{thisDate} {thisShow}
-              <br />
-              {shortName(thisPickup)}
-              <br/>
-              Capacity: {thisCapacity} / Sold: {reservations.length}
-              </div>)
-    }
+    if (displayList === 'ShowList') return (
+      <div>Select a Show<br/>
+        Select a Pickup Location<br/>
+        Capacity: ... / Sold ...
+      </div>)
+    
+    else if (displayList === 'PickupsList') return (
+      <div>{thisDate} - {thisShow}<br/>
+        Select a Pickup Location<br/>
+        Capacity: ... / Sold ...
+      </div>)
+    else if (displayList === 'ReservationsList' && thisCapacity) return (
+      <div>{thisDate} - {thisShow}<br />
+        {shortName(thisPickup)}<br/>
+        Capacity: {thisCapacity} / Sold: {reservations.length}
+      </div>)
     else return ''
   }
 
@@ -52,9 +58,11 @@ const UserCheckin = (props) => {
   return (
     
     <div className='ShowList mt-2'>
-    <div className='admin-list-header text-center ml-n1 mr-n1'>{headerLabel(displayList)}</div>
+    <div className='admin-list-header text-center ml-n1 mr-n1'>
+      {headerLabel(displayList)}
+    </div>
       <div className='container'>
-        <div className="list-group">
+        <div className="list-group mr-n1 ml-n1">
           <div className="list-group-item show-header">
             <div className="row show-list-flex">
               <div className="col-3 mb-3" >

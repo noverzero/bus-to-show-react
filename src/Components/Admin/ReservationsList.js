@@ -17,10 +17,10 @@ const ReservationsList = (props) => {
 
   const isPresent =(status)=>{
     if (status === 1) {
-      return <span style={{color: '#ff420f'}}>Absent</span>
+      return <span id="switchLabel" style={{color: '#ff420f'}}>Absent</span>
     }
     else if (status === 2) {
-      return <span style={{color: '#460088'}}>Present</span>
+      return <span id="switchLabel" style={{color: '#460088'}}>Present</span>
     }
   }
 
@@ -47,7 +47,7 @@ const ReservationsList = (props) => {
               Alt: {orderedByLastName}, {orderedByFirstName}
             </div>
             <div className="col-md-4 text-right" id={reservation.id}>
-              {isPresent(reservation.status)}
+            {isPresent(reservation.status)}
               <label className="switch ml-2">
                 <input type="checkbox" 
                 className="default" 
