@@ -30,7 +30,7 @@ const PickupsList = (props) => {
                 id={location.id}
                 onClick={e => { resetStuff(); makeSelection('pickupLocationId', location.id, 'ReservationsList') }}
                 type="button"
-                className='btn admin-detail-btn my-4 col-md-2'>
+                className='btn admin-detail-btn my-2 col-md-2'>
                 Select
               </button>
           </div>

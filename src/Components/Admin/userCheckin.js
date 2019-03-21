@@ -18,6 +18,10 @@ const UserCheckin = (props) => {
       displayList === 'ReservationsList' ? 'PickupsList' : 
       null)
 
+  const shortName = (locationName) => {
+    return locationName = locationName.split('- ')[1]
+  }
+
   const headerLabel = (displayList) => {
     if(thisShow) {
       thisDate = thisShow.date
@@ -29,7 +33,7 @@ const UserCheckin = (props) => {
     else if (displayList === 'ReservationsList' && thisCapacity) {
       return (<div>{thisDate} {thisShow}
               <br />
-              {thisPickup}
+              {shortName(thisPickup)}
               <br/>
               Capacity: {thisCapacity} / Sold: {reservations.length}
               </div>)
@@ -48,7 +52,7 @@ const UserCheckin = (props) => {
   return (
     
     <div className='ShowList mt-2'>
-    <div className='admin-list-header text-center'>{headerLabel(displayList)}</div>
+    <div className='admin-list-header text-center ml-n1 mr-n1'>{headerLabel(displayList)}</div>
       <div className='container'>
         <div className="list-group">
           <div className="list-group-item show-header">

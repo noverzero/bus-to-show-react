@@ -15,11 +15,21 @@ const ReservationsList = (props) => {
   filterString = filterString.toLowerCase()
   let filterRezzies = reservations.filter(rezzy => rezzy.willCallLastName.toLowerCase().includes(filterString) || rezzy.willCallFirstName.toLowerCase().includes(filterString))
 
+  const isPresent =(status)=>{
+    if (status === 1) {
+      return <span style={{color: '#ff420f'}}>Absent</span>
+    }
+    else if (status === 2) {
+      return <span style={{color: '#460088'}}>Present</span>
+    }
+  }
+
+
   return (
     <div className='Reservations'>
       {filterRezzies.length > 0 ?
 
-        reservations.map(reservation => {
+        filterRezzies.map(reservation => {
           const { willCallFirstName, willCallLastName, orderedByFirstName, orderedByLastName } = reservation
           const lastName = willCallLastName
           const firstName = willCallFirstName
@@ -36,8 +46,9 @@ const ReservationsList = (props) => {
               <br />
               Alt: {orderedByLastName}, {orderedByFirstName}
             </div>
-            <div className="col-sm-4" id={reservation.id}>
-              <label className="switch">
+            <div className="col-md-4 text-right" id={reservation.id}>
+              {isPresent(reservation.status)}
+              <label className="switch ml-2">
                 <input type="checkbox" 
                 className="default" 
                 checked={reservation.status === 2 ? 'checked' : ''}

@@ -51,19 +51,19 @@ const LoginView = (props) => {
             </div>
             : '' }
             {isStaff || isAdmin || isDriver ? 
-            <div className="btn detail-btn my-2 col-md-2" onClick={toggleAdminView}>
+            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleAdminView}>
             <strong>Employees</strong>
             </div> : ''}
-            <div className="btn detail-btn my-2 col-md-2" onClick={toggleReservationView}>
+            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleReservationView}>
             <strong>My Upcoming Reservations</strong>
             </div>
-            <div className="btn detail-btn my-2 col-md-2" onClick={profileClick}>
+            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
             <strong>Fuel Savings Calculator</strong>
             </div>
-            <div className="btn detail-btn my-2 col-md-2" onClick={profileClick}>
+            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
             <strong>All Events</strong>
             </div>
-            <div className="btn detail-btn my-2 col-md-2" onClick={profileClick}>
+            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
             <strong>About Us</strong>
             </div>
           </div>

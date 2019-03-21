@@ -44,6 +44,11 @@ color: #460088;
 color: #ff420f;
 }
 
+.btn-block-admin {
+  background: #ffffff;
+  border-color: #ff420f;
+  color: #ff420f;
+}
 
 .hidden {
 display: none;
