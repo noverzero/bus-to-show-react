@@ -109,8 +109,7 @@ class App extends Component {
       email: null,
       wCFName: null,
       wCLName: null
-    },
-    oldStuff: []
+    }
   }
 
 
@@ -934,79 +933,68 @@ class App extends Component {
   showAboutus = () => {
     this.setState({ displayAboutus: true })
   }
+  getEventbriteData2 = async (continuationString, val, previousFuelDataArr) => {
+    console.log('val 2', val )
+    console.log('continuationString', continuationString)
+    const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&page=${val}&expand=ticket_classes3F${continuationString}`)
+    const fuelData = await response.json()
+    const continuation = await fuelData.pagination.continuation
+    const fuelDataArr = await fuelData.events
+    const newFuelDataArr = await previousFuelDataArr.concat(fuelDataArr).flat()
 
+    // if(fuelData.pagination.has_more_items){
+    //   const continuationString = `continuation${continuation}`
+    //   this.getEventbriteData2(continuationString, val+=1, newFuelDataArr)
+    // }
+
+    console.log('seeingDouble', fuelData)
+    console.log('seeingDoubleArr', newFuelDataArr)
+    return newFuelDataArr
+  }
 
   getEventbriteData = async (continuationString, val, previousFuelDataArr) => {
     console.log('val 1', val )
     console.log('get Eventbrite Data fired')
-    // const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&page=${val}&expand=ticket_classes${continuationString}`)
-    const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?${continuationString}token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&expand=ticket_classes`)
-
+    const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&page=${val}expand=ticket_classes${continuationString}`)
 
     const fuelData = await response.json()
     const continuation = await fuelData.pagination.continuation
     const fuelDataArr = await fuelData.events
     const newFuelDataArr = await previousFuelDataArr.concat(fuelDataArr).flat()
-    continuationString = await `continuation=${continuation}&`
-    //let continuationString = ''
+
     if(fuelData.pagination.has_more_items && val <5 ){
-      console.log('val in if ', val)
-      return await this.getEventbriteData(continuationString, val+=1, newFuelDataArr)
+      const continuationString = `continuation${continuation}`
+      this.getEventbriteData(continuationString, val+=1, newFuelDataArr)
     } else {
-      console.log('seeingDoubleArr!!!', newFuelDataArr)
+      console.log('fuelData1', fuelData)
+      console.log('seeingDoubleArr', newFuelDataArr)
       return newFuelDataArr
     }
   }
 
  getHeadliners = async () => {
-  const eventsArr = await this.getEventbriteData('', 1, [])
-
-  .then((eventsArr)=> {
-    console.log('chicken')
-    //console.log('eventsArr', eventsArr)
+  const eventsArr = await this.getEventbriteData(null, 1, [])
   let newEventsArr = []
   for(let ii = 0; ii < eventsArr.length; ii++){
-    console.log('monkey')
     newEventsArr[ii] = {}
     let ticketClasses = []
     ticketClasses = eventsArr[ii].ticket_classes
-    //console.log('ticketClasses', ticketClasses)
-
       let eventTotal = 0
       let departures = {}
-      if (ticketClasses){
-        for(let jj = 0; jj < ticketClasses.length; jj++){
-          console.log('zebra')
-          eventTotal += ticketClasses[jj].quantity_sold
-          departures[ticketClasses[jj].name] = ticketClasses[jj].quantity_sold
-        }
+      for(let jj = 0; jj < ticketClasses.length; jj++){
+        eventTotal += ticketClasses[jj].quantity_sold
+        departures[ticketClasses[jj].name] = ticketClasses[jj].quantity_sold
       }
     newEventsArr[ii].headliner = eventsArr[ii].name.text.substring((0), eventsArr[ii].name.text.indexOf("*")-1)
     newEventsArr[ii].date = eventsArr[ii].start.local.substring(0, 10)
     newEventsArr[ii].venue =  eventsArr[ii].name.text.substring((eventsArr[ii].name.text.lastIndexOf("*")+5), eventsArr[ii].name.text.lastIndexOf("(")-1)
     newEventsArr[ii].totalSales = eventTotal
     newEventsArr[ii].departures = departures
+
   }
   console.log('headlinersArr', newEventsArr)
-  const newState = { ...this.state }
-  newState.oldStuff = newEventsArr
-  this.setState({oldStuff: newState.oldStuff})
-  return newEventsArr
-})
 }
-
-postOldData = async () => {
-  const newEventsArr = this.state.oldStuff
-  console.log('inSide post old data function', newEventsArr)
-  // const response = await fetch('http://localhost:3000/fuel', {
-  //   method: 'POST',
-  //   body: JSON.stringify(newEventsArr),
-  //   headers: {
-  //     'Content-Type': 'application/json'
-  //   }
-  // })
-  // console.log('post old data response', response)
-}
+//console.log("getHeadliners():::" , getHeadliners())
 
   render() {
     return (
@@ -1046,8 +1034,7 @@ postOldData = async () => {
                     showsExpandClick={this.showsExpandClick}
                     responseFacebook={this.responseFacebook}
                     continueAsGuest={this.continueAsGuest}
-                    facebook={this.state.facebook}
-                    postOldData={this.postOldData}/>
+                    facebook={this.state.facebook}/>
                   :
 
                     this.state.displayAboutus ?
