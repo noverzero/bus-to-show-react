@@ -5,7 +5,7 @@ import Cart from './Cart/Cart'
 import MediaQuery from 'react-responsive';
 import ShowList from '../Components/Shows/ShowList'
 import ExternalShowDetail from './Shows/ExternalShowDetail'
-import logo from '../Images/Logos/bts-logo-gray.png'
+// import logo from '../Images/Logos/bts-logo-gray.png'
 
 const DetailCartView = (props) => {
   // console.log('DCV', props.startTimer)

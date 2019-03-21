@@ -12,7 +12,7 @@ const ShowReservation = (props) => {
   //get Ticket Quantity for Each Pickup Party
 
   return (
-    <div className=''>
+    <div className='Shows container'>
 
         {props.userReservations.length > 0 ? props.userReservations.map(show =>
           <div className="list-group-item highlightOnHover show-list-item" key={show.id} id={show.orderId}>

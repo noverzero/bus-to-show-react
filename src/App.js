@@ -9,30 +9,23 @@ import moment from 'moment'
 import './App.css';
 
 // Components
-import Aboutus from './Components/Aboutus/Aboutus.js'
+import AdminView from './Components/Admin/adminView'
+import Aboutus from './Components/Aboutus/Aboutus'
 import Header from './Components/Header'
 import ShowList from './Components/Shows/ShowList'
 import LoginView from './Components/LoginView/LoginView'
 import Loading from './Components/Loading'
-import ReservationsView from './Components/ReservationsView/ReservationsView'
-// import Footer from './Components/Footer'
 import SponsorBox from './Components/SponsorBox'
 import DetailCartView from './Components/DetailCartView'
 import BannerRotator from './Components/BannerRotator'
-import Facebook from './Components/Facebook'
 import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-// const dotenv = require('dotenv').config()
-// const SERVER_URL = process.env.REACT_APP_SERVER_URL
-// const ACCESS_URL = process.env.REACT_APP_ACCESS_URL
-
-
-
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
   state = {
+    adminView: false,
     afterDiscountObj: {
       totalSavings: 0
     },
@@ -115,7 +108,7 @@ class App extends Component {
 
 
   async componentDidMount() {
-    const response = await fetch(`https://something-innocuous.herokuapp.com/events`)
+    const response = await fetch(`http://${process.env.REACT_APP_API_URL}/events`)
     const allShows = await response.json()
 
     //filters out expired shows and shows that don't meet criteria, and shows that are denied.
@@ -142,17 +135,16 @@ class App extends Component {
     })
 
     this.setState({ shows: newState })
-    const pickups = await fetch(`https://something-innocuous.herokuapp.com/pickup_locations`)
+    const pickups = await fetch(`http://${process.env.REACT_APP_API_URL}/pickup_locations`)
     const pickupLocations = await pickups.json()
     this.setState({ pickupLocations })
 
-    const getPickupParties = await fetch(`https://something-innocuous.herokuapp.com/pickup_parties`)
-    //const getPickupParties = await fetch('http://localhost:3000/pickup_parties')
+    const getPickupParties = await fetch(`http://${process.env.REACT_APP_API_URL}/pickup_parties`)
     const pickupParties = await getPickupParties.json()
     this.setState({ pickupParties })
   }
 
-  //status: over-ridden by onclick event in the "ride with bus button".  where. called in "loading.js"
+  //status: over-ridden by onclick event in the "ride with us button" where called in "loading.js"
   onLoad = () => {
 
     const newState = { ...this.state }
@@ -176,6 +168,7 @@ class App extends Component {
   selectPickupLocationId = async event => {
     const newState = { ...this.state }
     // console.log('change in selectPickupLocationId')
+
     if (parseInt(event.target.value) !== newState.pickupPartyId) {
       newState.ticketQuantity = null
       newState.displayQuantity = false
@@ -247,9 +240,9 @@ class App extends Component {
       newState.displayAddBtn = false
     }
     newState.ticketQuantity = event.target.value
-    const sPickupId = parseInt(this.state.pickupLocationId)
-    const sEventId = parseInt(this.state.displayShow.id)
-    const pickupParty = this.state.pickupParties.find(party => party.pickupLocationId === sPickupId && party.eventId === sEventId)
+    // const sPickupId = parseInt(this.state.pickupLocationId)
+    // const sEventId = parseInt(this.state.displayShow.id)
+    // const pickupParty = this.state.pickupParties.find(party => party.pickupLocationId === sPickupId && party.eventId === sEventId)
     // console.log('PARTYAY_______------:: ' , pickupParty)
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const subTotal = (Number(pickupLocation.basePrice) * Number(event.target.value))
@@ -273,8 +266,7 @@ class App extends Component {
     const userId = this.state.facebook.userDetails.id
     console.log('userId inside getReservations:::: ', userId)
     if (userId) {
-      const reservations = await fetch(`http://localhost:3000/orders/${userId}`)
-      //const reservations = await fetch(`https://something-innocuous.herokuapp.com/reservations/${userId}`)
+      const reservations = await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/${userId}`)
       const userReservations = await reservations.json()
       const newState = { ...this.State }
       //newState.userId = userId
@@ -290,7 +282,7 @@ class App extends Component {
 
     const ticketQuantity = this.state.ticketQuantity
     const eventId = this.state.inCart[0].id
-    const response = await fetch(`http://localhost:3000/discount_codes/${this.state.discountCode}`)
+    const response = await fetch(`http://${process.env.REACT_APP_API_URL}/discount_codes/${this.state.discountCode}`)
     const json = await response.json()
 
     const result = json.filter((discountObj) => discountObj.eventsId === eventId)[0]
@@ -387,12 +379,21 @@ class App extends Component {
   }
 
   profileClick = () => {
-    this.getHeadliners()
+    // this.getHeadliners()
     const newState = { ...this.state }
     newState.displayLoginView = !newState.displayLoginView
-    this.setState({
-      displayLoginView: newState.displayLoginView
-    })
+
+    if (newState.adminView) {
+      newState.adminView = !newState.adminView
+      this.setState({
+        adminView: newState.adminView
+      })
+    }
+    else {
+      this.setState({
+        displayLoginView: newState.displayLoginView
+      })
+    }
   }
 
   continueAsGuest = () => {
@@ -528,11 +529,10 @@ class App extends Component {
       pickupPartyId: newState.pickupPartyId
     })
     const clickedShow = newState.shows.find(show => (parseInt(show.id) === parseInt(event.target.id)))
-    console.log('clickedShow', clickedShow.external)
     if(clickedShow.external){
       newState.displayShowDetails = false
       newState.displayExternalShowDetails = true
-      newState.displayShowList= false
+      newState.displayShowList = false
       newState.displayShow = clickedShow
       this.setState({
         displayShowDetails: newState.displayShowDetails,
@@ -637,8 +637,6 @@ class App extends Component {
       cartToSend: newState.cartToSend,
       validatedElements: newState.validatedElements
     })
-    // console.log(' newState.cartToSend ', newState.cartToSend)
-    // console.log(' newState.validatedElements ', newState.validatedElements)
 
     this.setState({ lastDepartureTime, firstBusLoad })
 
@@ -655,7 +653,7 @@ class App extends Component {
     newState.startTimer = true
     this.setState(newState)
 
-    fetch(`https://something-innocuous.herokuapp.com/pickup_parties`, {
+    fetch(`http://${process.env.REACT_APP_API_URL}/pickup_parties`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -667,7 +665,7 @@ class App extends Component {
       }
     })
 
-    setTimeout(fetch(`https://something-innocuous.herokuapp.com/pickup_parties`, {
+    setTimeout(fetch(`http://${process.env.REACT_APP_API_URL}/pickup_parties`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -703,8 +701,7 @@ class App extends Component {
     const cartObj = this.state.cartToSend
     cartObj.userId = this.state.facebook.userDetails.id
     console.log('cartObj inside purchase.....', cartObj)
-    const ordersResponse = await fetch('http://localhost:3000/orders', {
-    //const ordersResponse = await fetch(`https://something-innocuous.herokuapp.com/orders`, {
+    const ordersResponse = await fetch(`http://${process.env.REACT_APP_API_URL}/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
       headers: {
@@ -713,7 +710,7 @@ class App extends Component {
     })
     // const orderJson = await ordersResponse.json()
     // if (this.state.userId) {
-    //   await fetch(`https://something-innocuous.herokuapp.com/reservations/users/${this.state.userId}`, {
+    //   await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/users/${this.state.userId}`, {
     //     method: 'POST',
     //     body: JSON.stringify({ reservationId: orderJson.id }),
     //     headers: {
@@ -799,6 +796,17 @@ class App extends Component {
     }
   }
 
+  // toggleLoggedIn = (boolean) => {
+  //   const newState = { ...this.state }
+  //   newState.loggedIn = boolean
+  //   if (boolean === false) {
+  //     newState.myReservationsView = false
+  //   }
+  //   if (boolean === true && (newState.isStaff || newState.isDriver || newState.isAdmin)) {
+  //     console.log('admin')
+  //   }
+  //   this.setState({ loggedIn: newState.loggedIn, myReservationsView: newState.myReservationsView })
+  // }
 
   removeFromCart = () => {
     const newState = { ...this.state }
@@ -1028,105 +1036,118 @@ postOldData = async () => {
                 profileClick={this.profileClick}
                 logout={this.logout}
                 spotifyResponse={this.state.spotifyResponse}
-                userDashboard={this.userDashboard} />
+                userDashboard={this.userDashboard}
+                adminView={this.state.adminView}
+              />
 
-                {this.state.displayLoginView ?
-                  <LoginView
-                    displayReservations={this.state.displayReservations}
-                    responseGoogle={this.responseGoogle}
-                    responseSpotify={this.responseSpotify}
-                    toggleLoggedIn={this.toggleLoggedIn}
-                    userDetails={this.state.userDetails}
-                    profileClick={this.profileClick}
-                    toggleReservationView={this.toggleReservationView}
-                    userReservations={this.state.userReservations}
-                    addBorder={this.addBorder}
-                    displayShow={this.state.displayShow}
-                    filterString={this.state.filterString}
-                    showsExpandClick={this.showsExpandClick}
-                    responseFacebook={this.responseFacebook}
-                    continueAsGuest={this.continueAsGuest}
-                    facebook={this.state.facebook}
-                    postOldData={this.postOldData}/>
+              {this.state.adminView ?
+              <AdminView
+                pickupLocations={this.state.pickupLocations}
+                searchShows={this.searchShows}
+                shows={this.state.shows}
+                showsExpandClick={this.showsExpandClick}
+                userDetails={this.state.facebook.userDetails}
+              />
+              :
+                this.state.displayLoginView ?
+                <LoginView
+                  displayReservations={this.state.displayReservations}
+                  responseGoogle={this.responseGoogle}
+                  responseSpotify={this.responseSpotify}
+                  toggleLoggedIn={this.toggleLoggedIn}
+                  userDetails={this.state.userDetails}
+                  profileClick={this.profileClick}
+                  toggleReservationView={this.toggleReservationView}
+                  userReservations={this.state.userReservations}
+                  addBorder={this.addBorder}
+                  displayShow={this.state.displayShow}
+                  filterString={this.state.filterString}
+                  showsExpandClick={this.showsExpandClick}
+                  responseFacebook={this.responseFacebook}
+                  continueAsGuest={this.continueAsGuest}
+                  facebook={this.state.facebook}
+                  toggleAdminView={this.toggleAdminView}
+                />
+                :
+                this.state.displayAboutus ?
+                  <Aboutus
+                    dismissBios={this.dismissBios}
+                    readBios={this.readBios}
+                    displayBios={this.state.displayBios}
+                    hideAboutus={this.hideAboutus}
+                  />
                   :
-
-                    this.state.displayAboutus ?
-                      <Aboutus
-                        dismissBios={this.dismissBios}
-                        readBios={this.readBios}
-                        displayBios={this.state.displayBios}
-                        hideAboutus={this.hideAboutus} />
-                      :
-                      this.state.shows ?
-                        <React.Fragment>
-
-                          <div className='content-section pt-4'>
-                            <div className='col-md-6 float-right' >
-                              {this.state.displayShow ? '' :
-                                <BannerRotator displayShow={this.state.displayShow} />}
-                              {this.state.displayCart || this.state.displayShow || this.state.displayExternalShowDetails ?
-                                <div>
-                                <DetailCartView
-                                  afterDiscountObj={this.state.afterDiscountObj}
-                                  assignedParties={this.state.assignedParties}
-                                  backToCalendar={this.backToCalendar}
-                                  closeAlert={this.closeAlert}
-                                  addToCart={this.addToCart}
-                                  checked={this.state.checked}
-                                  confirmedRemove={this.confirmedRemove}
-                                  cartToSend={this.state.cartToSend}
-                                  displayAddBtn={this.state.displayAddBtn}
-                                  displayBorder={this.state.displayBorder}
-                                  displayCart={this.state.displayCart}
-                                  displayConfirmRemove={this.state.displayConfirmRemove}
-                                  displayExternalShowDetails={this.state.displayExternalShowDetails}
-                                  displayQuantity={this.state.displayQuantity}
-                                  displayShow={this.state.displayShow}
-                                  displaySuccess={this.state.displaySuccess}
-                                  displayViewCartBtn={this.state.displayViewCartBtn}
-                                  displayWarning={this.state.displayWarning}
-                                  filterString={this.state.filterString}
-                                  findDiscountCode={this.findDiscountCode}
-                                  firstBusLoad={this.state.firstBusLoad}
-                                  getPickupParty={this.getPickupParty}
-                                  handleCheck={this.handleCheck}
-                                  handleSubmit={this.handleSubmit}
-                                  inCart={this.state.inCart}
-                                  lastDepartureTime={this.state.lastDepartureTime}
-                                  makePurchase={this.makePurchase}
-                                  pickupLocations={this.state.pickupLocations}
-                                  pickupLocationId={this.state.pickupLocationId}
-                                  pickupPartyId={this.state.pickupPartyId}
-                                  pickupParties={this.state.pickupParties}
-                                  purchase={this.purchase}
-                                  purchaseClick={this.purchaseClick}
-                                  purchaseFailed={this.state.purchaseFailed}
-                                  purchasePending={this.state.purchasePending}
-                                  purchaseSuccessful={this.state.purchaseSuccessful}
-                                  quantityChange={this.quantityChange}
-                                  removeFromCart={this.removeFromCart}
-                                  returnToShows={this.returnToShows}
-                                  selectPickupLocationId={this.selectPickupLocationId}
-                                  selectTicketQuantity={this.selectTicketQuantity}
-                                  shows={this.state.shows}
-                                  showsExpandClick={this.showsExpandClick}
-                                  showsInCart={this.state.inCart}
-                                  startTimer={this.state.startTimer}
-                                  tabClicked={this.tabClicked}
-                                  ticketsAvailable={this.state.ticketsAvailable}
-                                  ticketQuantity={this.state.ticketQuantity}
-                                  timeLeftInCart={this.state.timeLeftInCart}
-                                  totalCost={this.state.totalCost}
-                                  updateDiscountCode={this.updateDiscountCode}
-                                  updatePurchaseField={this.updatePurchaseField}
-                                  validated={this.state.validated}
-                                  validatedElements={this.state.validatedElements} />
-                                  </div>
-                                :
-                                <SponsorBox
-                                  showAboutus={this.showAboutus}
-                                  displayAboutus={this.state.displayAboutus} />}
+                  this.state.shows ?
+                    <React.Fragment>
+                      <div className='content-section pt-4'>
+                        <div className='col-md-6 float-right'>
+                        {this.state.displayShow ? '' :
+                          <BannerRotator displayShow={this.state.displayShow} />}
+                        {this.state.displayCart || this.state.displayShow || this.state.displayExternalShowDetails ?
+                          <div>
+                          <DetailCartView
+                            afterDiscountObj={this.state.afterDiscountObj}
+                            assignedParties={this.state.assignedParties}
+                            backToCalendar={this.backToCalendar}
+                            closeAlert={this.closeAlert}
+                            addToCart={this.addToCart}
+                            checked={this.state.checked}
+                            confirmedRemove={this.confirmedRemove}
+                            cartToSend={this.state.cartToSend}
+                            displayAddBtn={this.state.displayAddBtn}
+                            displayBorder={this.state.displayBorder}
+                            displayCart={this.state.displayCart}
+                            displayConfirmRemove={this.state.displayConfirmRemove}
+                            displayExternalShowDetails={this.state.displayExternalShowDetails}
+                            displayQuantity={this.state.displayQuantity}
+                            displayShow={this.state.displayShow}
+                            displaySuccess={this.state.displaySuccess}
+                            displayViewCartBtn={this.state.displayViewCartBtn}
+                            displayWarning={this.state.displayWarning}
+                            filterString={this.state.filterString}
+                            findDiscountCode={this.findDiscountCode}
+                            firstBusLoad={this.state.firstBusLoad}
+                            getPickupParty={this.getPickupParty}
+                            handleCheck={this.handleCheck}
+                            handleSubmit={this.handleSubmit}
+                            inCart={this.state.inCart}
+                            lastDepartureTime={this.state.lastDepartureTime}
+                            makePurchase={this.makePurchase}
+                            pickupLocations={this.state.pickupLocations}
+                            pickupLocationId={this.state.pickupLocationId}
+                            pickupPartyId={this.state.pickupPartyId}
+                            pickupParties={this.state.pickupParties}
+                            purchase={this.purchase}
+                            purchaseClick={this.purchaseClick}
+                            purchaseFailed={this.state.purchaseFailed}
+                            purchasePending={this.state.purchasePending}
+                            purchaseSuccessful={this.state.purchaseSuccessful}
+                            quantityChange={this.quantityChange}
+                            removeFromCart={this.removeFromCart}
+                            returnToShows={this.returnToShows}
+                            selectPickupLocationId={this.selectPickupLocationId}
+                            selectTicketQuantity={this.selectTicketQuantity}
+                            shows={this.state.shows}
+                            showsExpandClick={this.showsExpandClick}
+                            showsInCart={this.state.inCart}
+                            startTimer={this.state.startTimer}
+                            tabClicked={this.tabClicked}
+                            ticketsAvailable={this.state.ticketsAvailable}
+                            ticketQuantity={this.state.ticketQuantity}
+                            timeLeftInCart={this.state.timeLeftInCart}
+                            totalCost={this.state.totalCost}
+                            updateDiscountCode={this.updateDiscountCode}
+                            updatePurchaseField={this.updatePurchaseField}
+                            validated={this.state.validated}
+                            validatedElements={this.state.validatedElements}
+                          />
                           </div>
+                          :
+                          <SponsorBox
+                            showAboutus={this.showAboutus}
+                            displayAboutus={this.state.displayAboutus}
+                          />}
+                      </div>
                         <MediaQuery maxWidth={799}>
                         <div className='col-md-6 float-left'>
                         {this.state.displayExternalShowDetails || this.state.displayDetailCartView ?
@@ -1168,16 +1189,16 @@ postOldData = async () => {
                           ticketsAvailable={this.state.ticketsAvailable} />
                       </MediaQuery>
 
-                      </div>
-                    </React.Fragment> : <Loading />
-            }
+                    </div>
+                  </React.Fragment>
+                  :
+                <Loading />
+              }
             </div>
-          }
+            }
           </MediaQuery>
-          {/* End Desktop View */}
         </div>
       </React.Fragment>
-
     )
   }
 }

@@ -1,377 +1,488 @@
 html {
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+height: 100%;
+overflow-x: hidden;
+overflow-y: auto;
 }
 
 body {
-  width: 100%;
-  height: 100%;
-  margin: 0px;
-  padding: 0px;
+width: 100%;
+height: 100%;
+margin: 0px;
+padding: 0px;
 }
+
+/* Admin Styling */
+
+.admin-list-header {
+  color: #FF420F;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.admin-list-item {
+  color: #460088;
+  border-color: #ff420f;
+  }
+
+.admin-list-item:nth-child(odd) {
+  color: #460088;
+  background-color: #fac5b5;
+  }
+
+.bts-admin-purple {
+background-color: #460088;
+color: white; 
+}
+
+.admin-detail-btn {
+background: #ffffff;
+border-color: #ff420f;
+color: #460088;
+}
+
+.admin-detail-btn:hover {
+color: #ff420f;
+}
+
+.btn-block-admin {
+  background: #ffffff;
+  border-color: #ff420f;
+  color: #ff420f;
+}
+
+.hidden {
+display: none;
+}
+
+/*<----- custom switch ----->*/
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 65px;
+  height: 34px;
+  float: right;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ff420f;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .2s;
+  transition: .2s;
+}
+
+input.default:checked + .slider {
+  background-color: #460088;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(31px);
+  -ms-transform: translateX(31px);
+  transform: translateX(31px);
+}
+
+.slider.round {
+  border-radius: 8px;
+}
+
+.slider.round:before {
+  border-radius: 25%;
+}
+/* .scroll {
+
+} */
 
 /* Shows Styling */
 
 .list-group {
-  max-height: 90vh;
-  overflow: scroll;
-  overflow-x: hidden;
-  overflow: -moz-scrollbars-none;
-  /* scrollbar-width: none; */
-  -ms-overflow-style: none;
+max-height: 90vh;
+overflow: scroll;
+overflow-x: hidden;
+overflow: -moz-scrollbars-none;
+/* scrollbar-width: none; */
+-ms-overflow-style: none;
 }
 
 
 /* .list-item-mobile {
-  min-height: 45vh;
+min-height: 45vh;
 } */
 
 mobile-height{
-  height: 90vh;
+height: 90vh;
 }
 
 .mobile-view {
-  height: 100vh;
-  width: 100vw;
-  overflow: scroll;
+height: 100vh;
+width: 100vw;
+overflow: scroll;
 }
 
 li {
-  list-style: none;
+list-style: none;
 }
 
 /* .set-height{
-  max-height: 55vh;
+max-height: 55vh;
 } */
 
 .list-group-mobile {
-  max-height: 90vh;
-  overflow: scroll;
+max-height: 90vh;
+overflow: scroll;
 }
 
 .list-group::-webkit-scrollbar {
-  width: 0;
+width: 0;
 }
 
 .list-group-item {
-  border-radius: 1px;
-  padding: .5rem 1.25rem;
+border-radius: 1px;
+padding: .5rem 1.25rem;
 }
 
 .return-btn {
-  display: inline-block;
+display: inline-block;
 }
 
 .list-item-font {
-  font-size: 16px;
+font-size: 16px;
 }
 
 .bio-font {
-  font-size: 12px;
-  overflow: scroll;
-  height: 20vh;
+font-size: 12px;
+overflow: scroll;
+height: 20vh;
 }
 
 .content-section-details {
-  padding: 1.5%;
-  border-radius: 5px;
-  border: solid;
-  border-color: white;
-  border-width: 1px;
+padding: 1.5%;
+border-radius: 5px;
+border: solid;
+border-color: white;
+border-width: 1px;
 }
 
 .add-border {
-  transition: border 0.4s ease;
-  opacity: 1;
-  border-radius: 5px;
-  border: solid;
-  border-color: gray;
-  border-width: 1px;
+transition: border 0.4s ease;
+opacity: 1;
+border-radius: 5px;
+border: solid;
+border-color: gray;
+border-width: 1px;
 
 }
 
 .remove-border {
-  transition: border 0.4s ease;
-  opacity: 1;
-  border-radius: 5px;
-  border: solid;
-  border-color: white;
-  border-width: 1px;
+transition: border 0.4s ease;
+opacity: 1;
+border-radius: 5px;
+border: solid;
+border-color: white;
+border-width: 1px;
 }
 
 /* Footer Styling */
 .fixed-bottom {
-  display: flex;
-  align-items: flex-start
+display: flex;
+align-items: flex-start
 }
 
 .footer-col>ul {
-  list-style-type: none;
-  font-size: 10px;
-  justify-content: flex-start;
+list-style-type: none;
+font-size: 10px;
+justify-content: flex-start;
 
 }
 
 .footer-col>li {
-  margin-left: 0;
-  padding-left: 0;
+margin-left: 0;
+padding-left: 0;
 }
 
 .footer-col>p {
-  font-size: 12px;
+font-size: 12px;
 }
 
 
 /* Alert Styling */
 .alert-item {
-  border: none;
+border: none;
 }
 
 /* Login View Styling */
 .login-image-section {
-  background: url('./Images/bts-future-selves-background-image.png');
-  background-position: top;
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 100vh;
+background: url('./Images/bts-future-selves-background-image.png');
+background-position: top;
+background-size: cover;
+background-repeat: no-repeat;
+height: 100vh;
 }
 
 .login-content {
-  display: flex;
+display: flex;
 }
 
 .login-content-section {
-  margin: auto;
+margin: auto;
 }
 
 /* Cart Styling */
 .nothing-in-cart-text {
-  text-align: center;
-  color: #616060;
-  opacity: 0.5;
+text-align: center;
+color: #616060;
+opacity: 0.5;
 }
 
 .nothing-in-cart-image {
-  opacity: 0.5;
+opacity: 0.5;
 }
 
 .show-header {
-  display: flex;
-  flex-direction: column;
-  background-color: #ff420f;
-  color: white;
-  min-height: 0;
+display: flex;
+flex-direction: column;
+background-color: #ff420f;
+color: white;
+min-height: 0;
 }
 
 .show-list-item {
-  color: #ff420f;
-  border-color: #ff420f;
+color: #ff420f;
+border-color: #ff420f;
 }
 
 .show-list-item:nth-child(odd) {
-  color: #ff420f;
-  background-color: #fac5b5;
-  /* background-color: rgba(255, 66, 15, 0.75) */
+color: #ff420f;
+background-color: #fac5b5;
+/* background-color: rgba(255, 66, 15, 0.75) */
 
 }
 
 .lgi-header {
-  border-top: none;
+border-top: none;
 }
 
 .alert-item {
-  margin: 0;
-  padding: 0;
-  margin-bottom: 0;
+margin: 0;
+padding: 0;
+margin-bottom: 0;
 }
 
 .loading-image {
-  color: white;
-  background: url('./Images/BTS-redrocks-website-crop.png');
-  background-position: top;
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 100vh;
-  width: 100vw;
+color: white;
+background: url('./Images/BTS-redrocks-website-crop.png');
+background-position: top;
+background-size: cover;
+background-repeat: no-repeat;
+height: 100vh;
+width: 100vw;
 }
 
 .loading-image-mobile {
-  color: white;
+color: white;
 
-  background: url('./Images/BTS-redrocks-spacebus-mobile-flat.jpg');
-  background-position: top;
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 100vh;
-  width: 100vw;
+background: url('./Images/BTS-redrocks-spacebus-mobile-flat.jpg');
+background-position: top;
+background-size: cover;
+background-repeat: no-repeat;
+height: 100vh;
+width: 100vw;
 }
 
 .loading-header {
-  margin-top: 35vh;
-  text-align: center;
-  /* background: rgba(0, 0, 0, .75) */
+margin-top: 35vh;
+text-align: center;
+/* background: rgba(0, 0, 0, .75) */
 }
 
 .loading-text-main {
-  font-size: 75px;
-}
-
-.no-info-logo {
-  opacity: 0.5;
+font-size: 75px;
 }
 
 .sort-btn {
-  border: none;
+border: none;
+}
+
+.no-info-logo {
+opacity: 0.5;
+}
+
+.sort-btn {
+border: none;
 }
 
 .sort-btn:hover {
-  color: #ff420f;
+color: #ff420f;
 }
 
 .bts-orange-bg {
-  background-color: #ff420f;
-  color: white;
+background-color: #ff420f;
+color: white;
 }
 
 .bts-white-bg {
-  background-color: white;
-  color: #ff420f;
+background-color: white;
+color: #ff420f;
 }
 
 .search-height {
-  height: 25px;
+height: 25px;
 }
 
 .form-control-sm {
-  width: 200px;
+width: 200px;
 }
 
 .inline-block {
-  display: -webkit-inline-flex;
-  display: flex;
+display: -webkit-inline-flex;
+display: flex;
 }
 
 .round-img {
-  border-radius: 30px;
+border-radius: 30px;
 }
 
 .nav-flex,
 .cart-flex {
-  display: flex;
-  justify-content: space-between;
-  height: 100%;
+display: flex;
+justify-content: space-between;
+height: 100%;
 }
 
 .display-flex {
-  display: flex;
-  justify-content: flex-end;
-  height: 100%;
+display: flex;
+justify-content: flex-end;
+height: 100%;
 }
 
 
 .show-list-flex {
-  display: flex;
-  justify-content: space-evenly;
-  height: 100%;
+display: flex;
+justify-content: space-evenly;
+height: 100%;
 }
 
 p {
-  font-size: 14px;
+font-size: 14px;
 }
 
 .detail-btn {
-  background: #ffffff;
-  border-color: #ff420f;
-  color: #ff420f;
+background: #ffffff;
+border-color: #ff420f;
+color: #ff420f;
 }
 
 .detail-btn:hover {
-  background: #ff420f;
-  color: #ffffff;
+background: #ff420f;
+color: #ffffff;
 }
 
 .search-bar {
-  border: none;
+border: none;
 }
 
 .align-left {
-  margin-top: 8px;
-  text-align: left;
+margin-top: 8px;
+text-align: left;
 }
 
 .cart-item-font {
-  font-size: 12px;
-  font-weight: bold;
+font-size: 12px;
+font-weight: bold;
 }
 
 .red-text {
-  color: red;
-  font-weight: bold;
+color: red;
+font-weight: bold;
 }
 
 .black-text {
-  color: black;
+color: black;
 }
 
 .remove-border {
-  border: none;
-  margin-top: -3;
-  padding: 0;
+border: none;
+margin-top: -3;
+padding: 0;
 }
 
 .remove-border:hover {
-  background: #ffffff;
-  color: #616060;
+background: #ffffff;
+color: #616060;
 }
 
 .my-facebook-button-class {
-  height: 45px;
-  padding: 1rem;
-  border: none;
-  font-weight: bold;
-  color: white;
-  background-color: #ff420f;
+height: 45px;
+padding: 1rem;
+border: none;
+font-weight: bold;
+color: white;
+background-color: #ff420f;
 }
 
 .biophoto {
-  width: 100px;
-  border-radius: 30px;
+width: 100px;
+border-radius: 30px;
 }
 
 .phil {
-  background-color: #ff420f;
+background-color: #ff420f;
 }
 
 .teamMemberName {
-  font-weight: bold;
-  font-size: 20px;
+font-weight: bold;
+font-size: 20px;
 }
 
 .memberParagraph {
-  font-size: 15px
+font-size: 15px
 }
 
 .aboutUsPage {
-  border-color: #ff420f;
-  border-width: 1px;
+border-color: #ff420f;
+border-width: 1px;
 
 }
 
 .limit-height {
-  height: 60vh;
+height: 60vh;
 }
 
 .person {
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
+margin-top: 5px;
+margin-bottom: 5px;
+margin-left: 5px;
+margin-right: 5px;
 }
 
 .linkedInLogo {
-  width: 30px;
-  margin-right: 15px
+width: 30px;
+margin-right: 15px
 }
 
 .loading-btn:hover {
@@ -379,67 +490,65 @@ p {
 }
 
 .logo-img {
-  height: 67px;
-  width: 154px;
+height: 67px;
+width: 154px;
 }
 
 .bts-logo-flex {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  margin-left: 1.5vw;
-  opacity: .75;
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100%;
+width: 100%;
+margin-left: 1.5vw;
+opacity: .75;
 }
 
 .bts-logo-sDV {
-  height: 60px;
-  width: 150px;
+height: 60px;
+width: 150px;
 }
 
 .about-us-flex,
 .login-flex {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100%;
 }
 
 .future-selves {
-  height: 75vh;
-  width: 45vw;
+height: 75vh;
+width: 45vw;
 }
 
 .login-btn {
-  font-weight: bold;
+font-weight: bold;
 }
 
 .login-btn:hover {
-  font-weight: bold;
-  color: #ff420f;
+font-weight: bold;
+color: #ff420f;
 }
 
 .warning-text {
-  font-size: 12px;
-  line-height: 16px;
+font-size: 12px;
+line-height: 16px;
 }
 
 .add-top-margin {
-  margin-top: 4.5vh;
+margin-top: 4.5vh;
 }
 
-
-
 @media only screen and (max-width:300px) {
-  .biophoto {
-    display: none;
-  }
+.biophoto {
+  display: none;
+}
 }
 
 @media only screen and (min-width: 900px) {
-  .make-bigger {
-    align-self: flex-end;
-    margin-left: 9em;
-  }
+.make-bigger {
+  align-self: flex-end;
+  margin-left: 9em;
+}
 }

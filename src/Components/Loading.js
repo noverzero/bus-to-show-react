@@ -28,7 +28,7 @@ let bus3 = true
             <div className="col-4">
             </div>
               <div className='col-4'>
-                <button type="button" className="btn-sm btn-outline-light loading-btn px-auto mx-auto my-4" onClick={props.onLoad}>Ride with Us
+                <button type="button" className="btn-med btn-outline-light loading-btn bg-transparent my-4" onClick={props.onLoad}>Ride with Us
                 </button>
               </div>
             <div className="col-4">
@@ -59,7 +59,7 @@ let bus3 = true
             }
             </div>
             <div className='col-2 px-auto mx-auto py-4 my-4'>
-              <button type="button" className="btn-lg btn-outline-light loading-btn" onClick={props.onLoad}>Ride with Us
+              <button type="button" className="btn-lg btn-outline-light bg-transparent loading-btn" onClick={props.onLoad}>Ride with Us
               </button>
             </div>
             <div className='col-3'>
