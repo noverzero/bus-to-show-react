@@ -385,7 +385,6 @@ class App extends Component {
     if (newState.adminView) {
       newState.adminView = !newState.adminView
       this.setState({
-        displayLoginView: newState.displayLoginView,
         adminView: newState.adminView
       })
     }
@@ -1038,7 +1037,8 @@ class App extends Component {
                 pickupLocations={this.state.pickupLocations}
                 searchShows={this.searchShows}
                 shows={this.state.shows}
-                showsExpandClick={this.showsExpandClick} 
+                showsExpandClick={this.showsExpandClick}
+                userDetails={this.state.facebook.userDetails} 
               /> 
               :
                 this.state.displayLoginView ?

@@ -18,15 +18,10 @@ class AdminView extends React.Component {
     thisPickup: null
 
   }
-  // { shows, pickupLocations, searchItems } = this.props
+  // { shows, pickupLocations, searchItems, userDetails } = this.props
+
   componentDidMount(){
-    let pickupLocations = this.props.pickupLocations.map(location => {
-      location.locationName = location.locationName.split('- ')[1]
-      location.streetAddress = location.streetAddress.split(', CO')[0]
-      return location
-    })
-    
-    this.setState({pickupLocations})
+    this.setState({pickupLocations: this.props.pickupLocations})
   }
   
   searchItems = event => {
@@ -60,6 +55,7 @@ class AdminView extends React.Component {
   }
 
   getReservations = async () => {
+    console.log('getting reservations');
     await fetch(`http://${process.env.REACT_APP_API_URL}/pickup_parties/findId`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -71,6 +67,7 @@ class AdminView extends React.Component {
       }
     }).then(async (response) =>  {
       const thisPickupParty = await response.json()
+      console.log('pickup', thisPickupParty)
       const findReservations = await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/findOrders`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -81,7 +78,9 @@ class AdminView extends React.Component {
         }
       })
       const reservations = await findReservations.json()
-      this.setState({reservations})
+      this.setState({
+        reservations, 
+        thisCapacity: thisPickupParty.capacity})
     })
     if (this.state.displayList === "ReservationsList") setTimeout(this.getReservations, 30000)
   }
@@ -115,8 +114,9 @@ class AdminView extends React.Component {
     })[0]
     this.setState({thisPickup})
   }
-
+  
   render (){
+    let { isStaff, isAdmin, isDriver } = this.props.userDetails
 
     return(
       <div className="container AdminView">
@@ -124,6 +124,7 @@ class AdminView extends React.Component {
           <UserCheckin 
             thisShow={this.state.thisShow}
             thisPickup={this.state.thisPickup}
+            thisCapacity={this.state.thisCapacity}
             eventId={this.state.eventId}  
             filterString={this.state.filterString}
             toggleProperty={this.toggleProperty}
@@ -138,8 +139,15 @@ class AdminView extends React.Component {
             toggleCheckedIn={this.toggleCheckedIn} /> 
           : 
           <div className="col mt-2 adminButtons">
-            <button type="button" className="btn bts-orange-bg btn-lg btn-block" onClick={e=>this.toggleProperty('displayUserCheckin')}>Rider Check-In</button>
-            <button type="button" className="btn bts-orange-bg btn-lg btn-block" onClick={e=>console.log('also click', this.state)}>Admin Options</button>
+            {isAdmin ? 
+              <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>console.log('also click also')}>Admin Panel</button> 
+            : ''}
+            {isDriver ? 
+              <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>console.log('also click')}>Driver Shifts</button> 
+            : ''}
+            {isStaff ? 
+              <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>this.toggleProperty('displayUserCheckin')}>Rider Check-In</button> 
+            : ''}
           </div>
         }
       </div>

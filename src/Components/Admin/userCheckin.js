@@ -6,7 +6,10 @@ import PickupsList from './PickupsList'
 import ReservationsList from './ReservationsList'
 
 const UserCheckin = (props) => {
-  let { thisShow, thisPickup, searchItems, toggleProperty, filterString, shows, makeSelection, displayList, pickupLocations, reservations, toggleCheckedIn } = props
+  let { thisShow, thisPickup, searchItems, toggleProperty, filterString, 
+      shows, makeSelection, displayList, pickupLocations, reservations, 
+      toggleCheckedIn, thisCapacity } = props
+  
   let thisDate
 
   const previousProperty = ( 
@@ -21,13 +24,14 @@ const UserCheckin = (props) => {
       thisShow = thisShow.headliner
     }
     if(thisPickup) thisPickup = thisPickup.locationName
-
     if (displayList === 'ShowList') return 'Select a Show'
     else if (displayList === 'PickupsList') return `${thisDate} ${thisShow}`
-    else if (displayList === 'ReservationsList') {
+    else if (displayList === 'ReservationsList' && thisCapacity) {
       return (<div>{thisDate} {thisShow}
               <br />
               {thisPickup}
+              <br/>
+              Capacity: {thisCapacity} / Sold: {reservations.length}
               </div>)
     }
     else return ''
@@ -38,6 +42,7 @@ const UserCheckin = (props) => {
     const adminList = document.getElementById('adminList')
     searchBar.value = ''
     adminList.scrollTop = 0
+    // reservations = ''
   }
 
   return (
@@ -78,10 +83,11 @@ const UserCheckin = (props) => {
               <div>
               {displayList === 'ReservationsList' ? 
                 <ReservationsList
-                filterString={filterString}
-                reservations={reservations}
-                toggleCheckedIn={toggleCheckedIn}
-              /> : '' }
+                  filterString={filterString}
+                  reservations={reservations}
+                  toggleCheckedIn={toggleCheckedIn}
+                /> 
+              : '' }
               </div>  
             </ul>
           </div>

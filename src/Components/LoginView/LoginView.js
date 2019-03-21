@@ -9,15 +9,7 @@ const LoginView = (props) => {
         facebook, displayReservations, toggleReservationView, addBorder, displayShow, 
         filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
 
-  // const renderEmployeeButton = () => {
-    //   console.log(facebook.userDetails);
-    //   if (isStaff || isAdmin || isDriver) return (
-      //     <div className="btn-lg border border-success" onClick={toggleAdminView()}>
-      //     Employees
-      //     </div>
-      //   )
-      // }
-  let { isStaff, isAdmin, isDriver } = facebook.userDetails
+  const { isStaff, isAdmin, isDriver } = facebook.userDetails
       
   return (
     <div className='container-fluid'>
@@ -59,20 +51,20 @@ const LoginView = (props) => {
             </div>
             : '' }
             {isStaff || isAdmin || isDriver ? 
-            <div className="btn-lg border border-success" onClick={toggleAdminView}>
-            Employees
+            <div className="btn detail-btn my-2 col-md-2" onClick={toggleAdminView}>
+            <strong>Employees</strong>
             </div> : ''}
-            <div className="btn-lg border border-success" onClick={toggleReservationView}>
-            My Upcoming Reservations
+            <div className="btn detail-btn my-2 col-md-2" onClick={toggleReservationView}>
+            <strong>My Upcoming Reservations</strong>
             </div>
-            <div className="btn-lg border border-success" onClick={profileClick}>
-            Fuel Savings Calculator
+            <div className="btn detail-btn my-2 col-md-2" onClick={profileClick}>
+            <strong>Fuel Savings Calculator</strong>
             </div>
-            <div className="btn-lg border border-success" onClick={profileClick}>
-            All Events
+            <div className="btn detail-btn my-2 col-md-2" onClick={profileClick}>
+            <strong>All Events</strong>
             </div>
-            <div className="btn-lg border border-success" onClick={profileClick}>
-            About Us
+            <div className="btn detail-btn my-2 col-md-2" onClick={profileClick}>
+            <strong>About Us</strong>
             </div>
           </div>
         : ''
