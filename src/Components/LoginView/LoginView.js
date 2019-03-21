@@ -77,7 +77,7 @@ const LoginView = (props) => {
                <div className="btn-lg border border-success" onClick={props.toggleReservationView}>
                 My Upcoming Reservations
                </div>
-               <div className="btn-lg border border-success" onClick={props.profileClick}>
+               <div className="btn-lg border border-success" onClick={props.postOldData}>
                 Fuel Savings Calculator
                </div>
                <div className="btn-lg border border-success" onClick={props.profileClick}>
