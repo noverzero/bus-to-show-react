@@ -12,7 +12,7 @@ const ShowReservation = (props) => {
   const createArrayOfDates = props.userReservations.map(show => show.date ).sort()
   console.log('createArrayOfDates', createArrayOfDates)
 
-  let qtyArr = []
+
   let countObj = {}
   for(let ii = 0; ii < createArrayOfDates.length; ii++){
     let count = 1;
@@ -20,9 +20,29 @@ const ShowReservation = (props) => {
         if(createArrayOfDates[ii] == createArrayOfDates[jj])
             countObj[createArrayOfDates[ii]] = count++;
         }
-      qtyArr.push(countObj)
     }
-    console.log('qtyArr', qtyArr)
+    console.log('countObj', countObj)
+
+const reservationSummaryArr = []
+for (let property1 in countObj){
+ for (let ii = 0; ii < props.userReservations.length; ii++){
+   if(props.userReservations[ii].date === property1){
+     console.log('property 1', property1)
+     props.userReservations[ii].ticketQty = countObj[props.userReservations[ii].date]
+      reservationSummaryArr.push(props.userReservations[ii])
+      break
+   }
+ }
+}
+console.log('reservationSummaryArr ]}}}}} ', reservationSummaryArr)
+
+    let array1 = [5, 12, 8, 130, 44];
+    const  found = props.userReservations.find((element) => {
+      return element.date === "05/18/2019";
+    });
+
+console.log("found", found);
+// expected output: 12
 
 
   //const ticketQty = (props.userReservations, value) => props.userReservations.filter((show) => show.date === value).length

@@ -211,6 +211,7 @@ class App extends Component {
 
 
     if (matchedParty) {
+      //FIX THIS!!!! CAPACITY NEEDS TO COME FROM RESERVATIONS MATCHING PICKUP PARTYID RATHER THAN PICKUPPARTY.CAPACITY.  CAPACITY WAS SUPPOSED TO BE TOTAL NUMBER OF SEATS ASSIGNED TO PICKUP PARTY.  IT SHOULD NOT DECREMENT ON ORDER!!!
       const capacityLessInCart = parseInt(matchedParty.capacity) - parseInt(matchedParty.inCart)
       numArray = [...Array(capacityLessInCart).keys()].map(i => i + 1)
       newState.ticketsAvailable = numArray
@@ -652,6 +653,7 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
+    //FIX:: timer needs to be set on the server as well or instead, because if user closes app setTimeout won't expire and inCart tickets will not release.
 
     fetch(`http://${process.env.REACT_APP_API_URL}/pickup_parties`, {
       method: 'PATCH',
@@ -708,17 +710,7 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
-    // const orderJson = await ordersResponse.json()
-    // if (this.state.userId) {
-    //   await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/users/${this.state.userId}`, {
-    //     method: 'POST',
-    //     body: JSON.stringify({ reservationId: orderJson.id }),
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     }
-    //   })
-    //   this.getReservations(this.state.userId)
-    // }
+
 
     this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [] })
 
