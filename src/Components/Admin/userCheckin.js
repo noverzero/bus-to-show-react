@@ -55,54 +55,53 @@ const UserCheckin = (props) => {
     // reservations = ''
   }
 
+
   return (
     
-    <div className='ShowList mt-2'>
+    <div className='ShowList mt-2' style={{height: '100%'}}>
     <div className='admin-list-header text-center ml-n1 mr-n1'>
       {headerLabel(displayList)}
     </div>
-      <div className='container'>
-        <div className="list-group mr-n1 ml-n1">
-          <div className="list-group-item show-header">
-            <div className="row show-list-flex">
-              <div className="col-3 mb-3" >
-                <button type="button" className="btn btn-outline-light" onClick={e=>{resetStuff(); toggleProperty(previousProperty)}}>Back</button>
-              </div>
-              <div className="col-9 mb-3" >
-                <form className="form-inline float-right">
-                  <input onChange={searchItems} className="form-control search-bar" type="search" placeholder="Search..." aria-label="Search" id="search"></input>
-                </form>
-              </div>
+      <div className="list-group mr-n1 ml-n1">
+        <div className="list-group-item show-header" style={{height: '100%'}}>
+          <div className="row show-list-flex">
+            <div className="col-3 mb-3" >
+              <button type="button" className="btn btn-outline-light" onClick={e=>{resetStuff(); toggleProperty(previousProperty)}}>Back</button>
             </div>
-            <ul className="list-group" id="adminList">
-              <div className={displayList === 'ShowList' ? '' : 'hidden'}>
-                <ShowList
-                  shows={shows}
-                  filterString={filterString}
-                  makeSelection={makeSelection}
-                  toggleProperty={toggleProperty}
-                  resetStuff={resetStuff}
-                />
-              </div>  
-              <div className={displayList === 'PickupsList' ? '' : 'hidden'}>
-                <PickupsList
-                  filterString={filterString}
-                  pickupLocations={pickupLocations}
-                  makeSelection={makeSelection}
-                  resetStuff={resetStuff}
-                />  
-              </div>
-              <div>
-              {displayList === 'ReservationsList' ? 
-                <ReservationsList
-                  filterString={filterString}
-                  reservations={reservations}
-                  toggleCheckedIn={toggleCheckedIn}
-                /> 
-              : '' }
-              </div>  
-            </ul>
+            <div className="col-9 mb-3" >
+              <form className="form-inline float-right">
+                <input onChange={searchItems} className="form-control search-bar" type="search" placeholder="Search..." aria-label="Search" id="search"></input>
+              </form>
+            </div>
           </div>
+          <ul className="list-group adminlist" id="adminList" style={{height: '100%'}}>
+            <div className={displayList === 'ShowList' ? '' : 'hidden'}>
+              <ShowList
+                shows={shows}
+                filterString={filterString}
+                makeSelection={makeSelection}
+                toggleProperty={toggleProperty}
+                resetStuff={resetStuff}
+              />
+            </div>  
+            <div className={displayList === 'PickupsList' ? '' : 'hidden'}>
+              <PickupsList
+                filterString={filterString}
+                pickupLocations={pickupLocations}
+                makeSelection={makeSelection}
+                resetStuff={resetStuff}
+              />  
+            </div>
+            <div>
+            {displayList === 'ReservationsList' ? 
+              <ReservationsList
+                filterString={filterString}
+                reservations={reservations}
+                toggleCheckedIn={toggleCheckedIn}
+              /> 
+            : '' }
+            </div>  
+          </ul>
         </div>
       </div>
     </div>

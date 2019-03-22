@@ -7,8 +7,6 @@ import logo from '../Images/Logos/bustoshow-text-logo--white-outline-no-fill-328
 // import { GoogleLogout } from 'react-google-login';
 
 const Header = (props) => {
-  //console.log('Header', props)
-  // let logout = console.log('Success')
 
   return (
     <nav className={props.adminView ? 'Header row bts-admin-purple nav-flex' : 'Header row bts-orange-bg nav-flex'}>

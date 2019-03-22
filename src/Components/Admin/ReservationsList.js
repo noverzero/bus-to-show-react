@@ -33,6 +33,7 @@ const ReservationsList = (props) => {
           const { willCallFirstName, willCallLastName, orderedByFirstName, orderedByLastName } = reservation
           const lastName = willCallLastName
           const firstName = willCallFirstName
+          let toggleStatus = reservation.status
 
           if (reservation.status === '3') return null
 
@@ -47,12 +48,12 @@ const ReservationsList = (props) => {
               Alt: {orderedByLastName}, {orderedByFirstName}
             </div>
             <div className="col-md-4 text-right" id={reservation.id}>
-            {isPresent(reservation.status)}
+              Status: {isPresent(reservation.status)}
               <label className="switch ml-2">
                 <input type="checkbox" 
                 className="default" 
-                checked={reservation.status === 2 ? 'checked' : ''}
-                onChange={event=>toggleCheckedIn(event.target.checked, reservation)} />
+                checked={toggleStatus === 2 ? 'checked' : ''}
+                onChange={event=>{toggleStatus = (toggleStatus === 1 ? 2 : 1);  toggleCheckedIn(event.target.checked, reservation)}} />
                 <span className="slider round"></span>
               </label>
             </div>

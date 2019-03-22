@@ -4,7 +4,12 @@ import Show from './Show'
 import MediaQuery from 'react-responsive';
 
 const ShowList = (props) => {
-  // console.log('showlist', props)
+
+  // const calcHeightVal = () => { 
+  //   const newHeight = window.innerWidth > 800 ? window.innerHeight - 150 : window.innerHeight - 315
+  //   return `${newHeight}px`
+  // }
+  // style={{ maxHeight: calcHeightVal()}}
 
   return (
     <div className='ShowList'>
@@ -39,7 +44,7 @@ const ShowList = (props) => {
                 </div>
 
               </div>
-              <ul className="list-group">
+              <ul className="list-group" >
                 {props.shows ?
                   <div>
                     <Show

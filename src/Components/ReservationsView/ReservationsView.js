@@ -5,8 +5,6 @@ import logo from '../../Images/Logos/bts-logo-orange.png'
 import ShowReservation from './ShowReservation'
 
 const ReservationsView = (props) => {
-  console.log(props.userReservations)
-
 
   return (
     <div className=''>

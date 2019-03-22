@@ -7,8 +7,6 @@ import logo from '../../Images/Logos/bts-logo-gray.png'
 
 const ShowReservation = (props) => {
 
-  console.log('props.userReservations in ShowReservation', props.userReservations)
-
   //get Ticket Quantity for Each Pickup Party
 
   return (

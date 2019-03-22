@@ -47,7 +47,7 @@ export default class FacebookButton extends React.Component {
                 callback={this.props.responseFacebook}
                 //cssClass="my-facebook-button-class"
                 icon="fab fa-facebook-square"
-                 />
+              />
             </div>
           </div>
           <div className="row p-2">

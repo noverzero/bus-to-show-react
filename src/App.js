@@ -21,6 +21,19 @@ import BannerRotator from './Components/BannerRotator'
 import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
+// { email: "jake136@yahoo.com",
+// firstName: "Jake",
+// id: 105,
+// isAdmin: true,
+// isDeactivated: false,
+// isDriver: true,
+// isStaff: true,
+// isWaiverSigned: false,
+// lastName: "Mosher",
+// preferredLocation: "" }
+// userID: "10102849492705992"
+
+
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -70,12 +83,21 @@ class App extends Component {
     displayQuantity: false,
     displayTimes: false,
     facebook: {
-      isLoggedIn: false,
+      isLoggedIn: true,
       userID: '',
-      name: '',
+      name: 'Jake Mosher',
       email:'',
       picture:'',
-      userDetails: {},
+      userDetails: { email: "jake136@yahoo.com",
+      firstName: "Jake",
+      id: 105,
+      isAdmin: true,
+      isDeactivated: false,
+      isDriver: true,
+      isStaff: true,
+      isWaiverSigned: false,
+      lastName: "Mosher",
+      preferredLocation: "" },
     },
     filterString: '',
     firstBusLoad: null,
@@ -166,7 +188,6 @@ class App extends Component {
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
   selectPickupLocationId = async event => {
     const newState = { ...this.state }
-    // console.log('change in selectPickupLocationId')
     
     if (parseInt(event.target.value) !== newState.pickupPartyId) {
       newState.ticketQuantity = null
@@ -194,10 +215,7 @@ class App extends Component {
     const stateEventId = parseInt(newState.displayShow.id)
 
     const parties = newState.assignedParties
-    // console.log('parties:::::', parties)
-    // console.log('statePickupPartyId', statePickupPartyId)
     const matchedParty = await parties.find(party => (parseInt(party.id) === statePickupPartyId) && (parseInt(party.eventId) === stateEventId))
-    // console.log('matchedParty', matchedParty)
     newState.pickupLocationId = matchedParty.pickupLocationId
     if (matchedParty.firstBusLoadTime) {
       newState.firstBusLoad = moment(matchedParty.firstBusLoadTime, 'LT').format('h:mm A')
@@ -242,7 +260,6 @@ class App extends Component {
     // const sPickupId = parseInt(this.state.pickupLocationId)
     // const sEventId = parseInt(this.state.displayShow.id)
     // const pickupParty = this.state.pickupParties.find(party => party.pickupLocationId === sPickupId && party.eventId === sEventId)
-    // console.log('PARTYAY_______------:: ' , pickupParty)
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const subTotal = (Number(pickupLocation.basePrice) * Number(event.target.value))
     const total = ((Number(subTotal) * .1) + Number(subTotal)).toFixed(2)
@@ -263,7 +280,7 @@ class App extends Component {
 
   getReservations = async () => {
     const userId = this.state.facebook.userDetails.id
-    console.log('userId inside getReservations:::: ', userId)
+    // console.log('userId inside getReservations:::: ', userId)
     if (userId) {
       const reservations = await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/${userId}`)
       const userReservations = await reservations.json()
@@ -271,7 +288,7 @@ class App extends Component {
       //newState.userId = userId
       newState.userReservations = userReservations
       this.setState({ userReservations: newState.userReservations })
-      console.log('userReservations', this.state.userReservations)
+      // console.log('userReservations', this.state.userReservations)
     }
   }
 
@@ -346,7 +363,7 @@ class App extends Component {
   }
 
   toggleReservationView = () => {
-    console.log('click on toggleReservationView')
+    // console.log('click on toggleReservationView')
     const newState = { ...this.state }
     this.getReservations()
     newState.displayReservations = !newState.displayReservations
@@ -447,8 +464,8 @@ class App extends Component {
           userDetails: newState.userDetails
         }
       })
-      console.log('userObj response to work with', userObj)
-      console.log('this.state.facebook.userDetails::::', this.state.facebook.userDetails)
+      // console.log('userObj response to work with', userObj)
+      // console.log('this.state.facebook.userDetails::::', this.state.facebook.userDetails)
       //this.props.getReservations(json.id)
   }
 
@@ -501,7 +518,7 @@ class App extends Component {
 
   backToCalendar = event => {
     const newState = { ...this.state }
-    console.log('back to calendar');
+    // console.log('back to calendar');
     newState.displayExternalShowDetails = false
     newState.displayDetailCartView = false
     newState.displayShow = null
@@ -699,7 +716,7 @@ class App extends Component {
 
     const cartObj = this.state.cartToSend
     cartObj.userId = this.state.facebook.userDetails.id
-    console.log('cartObj inside purchase.....', cartObj)
+    // console.log('cartObj inside purchase.....', cartObj)
     const ordersResponse = await fetch(`http://${process.env.REACT_APP_API_URL}/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
@@ -942,8 +959,8 @@ class App extends Component {
     this.setState({ displayAboutus: true })
   }
   getEventbriteData2 = async (continuationString, val, previousFuelDataArr) => {
-    console.log('val 2', val )
-    console.log('continuationString', continuationString)
+    // console.log('val 2', val )
+    // console.log('continuationString', continuationString)
     const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&page=${val}&expand=ticket_classes3F${continuationString}`)
     const fuelData = await response.json()
     const continuation = await fuelData.pagination.continuation

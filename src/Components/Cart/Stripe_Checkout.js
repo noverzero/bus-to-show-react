@@ -5,7 +5,6 @@ export default class Checkout extends React.Component {
 
   onToken = (token) => {
     const orderInfo = this.props.cartToSend
-    // console.log('orderInfo (CTS) inside onToken (Checkout) ', orderInfo)
     orderInfo.receiptDescription = this.props.receiptDescription
     fetch(`${process.env.REACT_APP_API_URL}/orders/charge`, {
       method: 'POST',

@@ -7,8 +7,6 @@ import logo from '../../Images/Logos/bts-logo-gray.png'
 import moment from 'moment'
 
 const Cart = (props) => {
-   //console.log('Cart', props)
-
 
   let cTSendId;
 
@@ -35,14 +33,11 @@ const Cart = (props) => {
     time2 = 45
     time3 = [(time3.split('-')[0] - 1)].concat(time2).join('')
   }
-  // console.log('showsINcart--------', props.showsInCart[0])
+
   const defaultFirstBus = moment(time3, 'hmm').format('h:mm')
 
 
   // const receiptDescription = `${props.ticketQuantity} Roundtrip Bus Spot(s) on ${moment(props.showsInCart[0].date, "MM-DD-YYYY").format("dddd")}, ${props.showsInCart[0].date} For: ${props.showsInCart[0].headliner} at ${props.showsInCart[0].venue.split(' Amphitheatre')[0]} Departing From: ${pickupLocation.locationName} ${pickupLocation.streetAddress} with last call currently scheduled at ${pickupTime} (check website for most recent time updates.)`
-
-
-  //console.log('receipt description', receiptDescription)
 
   return (
     <div className='Cart'>

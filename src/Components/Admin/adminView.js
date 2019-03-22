@@ -55,7 +55,7 @@ class AdminView extends React.Component {
   }
 
   getReservations = async () => {
-    console.log('getting reservations');
+    // console.log('getting reservations');
     await fetch(`http://${process.env.REACT_APP_API_URL}/pickup_parties/findId`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -67,7 +67,7 @@ class AdminView extends React.Component {
       }
     }).then(async (response) =>  {
       const thisPickupParty = await response.json()
-      console.log('pickup', thisPickupParty)
+      // console.log('pickup', thisPickupParty)
       const findReservations = await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/findOrders`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -82,7 +82,7 @@ class AdminView extends React.Component {
         reservations, 
         thisCapacity: thisPickupParty.capacity})
     })
-    if (this.state.displayList === "ReservationsList") setTimeout(this.getReservations, 30000)
+    
   }
 
   toggleCheckedIn = async (isCheckedIn, reservation) => {
@@ -118,8 +118,22 @@ class AdminView extends React.Component {
   render (){
     let { isStaff, isAdmin, isDriver } = this.props.userDetails
 
+    const calcHeightVal = () => {
+      let header = document.getElementsByClassName('Header')[0]
+      var styles = window.getComputedStyle(header);
+      var margin = parseFloat(styles['marginTop']) + parseFloat(styles['marginBottom']);
+
+      let totalHeight = Math.ceil(header.offsetHeight + margin)
+      console.log(totalHeight)
+      console.log(window.innerHeight);
+      const newHeight = window.innerHeight - totalHeight
+      console.log(newHeight);
+      return `${newHeight}px`
+    }
+    if (this.state.displayList === "ReservationsList") setInterval(this.getReservations, 30000)
+
     return(
-      <div className="container AdminView">
+      <div className="container AdminView" style={{ Height: calcHeightVal() }}>
         {this.state.displayUserCheckin ? 
           <UserCheckin 
             thisShow={this.state.thisShow}

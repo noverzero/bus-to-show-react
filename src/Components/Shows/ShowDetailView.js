@@ -5,7 +5,6 @@ import MediaQuery from 'react-responsive';
 import moment from 'moment'
 
 const ShowDetailView = (props) => {
-  // console.log('ShowDetailView', props)
 
   let show;
   let headlinerBio
@@ -20,9 +19,6 @@ const ShowDetailView = (props) => {
   if (props.pickupPartyId) {
     basePrice = props.assignedParties.find(party => parseInt(party.id) === parseInt(props.pickupPartyId)).partyPrice.toFixed(2)
   }
-
-// console.log("last departure in showDetailView:::", props.lastDepartureTime)
-
 
   return (
     <div className='ShowDetailView'>
