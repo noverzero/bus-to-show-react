@@ -8,7 +8,7 @@ import ReservationsList from './ReservationsList'
 const UserCheckin = (props) => {
   let { thisShow, thisPickup, searchItems, toggleProperty, filterString, 
       shows, makeSelection, displayList, pickupLocations, reservations, 
-      toggleCheckedIn, thisCapacity } = props
+      toggleCheckedIn, thisCapacity, stopRefreshing } = props
   
   let thisDate
 
@@ -56,6 +56,7 @@ const UserCheckin = (props) => {
   }
 
 
+
   return (
     
     <div className='ShowList mt-2' style={{height: '100%'}}>
@@ -66,7 +67,7 @@ const UserCheckin = (props) => {
         <div className="list-group-item show-header" style={{height: '100%'}}>
           <div className="row show-list-flex">
             <div className="col-3 mb-3" >
-              <button type="button" className="btn btn-outline-light" onClick={e=>{resetStuff(); toggleProperty(previousProperty)}}>Back</button>
+              <button type="button" className="btn btn-outline-light" onClick={e=>{resetStuff(); toggleProperty(previousProperty); stopRefreshing(true)}}>Back</button>
             </div>
             <div className="col-9 mb-3" >
               <form className="form-inline float-right">

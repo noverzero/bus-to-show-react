@@ -2,6 +2,7 @@ import React from 'react'
 import '../../App.css';
 import UserCheckin from './userCheckin'
 import PickupsList from './PickupsList';
+import ReservationsList from './ReservationsList';
 
 
 class AdminView extends React.Component {
@@ -21,6 +22,7 @@ class AdminView extends React.Component {
   // { shows, pickupLocations, searchItems, userDetails } = this.props
 
   componentDidMount(){
+    console.log('mounted')
     this.setState({pickupLocations: this.props.pickupLocations})
   }
   
@@ -50,12 +52,18 @@ class AdminView extends React.Component {
     newState.filterString = ''
     await this.setState(newState)
     this.toggleProperty(next)
-    if (next === 'PickupsList') this.findShow(targetId)
-    else if (next === 'ReservationsList') this.getReservations(); this.findPickup(targetId)
+    if (next === 'PickupsList') {
+      this.findShow(targetId)
+    }
+    else if (next === 'ReservationsList') {
+      this.getReservations()
+      this.findPickup(targetId)
+      this.refreshReservations()
+    }
   }
 
   getReservations = async () => {
-    // console.log('getting reservations');
+    console.log('getting reservations');
     await fetch(`http://${process.env.REACT_APP_API_URL}/pickup_parties/findId`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -67,7 +75,6 @@ class AdminView extends React.Component {
       }
     }).then(async (response) =>  {
       const thisPickupParty = await response.json()
-      // console.log('pickup', thisPickupParty)
       const findReservations = await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/findOrders`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -82,7 +89,26 @@ class AdminView extends React.Component {
         reservations, 
         thisCapacity: thisPickupParty.capacity})
     })
-    
+  }
+
+  refreshReservations = (stop) => {
+    if (!stop) {
+      console.log('getting')
+      let x = 0;
+      const reservationsInterval = setInterval(()=>{
+        this.getReservations()
+        if (++x === 20) {
+          console.log('clear')
+          clearInterval(reservationsInterval)
+        }  
+      }, 30000)
+      this.setState({reservationsInterval})
+    }
+    else if (stop && this.state.reservationsInterval) {
+      console.log('stopping')
+      clearInterval(this.state.reservationsInterval)
+    }
+
   }
 
   toggleCheckedIn = async (isCheckedIn, reservation) => {
@@ -124,18 +150,18 @@ class AdminView extends React.Component {
       var margin = parseFloat(styles['marginTop']) + parseFloat(styles['marginBottom']);
 
       let totalHeight = Math.ceil(header.offsetHeight + margin)
-      console.log(totalHeight)
-      console.log(window.innerHeight);
+      // console.log(totalHeight)
+      // console.log(window.innerHeight);
       const newHeight = window.innerHeight - totalHeight
-      console.log(newHeight);
+      // console.log(newHeight);
       return `${newHeight}px`
     }
-    if (this.state.displayList === "ReservationsList") setInterval(this.getReservations, 30000)
 
     return(
       <div className="container AdminView" style={{ Height: calcHeightVal() }}>
         {this.state.displayUserCheckin ? 
           <UserCheckin 
+            getReservations={this.getReservations}
             thisShow={this.state.thisShow}
             thisPickup={this.state.thisPickup}
             thisCapacity={this.state.thisCapacity}
@@ -150,7 +176,8 @@ class AdminView extends React.Component {
             reservations={this.state.reservations}
             shows={this.props.shows}
             searchItems={this.searchItems} 
-            toggleCheckedIn={this.toggleCheckedIn} /> 
+            toggleCheckedIn={this.toggleCheckedIn}
+            stopRefreshing={this.refreshReservations} /> 
           : 
           <div className="col mt-2 adminButtons">
             {isAdmin ? 
