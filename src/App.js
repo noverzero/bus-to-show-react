@@ -266,7 +266,7 @@ class App extends Component {
     const userId = this.state.facebook.userDetails.id
     console.log('userId inside getReservations:::: ', userId)
     if (userId) {
-      const reservations = await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/${userId}`)
+      const reservations = await fetch(`http://${process.env.REACT_APP_API_URL}/orders/${userId}`)
       const userReservations = await reservations.json()
       const newState = { ...this.State }
       //newState.userId = userId
@@ -1016,6 +1016,11 @@ postOldData = async () => {
   // console.log('post old data response', response)
 }
 
+toggleAdminView = () => {
+  let adminView = this.state.adminView
+  adminView = !adminView
+  this.setState({ adminView })
+}
   render() {
     return (
 

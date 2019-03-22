@@ -7,7 +7,7 @@ export default class Checkout extends React.Component {
     const orderInfo = this.props.cartToSend
     // console.log('orderInfo (CTS) inside onToken (Checkout) ', orderInfo)
     orderInfo.receiptDescription = this.props.receiptDescription
-    fetch(`${process.env.REACT_APP_API_URL}/orders/charge`, {
+    fetch(`http://${process.env.REACT_APP_API_URL}/orders/charge`, {
       method: 'POST',
       body: JSON.stringify({
         stripeEmail: token.email,
@@ -42,7 +42,7 @@ export default class Checkout extends React.Component {
           email={email}
           amount={this.props.totalCost * 100}
           currency='USD'
-          metadata={this.props.cartToSend} 
+          metadata={this.props.cartToSend}
         >
           <button
             onClick={(event) => this.props.makePurchase(event)}

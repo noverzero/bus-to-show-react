@@ -5,7 +5,7 @@ import logo from '../../Images/Logos/bts-logo-orange.png'
 import ShowReservation from './ShowReservation'
 
 const ReservationsView = (props) => {
-  console.log(props.userReservations)
+  console.log('userReservations as props in ReservationsView', props.userReservations)
 
 
   return (

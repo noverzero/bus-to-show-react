@@ -5,12 +5,12 @@ import ReservationsView from '../ReservationsView/ReservationsView'
 
 const LoginView = (props) => {
 
-  const { userDashboard, toggleLoggedIn, userDetails, profileClick, responseFacebook, 
-        facebook, displayReservations, toggleReservationView, addBorder, displayShow, 
+  const { userDashboard, toggleLoggedIn, userDetails, profileClick, responseFacebook,
+        facebook, displayReservations, toggleReservationView, addBorder, displayShow,
         filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
 
   const { isStaff, isAdmin, isDriver } = facebook.userDetails
-      
+
   return (
     <div className='container-fluid'>
       <div className='row p-2'>
@@ -38,7 +38,7 @@ const LoginView = (props) => {
         <div className='col-12 text-center'>
           {displayReservations ?
           <div>
-            <div className="btn-lg border border-success" onClick={toggleReservationView}>
+            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleReservationView}>
             Back to User Dashboard
             </div>
               <ReservationsView
@@ -46,11 +46,11 @@ const LoginView = (props) => {
                 addBorder={addBorder}
                 displayShow={displayShow}
                 filterString={filterString}
-                showsExpandClick={showsExpandClick} 
+                showsExpandClick={showsExpandClick}
               />
             </div>
             : '' }
-            {isStaff || isAdmin || isDriver ? 
+            {isStaff || isAdmin || isDriver ?
             <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleAdminView}>
             <strong>Employees</strong>
             </div> : ''}
