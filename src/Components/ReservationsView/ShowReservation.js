@@ -9,96 +9,52 @@ const ShowReservation = (props) => {
 
   console.log('props.userReservations in ShowReservation', props.userReservations)
 
-  const createArrayOfDates = props.userReservations.map(show => show.date ).sort()
-  console.log('createArrayOfDates', createArrayOfDates)
+  const createArrayOfEventIds = props.userReservations.map(show => show.eventsId ).sort()
+  console.log('createArrayOfEventIds', createArrayOfEventIds)
 
 
   let countObj = {}
-  for(let ii = 0; ii < createArrayOfDates.length; ii++){
+  for(let ii = 0; ii < createArrayOfEventIds.length; ii++){
     let count = 1;
-    for(let jj = 0; jj < createArrayOfDates.length; jj++){
-        if(createArrayOfDates[ii] == createArrayOfDates[jj])
-            countObj[createArrayOfDates[ii]] = count++;
+    for(let jj = 0; jj < createArrayOfEventIds.length; jj++){
+        if(createArrayOfEventIds[ii] == createArrayOfEventIds[jj])
+            countObj[createArrayOfEventIds[ii]] = count++;
         }
     }
     console.log('countObj', countObj)
 
 const reservationSummaryArr = []
 for (let property1 in countObj){
+
  for (let ii = 0; ii < props.userReservations.length; ii++){
-   if(props.userReservations[ii].date === property1){
-     console.log('property 1', property1)
-     props.userReservations[ii].ticketQuantity = countObj[props.userReservations[ii].date]
+   if(props.userReservations[ii].eventsId == property1){
+     props.userReservations[ii].ticketQuantity = countObj[props.userReservations[ii].eventsId]
       reservationSummaryArr.push(props.userReservations[ii])
       break
    }
  }
 }
-console.log('reservationSummaryArr ]}}}}} ', reservationSummaryArr)
+const reservationSummaryArrSorted = reservationSummaryArr.sort((a, b) => {
+  return new Date(a.date).getTime() - new Date(b.date).getTime()
+})
+console.log('reservationSummaryArrSorted ]}}}}} ', reservationSummaryArrSorted)
 
-
-
-  //const ticketQty = (props.userReservations, value) => props.userReservations.filter((show) => show.date === value).length
-
-  // const reservationsByEvent = props.userReservations.map((accum, i, arr) =>{
-  //   let monkey = 0
-  //   arr.map(show=>{
-  //     if(show.date == arr[i].date){
-  //       monkey += 1
-  //     }
-  //     return monkey
-  //   })
-  //   console.log('here is what i is:', i)
-  //   console.log('here is what arr is', arr)
-  //   console.log('here is what arr[i].date is', arr[i].date)
-  //   //console.log('here is what show.date is', show.date)
-  //
-  //   console.log('accumulator for monkey', monkey)
-  //
-  //
-  // })
-//
-//     city: "Denver"
-// date: "04/13/2019"
-// firstBusLoadTime: null
-// headliner: "Flatbush Zombies"
-// headlinerBio: "Flatbush Zombies is a hip-hop group consisting of Meechy Darko, Zombie Juice, and producer/rapper Erick Arc Elliott. They are located in the Brooklyn neighborhood of Flatbush in New York City. They have released two mixtapes titled "D.R.U.G.S". and "BetterOffDEAD" as well as several music videos.↵ <a href="https://www.last.fm/music/Flatbush+ZOMBiES">Read more on Last.fm</a>. User-contributed text is available under the Creative Commons By-SA License; additional terms may apply."
-// headlinerImgLink: "https://lastfm-img2.akamaized.net/i/u/174s/5be80317bab524a3af11c21e3196f2c6.png"
-// lastBusDepartureTime: "16:00"
-// locationName: "Denver - DU Illegal Pete's"
-// orderId: 82
-// orderedByEmail: "larry@curb.com"
-// orderedByFirstName: "Larry"
-// orderedByLastName: "David"
-// status: 1
-// streetAddress: "1744 E Evans Ave, Denver, CO"
-// support1: "Joey Bada$$"
-// support2: "The Underachievers"
-// support3: "Kirk Knight"
-// userId: 8
-// venue: "Red Rocks Amphitheatre"
-// willCallFirstName: "Larry"
-// willCallLastName: "David"
-//   }
-
-
-  //get Ticket Quantity for Each Pickup Party
 
   return (
     <div>
       {props.reservationDetailId ?
       <div>
       DATE: {props.reservationDetailId}
-      <div className='Shows container'>
+      <div className='Shows container text-center'>
           {props.userReservations.length > 0 ? props.userReservations.map((show, i) => show.date === props.reservationDetailId &&
-            <li className="px-3 pt-2 list-item" key={i} id={show.id}>
+            <li className="px-3 pt-2 list-item text-center" key={show.reservationsId} id={show.id}>
               <div className="row border-top border-left border-right border-secondary bg-light p-2" id={show.id}>
-                <div className="col-lg-12 cart-item-font" id={show.id}>
+                <div className="col-lg-12 text-center cart-item-font" id={show.id}>
                 <div className="row">
-                  Ordered By: {show.orderedByFirstName} {show.orderedByLastName}<br/>
+                  Will Call Name: {show.willCallFirstName} {show.willCallLastName} <br/>
                   {show.orderedByFirstName !== show.willCallFirstName || show.orderedByLastName !== show.willCallLastName ?
                   <div>
-                  Will Call Name: {show.willCallFirstName} {show.willCallLastName} <br/>
+                  Ordered By: {show.orderedByFirstName} {show.orderedByLastName} <br/>
                   (Either can check in w/ ID)
                   </div>
                   : ''
@@ -112,7 +68,7 @@ console.log('reservationSummaryArr ]}}}}} ', reservationSummaryArr)
                 </div>
               </div>
               <div className="row border-left border-right border-bottom border-secondary bg-light">
-              <div className="col-lg-12 cart-item-font ">
+              <div className="col-lg-12 text-center cart-item-font ">
                 {show.firstBusLoadTime ?
                   <div>
                  {`First bus loads around: ${show.firstBusLoadTime}`}
@@ -147,9 +103,9 @@ console.log('reservationSummaryArr ]}}}}} ', reservationSummaryArr)
       </div>}
 
 
-      {!reservationSummaryArr.length > 0 || props.reservationDetailId  ? ''
-      : reservationSummaryArr.map((show, i) =>
-        <li className="px-3 pt-2 list-item" key={i} id={show.id}>
+      {!reservationSummaryArrSorted.length > 0 || props.reservationDetailId  ? ''
+      : reservationSummaryArrSorted.map((show, i) =>
+        <li className="px-3 pt-2 list-item text-center" key={i} id={show.id}>
           <div className="row border-top border-left border-right border-secondary bg-light p-2" id={show.id}>
               <div className="col-lg-12 cart-item-font red-text pl-0">{show.ticketQuantity} Roundtrip Bus Spot(s) on {moment(show.date, "MM-DD-YYYY").format("dddd")}, {show.date}
               </div>

@@ -38,9 +38,15 @@ const LoginView = (props) => {
         <div className='col-12 text-center'>
           {displayReservations ?
           <div>
+            {props.displayReservationDetail ?
+            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleReservationView}>
+            Back to Reservations Summary
+            </div>
+            :
             <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleReservationView}>
             Back to User Dashboard
             </div>
+            }
               <ReservationsView
                 userReservations={userReservations}
                 addBorder={addBorder}
@@ -52,23 +58,29 @@ const LoginView = (props) => {
               />
             </div>
             : '' }
-            {isStaff || isAdmin || isDriver ?
+            {displayReservations ? ''
+            :
+            <div>
+            {(isStaff || isAdmin || isDriver) ?
             <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleAdminView}>
-            <strong>Employees</strong>
+              <strong>Employees</strong>
             </div> : ''}
             <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleReservationView}>
-            <strong>My Upcoming Reservations</strong>
+              <strong>My Reservations</strong>
             </div>
             <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
-            <strong>Fuel Savings Calculator</strong>
+              <strong>Fuel Savings Calculator</strong>
             </div>
             <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
-            <strong>All Events</strong>
+              <strong>All Events</strong>
             </div>
             <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
-            <strong>About Us</strong>
+              <strong>About Us</strong>
             </div>
           </div>
+
+        }
+        </div>
         : ''
         }
         </div>

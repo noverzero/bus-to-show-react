@@ -60,6 +60,7 @@ class App extends Component {
     displayExternalShowDetails: false,
     displayLoadingScreen: true,
     displayLoginView: false,
+    displayReservationDetail: false,
     displayShow: null,
     displayShowDetails: false,
     displayShowList: true,
@@ -273,9 +274,9 @@ class App extends Component {
       const userReservations = await reservations.json()
       const newState = { ...this.State }
       //newState.userId = userId
-      newState.userReservations = userReservations
-      this.setState({ userReservations: newState.userReservations })
-      console.log('userReservations', this.state.userReservations)
+      newState.userReservations = await userReservations
+      await this.setState({ userReservations: newState.userReservations })
+      await console.log('userReservations', this.state.userReservations)
     }
   }
 
@@ -284,9 +285,11 @@ class App extends Component {
     console.log('Hey, Seth?', e.target.id)
     newState.displayUserReservationSummary = true
     newState.reservationDetailId = e.target.id
+    newState.displayReservationDetail = true
     this.setState({
       displayUserReservationSummary: newState.displayUserReservationSummary,
-      reservationDetailId: newState.reservationDetailId
+      reservationDetailId: newState.reservationDetailId,
+      displayReservationDetail: newState.displayReservationDetail
     })
   }
 
@@ -362,8 +365,12 @@ class App extends Component {
     console.log('click on toggleReservationView')
     const newState = { ...this.state }
     this.getReservations()
+    newState.reservationDetailId = null
     newState.displayReservations = !newState.displayReservations
-    this.setState({ displayReservations: newState.displayReservations })
+    this.setState({
+      displayReservations: newState.displayReservations,
+      reservationDetailId: newState.reservationDetailId 
+    })
   }
 
   toggleLoggedIn = (boolean) => {
@@ -1059,6 +1066,7 @@ toggleAdminView = () => {
               :
                 this.state.displayLoginView ?
                 <LoginView
+                  displayReservationDetail={this.state.displayReservationDetail}
                   displayReservations={this.state.displayReservations}
                   responseGoogle={this.responseGoogle}
                   responseSpotify={this.responseSpotify}
