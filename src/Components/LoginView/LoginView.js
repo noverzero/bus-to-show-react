@@ -47,6 +47,8 @@ const LoginView = (props) => {
                 displayShow={displayShow}
                 filterString={filterString}
                 showsExpandClick={showsExpandClick}
+                expandReservationDetailsClick={props.expandReservationDetailsClick}
+                reservationDetailId={props.reservationDetailId}
               />
             </div>
             : '' }

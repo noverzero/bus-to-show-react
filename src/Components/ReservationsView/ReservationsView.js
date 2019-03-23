@@ -15,11 +15,13 @@ const ReservationsView = (props) => {
         <ul className="list-group">
           {props.userReservations ?
             <div>
-                  upcoming reservations
-                  <ShowReservation
-                    userReservations={props.userReservations} />
-                </div>
-            : ''}
+                Your Upcoming Reservations:
+                <ShowReservation
+                  userReservations={props.userReservations}
+                  expandReservationDetailsClick={props.expandReservationDetailsClick}
+                  reservationDetailId={props.reservationDetailId}/>
+            </div>
+          : ''}
         </ul>
         </div>
 

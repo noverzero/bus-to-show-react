@@ -82,11 +82,13 @@ class App extends Component {
     googleResponse: null,
     inCart: [],
     displayReservations: false,
+    displayUserReservationSummary: false,
     pickupLocationId: null,
     pickupPartyId: null,
     purchaseFailed: false,
     purchasePending: false,
     purchaseSuccessful: false,
+    reservationDetailId: null,
     showBios: false,
     spotifyResponse: null,
     startTimer: false,
@@ -277,7 +279,16 @@ class App extends Component {
     }
   }
 
-
+  expandReservationDetailsClick = (e) =>{
+    const newState = { ...this.state }
+    console.log('Hey, Seth?', e.target.id)
+    newState.displayUserReservationSummary = true
+    newState.reservationDetailId = e.target.id
+    this.setState({
+      displayUserReservationSummary: newState.displayUserReservationSummary,
+      reservationDetailId: newState.reservationDetailId
+    })
+  }
 
   findDiscountCode = async () => {
 
@@ -1064,6 +1075,8 @@ toggleAdminView = () => {
                   continueAsGuest={this.continueAsGuest}
                   facebook={this.state.facebook}
                   toggleAdminView={this.toggleAdminView}
+                  expandReservationDetailsClick={this.expandReservationDetailsClick}
+                  reservationDetailId={this.state.reservationDetailId}
                 />
                 :
                 this.state.displayAboutus ?
