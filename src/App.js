@@ -289,6 +289,7 @@ class App extends Component {
     newState.reservationDetail = newState.shows.find(show => (parseInt(show.id) === parseInt(e.target.id)))
     newState.displayReservationDetail = true
 
+
     this.setState({
       displayUserReservationSummary: newState.displayUserReservationSummary,
       reservationDetail: newState.reservationDetail,
@@ -364,17 +365,29 @@ class App extends Component {
     this.setState({ filterString: newState.filterString })
   }
 
-  toggleReservationView = () => {
-    console.log('click on toggleReservationView')
+  toggleReservationView = (e) => {
+    console.log('click on toggleReservationView', e.target.id)
     const newState = { ...this.state }
+    //displayReservationDetail
     this.getReservations()
+    newState.displayFuture = true
+    newState.displayPast = false
+    newState.displayUserReservationSummary = true
     if(!newState.reservationDetail){
       newState.displayReservations = !newState.displayReservations
+    }
+    if(e.target.id==='dashboard' || e.target.id==='summary'){
+      console.log("did we get inside dashboard?")
+      newState.displayReservationDetail = false
     }
     newState.reservationDetail = null
     this.setState({
       displayReservations: newState.displayReservations,
-      reservationDetail: newState.reservationDetail
+      reservationDetail: newState.reservationDetail,
+      displayUserReservationSummary: newState.displayUserReservationSummary,
+      displayReservationDetail: newState.displayReservationDetail,
+      displayFuture: newState.displayFuture,
+      displayPast:newState.displayPast
     })
   }
 
@@ -1110,6 +1123,7 @@ toggleAdminView = () => {
                   displayFuture={this.state.displayFuture}
                   displayPast={this.state.displayPast}
                   getEventDetails={this.getEventDetails}
+                  displayUserReservationSummary={this.state.displayUserReservationSummary}
                 />
                 :
                 this.state.displayAboutus ?

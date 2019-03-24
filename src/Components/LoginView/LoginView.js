@@ -51,15 +51,15 @@ const LoginView = (props) => {
           {displayReservations ?
           <div>
             {props.displayReservationDetail && props.reservationDetail ?
-            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleReservationView}>
+            <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="summary" >
             Back to Reservations Summary
             </div>
             :
-            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleReservationView}>
+            <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="dashboard" >
             Back to User Dashboard
             </div>
             }
-            {!props.displayReservationDetail ?
+            {!props.displayReservationDetail && props.displayUserReservationSummary ?
             <div className="row">
               <div className="col-12">
               <div className="row" id="futurePast" onClick={props.toggleFuturePast}>
