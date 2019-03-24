@@ -91,7 +91,7 @@ class App extends Component {
     purchaseFailed: false,
     purchasePending: false,
     purchaseSuccessful: false,
-    reservationDetailId: null,
+    reservationDetail: null,
     showBios: false,
     spotifyResponse: null,
     startTimer: false,
@@ -286,11 +286,12 @@ class App extends Component {
     const newState = { ...this.state }
     console.log('Hey, Seth?', e.target.id)
     newState.displayUserReservationSummary = true
-    newState.reservationDetailId = e.target.id
+    newState.reservationDetail = newState.shows.find(show => (parseInt(show.id) === parseInt(e.target.id)))
     newState.displayReservationDetail = true
+
     this.setState({
       displayUserReservationSummary: newState.displayUserReservationSummary,
-      reservationDetailId: newState.reservationDetailId,
+      reservationDetail: newState.reservationDetail,
       displayReservationDetail: newState.displayReservationDetail
     })
   }
@@ -367,13 +368,13 @@ class App extends Component {
     console.log('click on toggleReservationView')
     const newState = { ...this.state }
     this.getReservations()
-    if(!newState.reservationDetailId){
+    if(!newState.reservationDetail){
       newState.displayReservations = !newState.displayReservations
     }
-    newState.reservationDetailId = null
+    newState.reservationDetail = null
     this.setState({
       displayReservations: newState.displayReservations,
-      reservationDetailId: newState.reservationDetailId
+      reservationDetail: newState.reservationDetail
     })
   }
 
@@ -1104,10 +1105,11 @@ toggleAdminView = () => {
                   facebook={this.state.facebook}
                   toggleAdminView={this.toggleAdminView}
                   expandReservationDetailsClick={this.expandReservationDetailsClick}
-                  reservationDetailId={this.state.reservationDetailId}
+                  reservationDetail={this.state.reservationDetail}
                   toggleFuturePast={this.toggleFuturePast}
                   displayFuture={this.state.displayFuture}
                   displayPast={this.state.displayPast}
+                  getEventDetails={this.getEventDetails}
                 />
                 :
                 this.state.displayAboutus ?

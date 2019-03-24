@@ -50,7 +50,7 @@ const LoginView = (props) => {
         <div className='col-12 text-center'>
           {displayReservations ?
           <div>
-            {props.displayReservationDetail && props.reservationDetailId ?
+            {props.displayReservationDetail && props.reservationDetail ?
             <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleReservationView}>
             Back to Reservations Summary
             </div>
@@ -91,7 +91,8 @@ const LoginView = (props) => {
                 filterString={filterString}
                 showsExpandClick={showsExpandClick}
                 expandReservationDetailsClick={props.expandReservationDetailsClick}
-                reservationDetailId={props.reservationDetailId}
+                reservationDetail={props.reservationDetail}
+                getEventDetails={props.getEventDetails}
               />
             </div>
             : '' }

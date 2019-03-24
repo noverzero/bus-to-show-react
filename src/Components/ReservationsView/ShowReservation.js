@@ -37,11 +37,16 @@ console.log('reservationSummaryArrSorted ]}}}}} ', reservationSummaryArrSorted)
 
   return (
     <div className="">
-      {props.reservationDetailId ?
+      {props.reservationDetail ?
       <div>
-      DATE: {props.reservationDetailId}
+        <h6><strong>Your Reservations For:</strong></h6>
+        <h6 className="bts-white-bg">
+          <strong>DATE:</strong> {props.reservationDetail.date}<br/>
+          <strong>Event:</strong> {props.reservationDetail.headliner}<br/>
+          <strong>Venue:</strong> {props.reservationDetail.venue}
+        </h6>
       <div className='Shows container mx-auto'>
-          {props.userReservations.length > 0 ? props.userReservations.map((show, i) => show.eventsId === parseInt(props.reservationDetailId) &&
+          {props.userReservations.length > 0 ? props.userReservations.map((show, i) => show.eventsId === parseInt(props.reservationDetail.id) &&
             <li className="px-3 pt-2 list-item mx-auto shadow-sm" key={show.reservationsId} id={show.id}>
               <div className="row border-top border-left border-right border-secondary bg-light p-2" id={show.id}>
                 <div className="col-lg-12 mx-auto cart-item-font" id={show.id}>
@@ -55,9 +60,7 @@ console.log('reservationSummaryArrSorted ]}}}}} ', reservationSummaryArrSorted)
                   : ''
                   }
                 </div>
-                  <div className="row mx-auto">Event: {show.headliner} <br/>
-                    Venue: {show.venue.split(' Amphitheatre')[0]}
-                  </div>
+                  
                   <div className="row mx-auto" id={show.id}>Departing From: {show.locationName} <br />{show.streetAddress}
                   </div>
                 </div>
@@ -100,7 +103,7 @@ console.log('reservationSummaryArrSorted ]}}}}} ', reservationSummaryArrSorted)
       </div>}
 
 
-      {!reservationSummaryArrSorted.length > 0 || props.reservationDetailId  ? '' :
+      {!reservationSummaryArrSorted.length > 0 || props.reservationDetail  ? '' :
       props.displayFuture ? reservationSummaryArrSorted.map((show, i) =>  new Date(show.date).getTime() >= Date.now() + 86400000 &&
         <li className="px-3 pt-2 mx-auto list-item text-center shadow-sm" key={i} id={show.id}>
           <div className="row border-top border-left border-right border-success bg-light p-2" id={show.id}>

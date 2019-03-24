@@ -17,9 +17,10 @@ const ReservationsView = (props) => {
                 <ShowReservation
                   userReservations={props.userReservations}
                   expandReservationDetailsClick={props.expandReservationDetailsClick}
-                  reservationDetailId={props.reservationDetailId}
+                  reservationDetail={props.reservationDetail}
                   displayFuture={props.displayFuture}
                   displayPast={props.displayPast}
+                  getEventDetails={props.getEventDetails}
                   />
               </div>
             </div>
