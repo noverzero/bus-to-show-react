@@ -35,19 +35,13 @@ const reservationSummaryArrSorted = reservationSummaryArr.sort((a, b) => {
 })
 console.log('reservationSummaryArrSorted ]}}}}} ', reservationSummaryArrSorted)
 
-//const dateOfShow = new Date(reservationSummaryArr[0].date).getTime()
-let now = Date.now()
-// setTimeout(console.log('date of show', dateOfShow), 5000)
-// setTimeout(console.log('            Date.now()' , now), 5000)
-// setTimeout(console.log('is the show in the past?'  , dateOfShow < now), 5000)
-
   return (
     <div className="">
       {props.reservationDetailId ?
       <div>
       DATE: {props.reservationDetailId}
       <div className='Shows container mx-auto'>
-          {props.userReservations.length > 0 ? props.userReservations.map((show, i) => show.date === props.reservationDetailId &&
+          {props.userReservations.length > 0 ? props.userReservations.map((show, i) => show.eventsId === parseInt(props.reservationDetailId) &&
             <li className="px-3 pt-2 list-item mx-auto shadow-sm" key={show.reservationsId} id={show.id}>
               <div className="row border-top border-left border-right border-secondary bg-light p-2" id={show.id}>
                 <div className="col-lg-12 mx-auto cart-item-font" id={show.id}>
@@ -107,7 +101,7 @@ let now = Date.now()
 
 
       {!reservationSummaryArrSorted.length > 0 || props.reservationDetailId  ? '' :
-      props.displayFuture ? reservationSummaryArrSorted.map((show, i) =>  (new Date(show.date).getTime() >= Date.now()) &&
+      props.displayFuture ? reservationSummaryArrSorted.map((show, i) =>  new Date(show.date).getTime() >= Date.now() + 86400000 &&
         <li className="px-3 pt-2 mx-auto list-item text-center shadow-sm" key={i} id={show.id}>
           <div className="row border-top border-left border-right border-success bg-light p-2" id={show.id}>
               <div className="col-lg-12 cart-item-font red-text pl-0 mx-auto">{show.ticketQuantity} Roundtrip Bus Spot(s) on {moment(show.date, "MM-DD-YYYY").format("dddd")}, {show.date}
@@ -115,28 +109,18 @@ let now = Date.now()
             <div className="col-lg-12 cart-item-font" id={show.id}>
               <div className="row mx-auto">For: {show.headliner} at {show.venue.split(' Amphitheatre')[0]}
               </div>
-              <div className="row mx-auto" id={show.id}>Departing From: {show.locationName} <br />{show.streetAddress}
-              </div>
             </div>
           </div>
           <div className="row border-left border-right border-bottom border-success bg-light mb-2">
-          <div className="col-lg-12 cart-item-font ">
-            {show.firstBusLoadTime ?
-              <div>
-             {`First bus loads around: ${moment(show.firstBusLoadTime, 'hhmm').format('hh:mm a')}`}
-             </div>
-            : ''}
-              <div className="red-text ">
-                Last bus departs at: {moment(show.firstBusLoadTime, 'hhmm').format('hh:mm a')}
-              </div>
-              <div className="btn detail-btn my-1 col-12" id={show.date} onClick={props.expandReservationDetailsClick}>
-                <strong id={show.date}>Expand</strong>
+            <div className="col-lg-12 cart-item-font ">
+              <div className="btn detail-btn my-1 col-12" id={show.eventsId} onClick={props.expandReservationDetailsClick}>
+                <strong id={show.eventsId}>View Departure Details</strong>
               </div>
             </div>
           </div>
 
         </li>)
-      : reservationSummaryArrSorted.map((show, i) =>  new Date(show.date).getTime() < Date.now() &&
+      : reservationSummaryArrSorted.map((show, i) =>  new Date(show.date).getTime() < Date.now() + 86400000 &&
         <li className="px-3 pt-2 mx-auto list-item text-center shadow-sm" key={i} id={show.id}>
           <div className="row border-top border-left border-right border-success p-2" id={show.id}>
               <div className="col-lg-12 cart-item-font text-black-50 pl-0 mx-auto">{show.ticketQuantity} Roundtrip Bus Spot(s) on {moment(show.date, "MM-DD-YYYY").format("dddd")}, {show.date}
