@@ -58,7 +58,8 @@ class App extends Component {
     displayConfirmRemove: false,
     displayDetailCartView: false,
     displayExternalShowDetails: false,
-    displayFuturePast: null,
+    displayFuture: true,
+    displayPast: false,
     displayLoadingScreen: true,
     displayLoginView: false,
     displayReservationDetail: false,
@@ -70,6 +71,8 @@ class App extends Component {
     displayViewCartBtn: false,
     displayWarning: false,
     displayQuantity: false,
+    displayReservations: false,
+    displayUserReservationSummary: false,
     displayTimes: false,
     facebook: {
       isLoggedIn: false,
@@ -83,8 +86,6 @@ class App extends Component {
     firstBusLoad: null,
     googleResponse: null,
     inCart: [],
-    displayReservations: false,
-    displayUserReservationSummary: false,
     pickupLocationId: null,
     pickupPartyId: null,
     purchaseFailed: false,
@@ -379,12 +380,16 @@ class App extends Component {
 toggleFuturePast = (e) => {
   console.log('this is this:', e.target.id)
   const newState = { ...this.state }
-  newState.displayFuturePast = e.target.id
   if(e.target.id==='future'){
-    console.log('are we in?')
+    newState.displayPast = false
+    newState.displayFuture = true
+  } else if(e.target.id==='past'){
+    newState.displayPast = true
+    newState.displayFuture = false
   }
     this.setState({
-      displayFuturePast: newState.displayFuturePast
+      displayPast: newState.displayPast,
+      displayFuture: newState.displayFuture
     } )
 }
 
@@ -1101,7 +1106,8 @@ toggleAdminView = () => {
                   expandReservationDetailsClick={this.expandReservationDetailsClick}
                   reservationDetailId={this.state.reservationDetailId}
                   toggleFuturePast={this.toggleFuturePast}
-                  displayFuturePast={this.state.displayFuturePast}
+                  displayFuture={this.state.displayFuture}
+                  displayPast={this.state.displayPast}
                 />
                 :
                 this.state.displayAboutus ?

@@ -18,7 +18,9 @@ const ReservationsView = (props) => {
                   userReservations={props.userReservations}
                   expandReservationDetailsClick={props.expandReservationDetailsClick}
                   reservationDetailId={props.reservationDetailId}
-                  displayFuturePast={props.displayFuturePast}/>
+                  displayFuture={props.displayFuture}
+                  displayPast={props.displayPast}
+                  />
               </div>
             </div>
           : ''}

@@ -13,11 +13,11 @@ const LoginView = (props) => {
 
   let futureClass = 'border'
   let pastClass = 'border'
-  if (props.displayFuturePast === 'future'){
+  if (props.displayFuture){
     console.log('futureshock')
     futureClass = 'border border-success'
     pastClass = 'border bg-light'
-  } else if (props.displayFuturePast === 'past'){
+  } else if (props.displayPast){
     console.log('pastshock')
     pastClass = 'border border-success'
     futureClass = 'border bg-light'
@@ -83,6 +83,8 @@ const LoginView = (props) => {
             :''
             }
               <ReservationsView
+                displayFuture={props.displayFuture}
+                displayPast={props.displayPast}
                 userReservations={userReservations}
                 addBorder={addBorder}
                 displayShow={displayShow}
@@ -90,7 +92,6 @@ const LoginView = (props) => {
                 showsExpandClick={showsExpandClick}
                 expandReservationDetailsClick={props.expandReservationDetailsClick}
                 reservationDetailId={props.reservationDetailId}
-                displayFuturePast={props.displayFuturePast}
               />
             </div>
             : '' }
