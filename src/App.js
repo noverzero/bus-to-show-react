@@ -407,6 +407,13 @@ toggleFuturePast = (e) => {
     } )
 }
 
+toggleEditReservation = (e) =>{
+  console.log('click on:: ', e.target.id)
+  const newState = { ...this.state }
+  newState.displayEditReservation = !newState.displayEditReservation
+  this.setState({ displayEditReservation: newState.displayEditReservation})
+}
+
   toggleLoggedIn = (boolean) => {
     if (boolean === false){
       this.setState({
@@ -1124,6 +1131,8 @@ toggleAdminView = () => {
                   displayPast={this.state.displayPast}
                   getEventDetails={this.getEventDetails}
                   displayUserReservationSummary={this.state.displayUserReservationSummary}
+                  toggleEditReservation={this.toggleEditReservation}
+                  displayEditReservation={this.displayEditReservation}
                 />
                 :
                 this.state.displayAboutus ?

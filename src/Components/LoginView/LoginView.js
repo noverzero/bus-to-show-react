@@ -93,6 +93,8 @@ const LoginView = (props) => {
                 expandReservationDetailsClick={props.expandReservationDetailsClick}
                 reservationDetail={props.reservationDetail}
                 getEventDetails={props.getEventDetails}
+                toggleEditReservation={props.toggleEditReservation}
+                displayEditReservation={props.displayEditReservation}
               />
             </div>
             : '' }
