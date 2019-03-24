@@ -57,6 +57,7 @@ class App extends Component {
     displayCart: false,
     displayConfirmRemove: false,
     displayDetailCartView: false,
+    displayEditReservation: false,
     displayExternalShowDetails: false,
     displayFuture: true,
     displayPast: false,
@@ -408,6 +409,7 @@ toggleFuturePast = (e) => {
 }
 
 toggleEditReservation = (e) =>{
+
   console.log('click on:: ', e.target.id)
   const newState = { ...this.state }
   newState.displayEditReservation = !newState.displayEditReservation
@@ -1132,7 +1134,7 @@ toggleAdminView = () => {
                   getEventDetails={this.getEventDetails}
                   displayUserReservationSummary={this.state.displayUserReservationSummary}
                   toggleEditReservation={this.toggleEditReservation}
-                  displayEditReservation={this.displayEditReservation}
+                  displayEditReservation={this.state.displayEditReservation}
                 />
                 :
                 this.state.displayAboutus ?
