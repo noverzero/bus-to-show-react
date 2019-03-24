@@ -58,6 +58,7 @@ class App extends Component {
     displayConfirmRemove: false,
     displayDetailCartView: false,
     displayExternalShowDetails: false,
+    displayFuturePast: null,
     displayLoadingScreen: true,
     displayLoginView: false,
     displayReservationDetail: false,
@@ -365,13 +366,27 @@ class App extends Component {
     console.log('click on toggleReservationView')
     const newState = { ...this.state }
     this.getReservations()
+    if(!newState.reservationDetailId){
+      newState.displayReservations = !newState.displayReservations
+    }
     newState.reservationDetailId = null
-    newState.displayReservations = !newState.displayReservations
     this.setState({
       displayReservations: newState.displayReservations,
-      reservationDetailId: newState.reservationDetailId 
+      reservationDetailId: newState.reservationDetailId
     })
   }
+
+toggleFuturePast = (e) => {
+  console.log('this is this:', e.target.id)
+  const newState = { ...this.state }
+  newState.displayFuturePast = e.target.id
+  if(e.target.id==='future'){
+    console.log('are we in?')
+  }
+    this.setState({
+      displayFuturePast: newState.displayFuturePast
+    } )
+}
 
   toggleLoggedIn = (boolean) => {
     if (boolean === false){
@@ -1085,6 +1100,8 @@ toggleAdminView = () => {
                   toggleAdminView={this.toggleAdminView}
                   expandReservationDetailsClick={this.expandReservationDetailsClick}
                   reservationDetailId={this.state.reservationDetailId}
+                  toggleFuturePast={this.toggleFuturePast}
+                  displayFuturePast={this.state.displayFuturePast}
                 />
                 :
                 this.state.displayAboutus ?
