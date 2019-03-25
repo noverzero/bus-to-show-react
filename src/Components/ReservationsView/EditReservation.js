@@ -35,7 +35,7 @@ const EditReservation = (props) => {
 
   return (
     <div>
-    {props.userReservations.map((reservation)=> reservation.eventsId === props.reservationDetail.eventsId &&
+    {props.userReservations.map((reservation, i)=> reservation.eventsId === props.reservationDetail.eventsId &&
       <div className="border border-warning my-2 p-1" key={reservation.reservationsId}>
       <div>
       Date: {reservation.date} Reservation Id: {reservation.reservationsId}
@@ -43,21 +43,21 @@ const EditReservation = (props) => {
       Ordered By First Name: {reservation.willCallFirstName} Ordered By Last Name: {reservation.willCallLastName}
       </div>
       <div>
-        <form>
-          <div className="form-group">
-            <label htmlFor="exampleInputEmail1">Email address</label>
-            <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
-            <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
+        <form onChange={props.reservationEditField}>
+          <div className="form-group" >
+            <label htmlFor="willCallFirstName">Will Call First Name </label>
+            <input type="name" name="willCallFirstName" className="form-control" id={reservation.reservationsId} aria-describedby="willCallFirstName" placeholder="First name of someone who can claim this ticket"  defaultValue={reservation.willCallFirstName}/>
           </div>
           <div className="form-group">
-            <label htmlFor="exampleInputPassword1">Password</label>
-            <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
+            <label htmlFor="willCallLastName">Will Call Last Name </label>
+            <input type="name" name="willCallLastName" className="form-control" id={reservation.reservationsId} aria-describedby="willCallLastName" placeholder="Last name of someone who can claim this ticket"  defaultValue={reservation.willCallLastName} />
           </div>
+          <small className="form-text text-muted">(Someone who can claim this ticket.)</small>
           <div className="form-group form-check">
-            <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-            <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
+            <input type="checkbox" name="confirm" className="form-check-input" id={reservation.reservationsId} required/>
+            <label className="form-check-label" htmlFor="confirm">I understand that by pressing submit, I am updating my ticket information, and old information will be replaced the new information.</label>
           </div>
-          <button type="submit" className="btn btn-primary">Submit</button>
+          <div className="bg-primary text-white" onClick={props.submitReservationForm}>Submit</div>
         </form>
       </div>
 

@@ -101,6 +101,8 @@ const ShowReservation = (props) => {
               <EditReservation
                 reservationDetail={props.reservationDetail}
                 userReservations={props.userReservations}
+                reservationEditField={props.reservationEditField}
+                submitReservationForm={props.submitReservationForm}
               />
             }
           </div>

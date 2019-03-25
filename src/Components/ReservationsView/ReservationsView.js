@@ -23,6 +23,8 @@ const ReservationsView = (props) => {
                   getEventDetails={props.getEventDetails}
                   toggleEditReservation={props.toggleEditReservation}
                   displayEditReservation={props.displayEditReservation}
+                  reservationEditField={props.reservationEditField}
+                  submitReservationForm={props.submitReservationForm}
                   />
               </div>
             </div>

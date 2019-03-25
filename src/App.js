@@ -93,6 +93,9 @@ class App extends Component {
     purchasePending: false,
     purchaseSuccessful: false,
     reservationDetail: null,
+    reservationEditsToSend: {
+
+    },
     showBios: false,
     spotifyResponse: null,
     startTimer: false,
@@ -420,6 +423,39 @@ toggleEditReservation = (e) =>{
   this.setState({
     displayEditReservation: newState.displayEditReservation,
   })
+}
+reservationEditField = (e) => {
+  console.log('reservationEditsToSend', e.target)
+  const newState={ ...this.state }
+  const rETS = newState.reservationEditsToSend
+  rETS[e.target.id] = { id: null, willCallFirstName: '', willCallLastName: ''}
+  rETS[e.target.id].id = e.target.id
+  if(e.target.name === 'willCallFirstName'){
+  //rETS[e.target.id][e.target.id] = 'willCallFirstName'
+  rETS[e.target.id]['willCallFirstName'] = e.target.value
+  } else if(e.target.name === 'willCallLastName'){
+    //rETS[e.target.id][e.target.id] = 'willCallLastName'
+    rETS[e.target.id]['willCallLastName'] = e.target.value
+  }
+//  rETS[e.target.id].willCallLastName = e.target.value
+
+
+  // rETS[e.target.id] = {
+  //   [e.target.name]: e.target.value,
+  //   [e.target.name]: e.target.value
+  // }
+  //rETS[e.target.id][e.target.name] = e.target.value
+  this.setState({
+    reservationEditsToSend: rETS
+  })
+  console.log('rETS', this.state.reservationEditsToSend)
+
+}
+
+submitReservationForm = (e) => {
+  console.log('rETS', this.state.reservationEditsToSend)
+
+
 }
 
   toggleLoggedIn = (boolean) => {
@@ -1141,6 +1177,8 @@ toggleAdminView = () => {
                   displayUserReservationSummary={this.state.displayUserReservationSummary}
                   toggleEditReservation={this.toggleEditReservation}
                   displayEditReservation={this.state.displayEditReservation}
+                  reservationEditField={this.reservationEditField}
+                  submitReservationForm={this.submitReservationForm}
                 />
                 :
                 this.state.displayAboutus ?
