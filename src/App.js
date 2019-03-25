@@ -285,11 +285,9 @@ class App extends Component {
 
   expandReservationDetailsClick = (e) =>{
     const newState = { ...this.state }
-    console.log('Hey, Seth?', e.target.id)
     newState.displayUserReservationSummary = true
-    newState.reservationDetail = newState.shows.find(show => (parseInt(show.id) === parseInt(e.target.id)))
+    newState.reservationDetail = newState.userReservations.find(show => (parseInt(show.eventsId) === parseInt(e.target.id)))
     newState.displayReservationDetail = true
-
 
     this.setState({
       displayUserReservationSummary: newState.displayUserReservationSummary,
@@ -380,15 +378,22 @@ class App extends Component {
     if(e.target.id==='dashboard' || e.target.id==='summary'){
       console.log("did we get inside dashboard?")
       newState.displayReservationDetail = false
+      newState.reservationDetail = null
     }
-    newState.reservationDetail = null
+    if(e.target.id==='detail'){
+      newState.displayReservations = true
+      newState.displayEditReservation = false
+      newState.displayReservationDetail = true
+      newState.displayUserReservationSummary = false
+    }
     this.setState({
       displayReservations: newState.displayReservations,
       reservationDetail: newState.reservationDetail,
       displayUserReservationSummary: newState.displayUserReservationSummary,
       displayReservationDetail: newState.displayReservationDetail,
       displayFuture: newState.displayFuture,
-      displayPast:newState.displayPast
+      displayPast:newState.displayPast,
+      displayEditReservation: newState.displayEditReservation
     })
   }
 
@@ -409,11 +414,12 @@ toggleFuturePast = (e) => {
 }
 
 toggleEditReservation = (e) =>{
-
   console.log('click on:: ', e.target.id)
   const newState = { ...this.state }
   newState.displayEditReservation = !newState.displayEditReservation
-  this.setState({ displayEditReservation: newState.displayEditReservation})
+  this.setState({
+    displayEditReservation: newState.displayEditReservation,
+  })
 }
 
   toggleLoggedIn = (boolean) => {

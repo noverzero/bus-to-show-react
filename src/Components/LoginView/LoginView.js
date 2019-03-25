@@ -50,15 +50,26 @@ const LoginView = (props) => {
         <div className='col-12 text-center'>
           {displayReservations ?
           <div>
-            {props.displayReservationDetail && props.reservationDetail ?
-            <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="summary" >
-            Back to Reservations Summary
-            </div>
+            {props.displayReservationDetail && props.displayEditReservation
+            ?
+              <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="detail" >
+              Back to Reservation Detail View
+              </div>
             :
-            <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="dashboard" >
-            Back to User Dashboard
-            </div>
+              <div>
+              {props.displayReservationDetail && props.reservationDetail
+              ?
+                <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="summary" >
+                Back to Reservations Summary
+                </div>
+              :
+                <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="dashboard" >
+                Back to User Dashboard
+                </div>
+              }
+              </div>
             }
+
             {!props.displayReservationDetail && props.displayUserReservationSummary ?
             <div className="row">
               <div className="col-12">

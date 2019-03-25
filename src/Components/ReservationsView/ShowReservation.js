@@ -39,17 +39,23 @@ const ShowReservation = (props) => {
       {props.reservationDetail
       ? //If a reservaton summary has been selected, display reservation details ( if not, do nothing )
         <div>
-          <h6><strong>Your Reservations For:</strong></h6>
-          <h6 className="bts-white-bg">
-            <strong>DATE:</strong> {props.reservationDetail.date}<br/>
-            <strong>Event:</strong> {props.reservationDetail.headliner}<br/>
-            <strong>Venue:</strong> {props.reservationDetail.venue}
-          </h6>
+          {!props.displayEditReservation
+          ?
+          <div>
+            <h6><strong>Your Reservations For:</strong></h6>
+            <h6 className="bts-white-bg">
+              <strong>DATE:</strong> {props.reservationDetail.date}<br/>
+              <strong>Event:</strong> {props.reservationDetail.headliner}<br/>
+              <strong>Venue:</strong> {props.reservationDetail.venue}
+            </h6>
+          </div>
+          : ''
+          }
           <div className='Shows container mx-auto'>
             {// if user has not clicked edit on a reservation, display all reservations for the selected summary (otherwise, display EditReservation component)
             }
-            {!props.displayEditReservation ? props.userReservations.map((show, i) => show.eventsId === parseInt(props.reservationDetail.id) &&
-              <li className="px-3 pt-2 list-item mx-auto shadow-sm" key={show.reservationsId} id={show.id}>
+            {!props.displayEditReservation ? props.userReservations.map((show, i) => show.eventsId === parseInt(props.reservationDetail.eventsId) &&
+              <li className="px-3 pt-2 list-item mx-auto shadow-sm" key={show.reservationsId} id={show.reservationsId}>
                 <div className="row border-top border-left border-right border-secondary bg-light p-2" id={show.id}>
                   <div className="col-lg-12 mx-auto cart-item-font" id={show.id}>
 
@@ -85,14 +91,17 @@ const ShowReservation = (props) => {
                         Last bus departs at: {moment(show.lastBusDepartureTime, 'hhmm').format('hh:mm a')}
                     </div>
                     <div onClick={props.toggleEditReservation}>
-                      <i id="edit" className="fas fa-edit fa-sm float-right pb-2"></i>
+                      <i id={show.reservationsId} className="fas fa-edit fa-sm float-right pb-2"></i>
                     </div>
                   </div>
                 </div>
               </li>
             ) //end of userReservations.map function
             :
-              <EditReservation />
+              <EditReservation
+                reservationDetail={props.reservationDetail}
+                userReservations={props.userReservations}
+              />
             }
           </div>
         </div>
