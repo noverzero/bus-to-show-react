@@ -25,6 +25,7 @@ const ReservationsView = (props) => {
                   displayEditReservation={props.displayEditReservation}
                   reservationEditField={props.reservationEditField}
                   submitReservationForm={props.submitReservationForm}
+                  reservationToEditId={props.reservationToEditId}
                   />
               </div>
             </div>

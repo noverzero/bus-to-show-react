@@ -93,9 +93,8 @@ class App extends Component {
     purchasePending: false,
     purchaseSuccessful: false,
     reservationDetail: null,
-    reservationEditsToSend: {
-
-    },
+    reservationToEditId: null,
+    reservationEditsToSend: [],
     showBios: false,
     spotifyResponse: null,
     startTimer: false,
@@ -112,7 +111,8 @@ class App extends Component {
       wCFName: null,
       wCLName: null
     },
-    oldStuff: []
+    oldStuff: [],
+    willCallEdits: {},
   }
 
 
@@ -417,44 +417,59 @@ toggleFuturePast = (e) => {
 }
 
 toggleEditReservation = (e) =>{
-  console.log('click on:: ', e.target.id)
+  console.log('click on:: toggleEditREservation ', e.target.id)
   const newState = { ...this.state }
   newState.displayEditReservation = !newState.displayEditReservation
+  newState.reservationToEditId = parseInt(e.target.id)
   this.setState({
     displayEditReservation: newState.displayEditReservation,
+    reservationToEditId: newState.reservationToEditId
   })
+  console.log('reservationsId ', this.state.reservationToEditId)
 }
+
+
 reservationEditField = (e) => {
-  console.log('reservationEditsToSend', e.target)
-  const newState={ ...this.state }
-  const rETS = newState.reservationEditsToSend
-  rETS[e.target.id] = { id: null, willCallFirstName: '', willCallLastName: ''}
-  rETS[e.target.id].id = e.target.id
-  if(e.target.name === 'willCallFirstName'){
-  //rETS[e.target.id][e.target.id] = 'willCallFirstName'
-  rETS[e.target.id]['willCallFirstName'] = e.target.value
-  } else if(e.target.name === 'willCallLastName'){
-    //rETS[e.target.id][e.target.id] = 'willCallLastName'
-    rETS[e.target.id]['willCallLastName'] = e.target.value
-  }
-//  rETS[e.target.id].willCallLastName = e.target.value
-
-
-  // rETS[e.target.id] = {
-  //   [e.target.name]: e.target.value,
-  //   [e.target.name]: e.target.value
-  // }
-  //rETS[e.target.id][e.target.name] = e.target.value
-  this.setState({
-    reservationEditsToSend: rETS
+  //this.setState({[e.target.name]: e.target.value})
+    this.setState({
+      ...this.state,
+        willCallEdits: {
+        ...this.state.willCallEdits,
+        [e.target.name]: e.target.value,
+        id: e.target.id
+      }
   })
   console.log('rETS', this.state.reservationEditsToSend)
-
 }
 
 submitReservationForm = (e) => {
-  console.log('rETS', this.state.reservationEditsToSend)
+  e.preventDefault()
+  console.log('submit e target id', e.target.id)
+  console.log('this.state.willCallEdits::: ' , this.state.willCallEdits)
+  const newRETS = [ ...this.state.reservationEditsToSend ]
+  newRETS.push(this.state.willCallEdits)
+  this.setState({
+    reservationEditsToSend: newRETS
+  })
+  console.log('newRETS:::: ', this.state.reservationEditsToSend)
+}
+handleEditSend= async()=>{
+  this.state.reservationEditsToSend.map(async(reservation)=>{
+    const editReservationResponse = await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/${reservation.id}`, {
+      method: 'PATCH',
+      headers: {
+       'Content-type': 'application/json',
+       'Accept': 'application/json'
+      },
+      body: JSON.stringify(reservation)
 
+      })
+    console.log('editReservationResponse', editReservationResponse)
+
+    const json = await editReservationResponse.json()
+    console.log('editReservationResponse.json', json)
+
+  })
 
 }
 
@@ -516,6 +531,7 @@ submitReservationForm = (e) => {
 
 
   responseFacebook = async (response) => {
+    console.log('searching for onLoad response facbook', response)
 
       this.setState({
         ...this.state,
@@ -530,6 +546,7 @@ submitReservationForm = (e) => {
 
       })
       this.toggleLoggedIn(true)
+      this.onLoad()
       const usersInfo = await fetch('http://localhost:3000/users', {
       //const usersInfo = await fetch('https://something-innocuous.herokuapp.com/users', {
         method: 'POST',
@@ -1123,7 +1140,7 @@ toggleAdminView = () => {
         <div className="App">
           {/* Desktop View */}
           <MediaQuery minWidth={8}>
-            {this.state.displayLoadingScreen ?
+            {this.state.displayLoadingScreen && !this.state.facebook.isLoggedIn ?
               <Loading
                 onLoad={this.onLoad}
                 handleBus={this.handleBus} />
@@ -1179,6 +1196,7 @@ toggleAdminView = () => {
                   displayEditReservation={this.state.displayEditReservation}
                   reservationEditField={this.reservationEditField}
                   submitReservationForm={this.submitReservationForm}
+                  reservationToEditId={this.state.reservationToEditId}
                 />
                 :
                 this.state.displayAboutus ?
@@ -1304,7 +1322,9 @@ toggleAdminView = () => {
                     </div>
                   </React.Fragment>
                   :
-                <Loading />
+                <Loading
+                  responseFacebook={this.responseFacebook}
+                />
               }
             </div>
             }

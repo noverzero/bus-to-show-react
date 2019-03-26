@@ -103,6 +103,7 @@ const ShowReservation = (props) => {
                 userReservations={props.userReservations}
                 reservationEditField={props.reservationEditField}
                 submitReservationForm={props.submitReservationForm}
+                reservationToEditId={props.reservationToEditId}
               />
             }
           </div>

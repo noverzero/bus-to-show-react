@@ -35,29 +35,31 @@ const EditReservation = (props) => {
 
   return (
     <div>
-    {props.userReservations.map((reservation, i)=> reservation.eventsId === props.reservationDetail.eventsId &&
-      <div className="border border-warning my-2 p-1" key={reservation.reservationsId}>
+    {props.userReservations.map((reservation, i)=> reservation.reservationsId === props.reservationToEditId &&
+      <div className="border border-warning my-1 p-2 shadow" key={reservation.reservationsId}>
       <div>
-      Date: {reservation.date} Reservation Id: {reservation.reservationsId}
-      Will Call First Name: {reservation.willCallFirstName} Will Call Last Name: {reservation.willCallLastName}
-      Ordered By First Name: {reservation.willCallFirstName} Ordered By Last Name: {reservation.willCallLastName}
+        <h6 className="bts-white-bg"><strong>Edit Your Reservations For:</strong></h6>
+        <h6 className="bts-white-bg">
+          <strong>DATE:</strong> {reservation.date}<br/>
+          <strong>Event:</strong> {reservation.headliner}<br/>
+          <strong>Venue:</strong> {reservation.venue.split(' Amphitheatre')[0]}<br/>
+          <strong>Ordered By:</strong> {reservation.willCallFirstName} {reservation.willCallLastName} <br/>
+        </h6>
       </div>
       <div>
-        <form onChange={props.reservationEditField}>
-          <div className="form-group" >
+      </div>
+      <div>
+        <form className="cart-item-font" >
+          <div className="form-group " >
             <label htmlFor="willCallFirstName">Will Call First Name </label>
-            <input type="name" name="willCallFirstName" className="form-control" id={reservation.reservationsId} aria-describedby="willCallFirstName" placeholder="First name of someone who can claim this ticket"  defaultValue={reservation.willCallFirstName}/>
+            <input type="name" name="willCallFirstName" className="form-control" id={reservation.reservationsId} aria-describedby="willCallFirstName" placeholder="First name of someone who can claim this ticket"  defaultValue={reservation.willCallFirstName} onChange={(e)=>props.reservationEditField(e)}/>
           </div>
           <div className="form-group">
             <label htmlFor="willCallLastName">Will Call Last Name </label>
-            <input type="name" name="willCallLastName" className="form-control" id={reservation.reservationsId} aria-describedby="willCallLastName" placeholder="Last name of someone who can claim this ticket"  defaultValue={reservation.willCallLastName} />
+            <input type="name" name="willCallLastName" className="form-control" id={reservation.reservationsId} aria-describedby="willCallLastName" placeholder="Last name of someone who can claim this ticket"  defaultValue={reservation.willCallLastName} onChange={(e)=>props.reservationEditField(e)} />
           </div>
-          <small className="form-text text-muted">(Someone who can claim this ticket.)</small>
-          <div className="form-group form-check">
-            <input type="checkbox" name="confirm" className="form-check-input" id={reservation.reservationsId} required/>
-            <label className="form-check-label" htmlFor="confirm">I understand that by pressing submit, I am updating my ticket information, and old information will be replaced the new information.</label>
-          </div>
-          <div className="bg-primary text-white" onClick={props.submitReservationForm}>Submit</div>
+          <small className="form-text text-muted">By pressing submit, you are updating the information, and old information will be erased.</small>
+          <button id={`${reservation.reservationsId}`} className="btn bg-primary text-white" onClick={props.submitReservationForm}>Submit</button>
         </form>
       </div>
 

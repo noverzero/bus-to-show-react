@@ -41,8 +41,9 @@ export default class FacebookButton extends React.Component {
             <div className='col-12 text-center'>
               <FacebookLogin
                 appId="244004823142378"
-                autoLoad={false}
+                autoLoad={true}
                 fields="name,email,picture"
+                state="randomstring"
                 //onClick={this.componentClicked}
                 callback={this.props.responseFacebook}
                 //cssClass="my-facebook-button-class"
