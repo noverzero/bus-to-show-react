@@ -368,7 +368,7 @@ class App extends Component {
   }
 
   toggleReservationView = (e) => {
-    console.log('click on toggleReservationView', e.target.id)
+    //console.log('click on toggleReservationView', e.target.id)
     const newState = { ...this.state }
     //displayReservationDetail
     this.getReservations()
@@ -383,7 +383,7 @@ class App extends Component {
       newState.displayReservationDetail = false
       newState.reservationDetail = null
     }
-    if(e.target.id==='detail'){
+    if(e.target.id === 'detail' || e.target.id === 'edit'){
       newState.displayReservations = true
       newState.displayEditReservation = false
       newState.displayReservationDetail = true
@@ -451,26 +451,32 @@ submitReservationForm = (e) => {
   this.setState({
     reservationEditsToSend: newRETS
   })
-  console.log('newRETS:::: ', this.state.reservationEditsToSend)
+  this.handleEditSend(newRETS)
 }
-handleEditSend= async()=>{
-  this.state.reservationEditsToSend.map(async(reservation)=>{
-    const editReservationResponse = await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/${reservation.id}`, {
-      method: 'PATCH',
-      headers: {
-       'Content-type': 'application/json',
-       'Accept': 'application/json'
-      },
-      body: JSON.stringify(reservation)
 
-      })
-    console.log('editReservationResponse', editReservationResponse)
+handleEditSend= async(newRETS)=>{
+  console.log('newRETS:::: ', newRETS)
+  newRETS.map(async(reservation)=>{
+    console.log('reservation inside patch map:::', reservation)
+    const editReservationResponse = await fetch(`http://${process.env.REACT_APP_API_URL}/reservations`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        id: parseInt(reservation.id),
+        willCallFirstName: reservation.willCallFirstName,
+        willCallLastName: reservation.willCallLastName,
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    await console.log('editReservationResponse', editReservationResponse)
 
     const json = await editReservationResponse.json()
-    console.log('editReservationResponse.json', json)
+    await console.log('editReservationResponse.json', json)
+    const e = {target: {id: "edit"}}
 
+    await this.toggleReservationView(e)
   })
-
 }
 
   toggleLoggedIn = (boolean) => {

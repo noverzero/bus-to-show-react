@@ -51,7 +51,7 @@ const EditReservation = (props) => {
       <div>
         <form className="cart-item-font" >
           <div className="form-group " >
-            <label htmlFor="willCallFirstName">Will Call First Name </label>
+            <label htmlFor="willCallFirstName">ID:{reservation.reservationsId} Will Call First Name </label>
             <input type="name" name="willCallFirstName" className="form-control" id={reservation.reservationsId} aria-describedby="willCallFirstName" placeholder="First name of someone who can claim this ticket"  defaultValue={reservation.willCallFirstName} onChange={(e)=>props.reservationEditField(e)}/>
           </div>
           <div className="form-group">
@@ -59,7 +59,7 @@ const EditReservation = (props) => {
             <input type="name" name="willCallLastName" className="form-control" id={reservation.reservationsId} aria-describedby="willCallLastName" placeholder="Last name of someone who can claim this ticket"  defaultValue={reservation.willCallLastName} onChange={(e)=>props.reservationEditField(e)} />
           </div>
           <small className="form-text text-muted">By pressing submit, you are updating the information, and old information will be erased.</small>
-          <button id={`${reservation.reservationsId}`} className="btn bg-primary text-white" onClick={props.submitReservationForm}>Submit</button>
+          <button name="detail" id={`${reservation.reservationsId}`} className="btn bg-primary text-white" onClick={props.submitReservationForm}>Submit</button>
         </form>
       </div>
 
