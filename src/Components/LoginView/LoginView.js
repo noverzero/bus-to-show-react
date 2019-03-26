@@ -1,6 +1,7 @@
 import React from 'react'
 import '../../App.css'
 import Facebook from '../Facebook';
+import MediaQuery from 'react-responsive'
 import ReservationsView from '../ReservationsView/ReservationsView'
 
 const LoginView = (props) => {
@@ -25,121 +26,244 @@ const LoginView = (props) => {
 
   return (
     <div className='container-fluid'>
-      <div className='row p-2'>
-        {!facebook.isLoggedIn ?
-        <div className='col-12 text-center'>
-          Continue as a Guest or Click below to Sign-In to (or create) your own account using Facebook:
+    <MediaQuery minWidth={800}>
+      <div className="w-25 mx-auto">
+        <div className='row p-2 mb-4'>
+          {!facebook.isLoggedIn ?
+          <div className='col-12 text-center'>
+            Continue as a Guest or Click below to Sign-In to (or create) your own account using Facebook:
+          </div>
+          : ""}
         </div>
-        : ""}
-      </div>
-      <div className='row'>
-        <div className='col-12 text-center'>
-          <Facebook
-            userDashboard={userDashboard}
-            toggleLoggedIn={toggleLoggedIn}
-            userDetails={userDetails}
-            profileClick={profileClick}
-            responseFacebook={responseFacebook}
-            continueAsGuest={continueAsGuest}
-            facebook={facebook}
-          />
+        <div className='row'>
+          <div className='col-12 text-center'>
+            <Facebook
+              userDashboard={userDashboard}
+              toggleLoggedIn={toggleLoggedIn}
+              userDetails={userDetails}
+              profileClick={profileClick}
+              responseFacebook={responseFacebook}
+              continueAsGuest={continueAsGuest}
+              facebook={facebook}
+            />
+          </div>
         </div>
-      </div>
-      <div className='row'>
-        {facebook.isLoggedIn ?
-        <div className='col-12 text-center'>
-          {displayReservations ?
-          <div>
-            {props.displayReservationDetail && props.displayEditReservation
-            ?
-              <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="detail" >
-              Back to Reservation Detail View
-              </div>
-            :
-              <div>
-              {props.displayReservationDetail && props.reservationDetail
+        <div className='row'>
+          {facebook.isLoggedIn ?
+          <div className='col-12 text-center'>
+            {displayReservations ?
+            <div>
+              {props.displayReservationDetail && props.displayEditReservation
               ?
-                <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="summary" >
-                Back to Reservations Summary
+                <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="detail" >
+                Back to Reservation Detail View
                 </div>
               :
-                <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="dashboard" >
-                Back to User Dashboard
+                <div>
+                {props.displayReservationDetail && props.reservationDetail
+                ?
+                  <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="summary" >
+                  Back to Reservations Summary
+                  </div>
+                :
+                  <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="dashboard" >
+                  Back to User Dashboard
+                  </div>
+                }
                 </div>
               }
-              </div>
-            }
 
-            {!props.displayReservationDetail && props.displayUserReservationSummary ?
-            <div className="row">
-              <div className="col-12">
-              <div className="row" id="futurePast" onClick={props.toggleFuturePast}>
-                  <div className="col-2">
-                  </div>
-                  <div className="col-4">
-                    <div className={futureClass} id="future">
-                        Future
+              {!props.displayReservationDetail && props.displayUserReservationSummary ?
+              <div className="row">
+                <div className="col-12">
+                <div className="row" id="futurePast" onClick={props.toggleFuturePast}>
+                    <div className="col-2">
                     </div>
-                  </div>
-                  <div className="col-4">
-                    <div className={pastClass} id="past">
-                        Past
+                    <div className="col-4">
+                      <div className={futureClass} id="future">
+                          Future
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-2">
+                    <div className="col-4">
+                      <div className={pastClass} id="past">
+                          Past
+                      </div>
+                    </div>
+                    <div className="col-2">
+                    </div>
                   </div>
                 </div>
               </div>
+              :''
+              }
+                <ReservationsView
+                  displayFuture={props.displayFuture}
+                  displayPast={props.displayPast}
+                  userReservations={userReservations}
+                  addBorder={addBorder}
+                  displayShow={displayShow}
+                  filterString={filterString}
+                  showsExpandClick={showsExpandClick}
+                  expandReservationDetailsClick={props.expandReservationDetailsClick}
+                  reservationDetail={props.reservationDetail}
+                  getEventDetails={props.getEventDetails}
+                  toggleEditReservation={props.toggleEditReservation}
+                  displayEditReservation={props.displayEditReservation}
+                  reservationEditField={props.reservationEditField}
+                  submitReservationForm={props.submitReservationForm}
+                  reservationToEditId={props.reservationToEditId}
+                  displayEditSuccess={props.displayEditSuccess}
+                  toggleEditSuccess={props.toggleEditSuccess}
+                />
+              </div>
+              : '' }
+              {displayReservations ? ''
+              :
+              <div>
+              {(isStaff || isAdmin || isDriver) ?
+              <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleAdminView}>
+                <strong>Employees</strong>
+              </div> : ''}
+              <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleReservationView}>
+                <strong>My Reservations</strong>
+              </div>
+              <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
+                <strong>Fuel Savings Calculator</strong>
+              </div>
+              <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
+                <strong>All Events</strong>
+              </div>
+              <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
+                <strong>About Us</strong>
+              </div>
             </div>
-            :''
-            }
-              <ReservationsView
-                displayFuture={props.displayFuture}
-                displayPast={props.displayPast}
-                userReservations={userReservations}
-                addBorder={addBorder}
-                displayShow={displayShow}
-                filterString={filterString}
-                showsExpandClick={showsExpandClick}
-                expandReservationDetailsClick={props.expandReservationDetailsClick}
-                reservationDetail={props.reservationDetail}
-                getEventDetails={props.getEventDetails}
-                toggleEditReservation={props.toggleEditReservation}
-                displayEditReservation={props.displayEditReservation}
-                reservationEditField={props.reservationEditField}
-                submitReservationForm={props.submitReservationForm}
-                reservationToEditId={props.reservationToEditId}
-                displayEditSuccess={props.displayEditSuccess}
-                toggleEditSuccess={props.toggleEditSuccess}
+
+          }
+          </div>
+          : ''
+          }
+          </div>
+      </div>
+      </MediaQuery>
+      <MediaQuery maxWidth={799}>
+        <div className="w-50 mx-auto">
+          <div className='row p-2'>
+            {!facebook.isLoggedIn ?
+            <div className='col-12 text-center'>
+              Continue as a Guest or Click below to Sign-In to (or create) your own account using Facebook:
+            </div>
+            : ""}
+          </div>
+          <div className='row'>
+            <div className='col-12 text-center'>
+              <Facebook
+                userDashboard={userDashboard}
+                toggleLoggedIn={toggleLoggedIn}
+                userDetails={userDetails}
+                profileClick={profileClick}
+                responseFacebook={responseFacebook}
+                continueAsGuest={continueAsGuest}
+                facebook={facebook}
               />
             </div>
-            : '' }
-            {displayReservations ? ''
-            :
-            <div>
-            {(isStaff || isAdmin || isDriver) ?
-            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleAdminView}>
-              <strong>Employees</strong>
-            </div> : ''}
-            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleReservationView}>
-              <strong>My Reservations</strong>
-            </div>
-            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
-              <strong>Fuel Savings Calculator</strong>
-            </div>
-            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
-              <strong>All Events</strong>
-            </div>
-            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
-              <strong>About Us</strong>
-            </div>
           </div>
+          <div className='row'>
+            {facebook.isLoggedIn ?
+            <div className='col-12 text-center'>
+              {displayReservations ?
+              <div>
+                {props.displayReservationDetail && props.displayEditReservation
+                ?
+                  <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="detail" >
+                  Back to Reservation Detail View
+                  </div>
+                :
+                  <div>
+                  {props.displayReservationDetail && props.reservationDetail
+                  ?
+                    <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="summary" >
+                    Back to Reservations Summary
+                    </div>
+                  :
+                    <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="dashboard" >
+                    Back to User Dashboard
+                    </div>
+                  }
+                  </div>
+                }
 
-        }
+                {!props.displayReservationDetail && props.displayUserReservationSummary ?
+                <div className="row">
+                  <div className="col-12">
+                  <div className="row" id="futurePast" onClick={props.toggleFuturePast}>
+                      <div className="col-2">
+                      </div>
+                      <div className="col-4">
+                        <div className={futureClass} id="future">
+                            Future
+                        </div>
+                      </div>
+                      <div className="col-4">
+                        <div className={pastClass} id="past">
+                            Past
+                        </div>
+                      </div>
+                      <div className="col-2">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                :''
+                }
+                  <ReservationsView
+                    displayFuture={props.displayFuture}
+                    displayPast={props.displayPast}
+                    userReservations={userReservations}
+                    addBorder={addBorder}
+                    displayShow={displayShow}
+                    filterString={filterString}
+                    showsExpandClick={showsExpandClick}
+                    expandReservationDetailsClick={props.expandReservationDetailsClick}
+                    reservationDetail={props.reservationDetail}
+                    getEventDetails={props.getEventDetails}
+                    toggleEditReservation={props.toggleEditReservation}
+                    displayEditReservation={props.displayEditReservation}
+                    reservationEditField={props.reservationEditField}
+                    submitReservationForm={props.submitReservationForm}
+                    reservationToEditId={props.reservationToEditId}
+                    displayEditSuccess={props.displayEditSuccess}
+                    toggleEditSuccess={props.toggleEditSuccess}
+                  />
+                </div>
+                : '' }
+                {displayReservations ? ''
+                :
+                <div>
+                {(isStaff || isAdmin || isDriver) ?
+                <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleAdminView}>
+                  <strong>Employees</strong>
+                </div> : ''}
+                <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleReservationView}>
+                  <strong>My Reservations</strong>
+                </div>
+                <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
+                  <strong>Fuel Savings Calculator</strong>
+                </div>
+                <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
+                  <strong>All Events</strong>
+                </div>
+                <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
+                  <strong>About Us</strong>
+                </div>
+              </div>
+
+            }
+            </div>
+            : ''
+            }
+            </div>
         </div>
-        : ''
-        }
-        </div>
+        </MediaQuery>
     </div>
   )
 
