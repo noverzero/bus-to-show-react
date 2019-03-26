@@ -48,6 +48,20 @@ const ShowReservation = (props) => {
               <strong>Event:</strong> {props.reservationDetail.headliner}<br/>
               <strong>Venue:</strong> {props.reservationDetail.venue}
             </h6>
+            {props.displayEditSuccess
+            ?
+              <div className="alert alert-success cart-item-font" role="alert">
+                <div className="row">
+                  <div className="col-10 float-left">
+                  Your change has been processed.  Take a look at the updated information below.
+                  </div>
+                  <div className="col-2 float-right">
+                    <i class="fas fa-times-circle" onClick={props.toggleEditSuccess}></i>
+                  </div>
+                </div>
+              </div>
+            : ''
+            }
           </div>
           : ''
           }

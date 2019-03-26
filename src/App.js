@@ -58,6 +58,7 @@ class App extends Component {
     displayConfirmRemove: false,
     displayDetailCartView: false,
     displayEditReservation: false,
+    displayEditSuccess: false,
     displayExternalShowDetails: false,
     displayFuture: true,
     displayPast: false,
@@ -446,10 +447,13 @@ submitReservationForm = (e) => {
   e.preventDefault()
   console.log('submit e target id', e.target.id)
   console.log('this.state.willCallEdits::: ' , this.state.willCallEdits)
-  const newRETS = [ ...this.state.reservationEditsToSend ]
+  let newRETS = [ ...this.state.reservationEditsToSend ]
+  let newDisplayEditSuccess = this.state.displayEditSuccess
+  newDisplayEditSuccess = !newDisplayEditSuccess
   newRETS.push(this.state.willCallEdits)
   this.setState({
-    reservationEditsToSend: newRETS
+    reservationEditsToSend: newRETS,
+    displayEditSuccess:newDisplayEditSuccess
   })
   this.handleEditSend(newRETS)
 }
@@ -469,15 +473,25 @@ handleEditSend= async(newRETS)=>{
         'Content-Type': 'application/json'
       }
     })
-    await console.log('editReservationResponse', editReservationResponse)
+    .catch()
 
     const json = await editReservationResponse.json()
     await console.log('editReservationResponse.json', json)
     const e = {target: {id: "edit"}}
 
     await this.toggleReservationView(e)
+    if(editReservationResponse.status === 200){
+      console.log('editReservationResponse', editReservationResponse.status)
+    }
   })
 }
+
+toggleEditSuccess=()=>{
+    let newStateDisplayEditSuccess = {...this.state.displayEditSuccess}
+    newStateDisplayEditSuccess=!newStateDisplayEditSuccess
+    this.setState({displayEditSuccess: newStateDisplayEditSuccess})
+}
+
 
   toggleLoggedIn = (boolean) => {
     if (boolean === false){
@@ -1203,6 +1217,8 @@ toggleAdminView = () => {
                   reservationEditField={this.reservationEditField}
                   submitReservationForm={this.submitReservationForm}
                   reservationToEditId={this.state.reservationToEditId}
+                  displayEditSuccess={this.state.displayEditSuccess}
+                  toggleEditSuccess={this.toggleEditSuccess}
                 />
                 :
                 this.state.displayAboutus ?
