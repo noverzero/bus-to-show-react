@@ -55,16 +55,28 @@ const UserCheckin = (props) => {
     // reservations = ''
   }
 
+  const calcHeightVal = () => {
+    let header = document.getElementsByClassName('Header')[0]
+    var styles = window.getComputedStyle(header);
+    var margin = parseFloat(styles['marginTop']) + parseFloat(styles['marginBottom']);
 
+    let totalHeight = Math.ceil(header.offsetHeight + margin)
+    console.log(totalHeight)
+    console.log(window.innerHeight);
+    const newHeight = window.innerHeight - totalHeight
+    console.log(newHeight);
+    return `${newHeight}px`
+    
+  }
 
   return (
     
-    <div className='ShowList mt-2' style={{height: '100%'}}>
+    <div className='ShowList mt-2' style={{ maxHeight: '100%'}}>
     <div className='admin-list-header text-center ml-n1 mr-n1'>
       {headerLabel(displayList)}
     </div>
       <div className="list-group mr-n1 ml-n1">
-        <div className="list-group-item show-header" style={{height: '100%'}}>
+        <div className="list-group-item show-header" style={{ maxHeight: calcHeightVal()}}>
           <div className="row show-list-flex">
             <div className="col-3 mb-3" >
               <button type="button" className="btn btn-outline-light" onClick={e=>{resetStuff(); toggleProperty(previousProperty); stopRefreshing(true)}}>Back</button>
@@ -78,18 +90,18 @@ const UserCheckin = (props) => {
           <ul className="list-group adminlist" id="adminList" style={{height: '100%'}}>
             <div className={displayList === 'ShowList' ? '' : 'hidden'}>
               <ShowList
-                shows={shows}
                 filterString={filterString}
                 makeSelection={makeSelection}
-                toggleProperty={toggleProperty}
                 resetStuff={resetStuff}
+                shows={shows}
+                toggleProperty={toggleProperty}
               />
             </div>  
             <div className={displayList === 'PickupsList' ? '' : 'hidden'}>
               <PickupsList
                 filterString={filterString}
-                pickupLocations={pickupLocations}
                 makeSelection={makeSelection}
+                pickupLocations={pickupLocations}
                 resetStuff={resetStuff}
               />  
             </div>

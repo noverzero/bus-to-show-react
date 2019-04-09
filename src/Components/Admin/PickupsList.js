@@ -3,7 +3,7 @@ import '../../App.css';
 
 
 const PickupsList = (props) => {
-  let { pickupLocations, makeSelection, resetStuff } = props
+  let { pickupLocations, makeSelection, resetStuff, filterString } = props
 
   const shortName = (locationName) => {
     return locationName = locationName.split('- ')[1]
@@ -13,9 +13,14 @@ const PickupsList = (props) => {
     return streetAddress = streetAddress.split(', CO')[0]
   }
 
+  filterString = filterString.toLowerCase()
+  let filterPickups = pickupLocations.filter(pickup => pickup.locationName.toLowerCase().includes(filterString) || pickup.streetAddress.toLowerCase().includes(filterString))
+
   return (
     <div className='Pickups'>
-      {pickupLocations.map(location =>
+      {filterPickups.length > 0 ?
+
+        filterPickups.map(location =>
         <li className="list-group-item admin-list-item" 
             key={location.id} 
             id={location.id}>
@@ -34,7 +39,8 @@ const PickupsList = (props) => {
                 Select
               </button>
           </div>
-        </li>)}
+        </li>) 
+        : 'Pickup location not found'}
     </div>
   )
 }

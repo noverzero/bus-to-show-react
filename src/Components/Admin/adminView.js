@@ -144,40 +144,28 @@ class AdminView extends React.Component {
   render (){
     let { isStaff, isAdmin, isDriver } = this.props.userDetails
 
-    const calcHeightVal = () => {
-      let header = document.getElementsByClassName('Header')[0]
-      var styles = window.getComputedStyle(header);
-      var margin = parseFloat(styles['marginTop']) + parseFloat(styles['marginBottom']);
-
-      let totalHeight = Math.ceil(header.offsetHeight + margin)
-      // console.log(totalHeight)
-      // console.log(window.innerHeight);
-      const newHeight = window.innerHeight - totalHeight
-      // console.log(newHeight);
-      return `${newHeight}px`
-    }
-
     return(
-      <div className="container AdminView" style={{ Height: calcHeightVal() }}>
+      <div className="container AdminView" style={{ Height: '100%' }}>
         {this.state.displayUserCheckin ? 
           <UserCheckin 
-            getReservations={this.getReservations}
-            thisShow={this.state.thisShow}
-            thisPickup={this.state.thisPickup}
-            thisCapacity={this.state.thisCapacity}
             eventId={this.state.eventId}  
             filterString={this.state.filterString}
-            toggleProperty={this.toggleProperty}
-            makeSelection={this.makeSelection}
+            getReservations={this.getReservations}
             displayList={this.state.displayList}
             displayUserCheckin={this.state.displayUserCheckin}
             pickupLocations={this.state.pickupLocations}
             pickupLocationId={this.state.pickupLocationId}
+            makeSelection={this.makeSelection}
             reservations={this.state.reservations}
-            shows={this.props.shows}
             searchItems={this.searchItems} 
+            shows={this.props.shows}
+            stopRefreshing={this.refreshReservations} 
+            thisShow={this.state.thisShow}
+            thisPickup={this.state.thisPickup}
+            thisCapacity={this.state.thisCapacity}
             toggleCheckedIn={this.toggleCheckedIn}
-            stopRefreshing={this.refreshReservations} /> 
+            toggleProperty={this.toggleProperty}
+          /> 
           : 
           <div className="col mt-2 adminButtons">
             {isAdmin ? 
