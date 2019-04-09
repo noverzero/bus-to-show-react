@@ -70,9 +70,14 @@ class App extends Component {
     displayCart: false,
     displayConfirmRemove: false,
     displayDetailCartView: false,
+    displayEditReservation: false,
+    displayEditSuccess: false,
     displayExternalShowDetails: false,
+    displayFuture: true,
+    displayPast: false,
     displayLoadingScreen: true,
     displayLoginView: false,
+    displayReservationDetail: false,
     displayShow: null,
     displayShowDetails: false,
     displayShowList: true,
@@ -81,6 +86,8 @@ class App extends Component {
     displayViewCartBtn: false,
     displayWarning: false,
     displayQuantity: false,
+    displayReservations: false,
+    displayUserReservationSummary: false,
     displayTimes: false,
     facebook: {
       isLoggedIn: false,
@@ -94,12 +101,14 @@ class App extends Component {
     firstBusLoad: null,
     googleResponse: null,
     inCart: [],
-    displayReservations: false,
     pickupLocationId: null,
     pickupPartyId: null,
     purchaseFailed: false,
     purchasePending: false,
     purchaseSuccessful: false,
+    reservationDetail: null,
+    reservationToEditId: null,
+    reservationEditsToSend: [],
     showBios: false,
     spotifyResponse: null,
     startTimer: false,
@@ -116,7 +125,8 @@ class App extends Component {
       wCFName: null,
       wCLName: null
     },
-    oldStuff: []
+    oldStuff: [],
+    willCallEdits: {},
   }
 
 
@@ -180,7 +190,8 @@ class App extends Component {
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
   selectPickupLocationId = async event => {
     const newState = { ...this.state }
-    
+    // console.log('change in selectPickupLocationId')
+
     if (parseInt(event.target.value) !== newState.pickupPartyId) {
       newState.ticketQuantity = null
       newState.displayQuantity = false
@@ -220,6 +231,7 @@ class App extends Component {
 
 
     if (matchedParty) {
+      //FIX THIS!!!! CAPACITY NEEDS TO COME FROM RESERVATIONS MATCHING PICKUP PARTYID RATHER THAN PICKUPPARTY.CAPACITY.  CAPACITY WAS SUPPOSED TO BE TOTAL NUMBER OF SEATS ASSIGNED TO PICKUP PARTY.  IT SHOULD NOT DECREMENT ON ORDER!!!
       const capacityLessInCart = parseInt(matchedParty.capacity) - parseInt(matchedParty.inCart)
       numArray = [...Array(capacityLessInCart).keys()].map(i => i + 1)
       newState.ticketsAvailable = numArray
@@ -274,17 +286,28 @@ class App extends Component {
     const userId = this.state.facebook.userDetails.id
     // console.log('userId inside getReservations:::: ', userId)
     if (userId) {
-      const reservations = await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/${userId}`)
+      const reservations = await fetch(`http://${process.env.REACT_APP_API_URL}/orders/${userId}`)
       const userReservations = await reservations.json()
       const newState = { ...this.State }
       //newState.userId = userId
-      newState.userReservations = userReservations
-      this.setState({ userReservations: newState.userReservations })
-      // console.log('userReservations', this.state.userReservations)
+      newState.userReservations = await userReservations
+      await this.setState({ userReservations: newState.userReservations })
+      await console.log('userReservations', this.state.userReservations)
     }
   }
 
+  expandReservationDetailsClick = (e) =>{
+    const newState = { ...this.state }
+    newState.displayUserReservationSummary = true
+    newState.reservationDetail = newState.userReservations.find(show => (parseInt(show.eventsId) === parseInt(e.target.id)))
+    newState.displayReservationDetail = true
 
+    this.setState({
+      displayUserReservationSummary: newState.displayUserReservationSummary,
+      reservationDetail: newState.reservationDetail,
+      displayReservationDetail: newState.displayReservationDetail
+    })
+  }
 
   findDiscountCode = async () => {
 
@@ -354,13 +377,130 @@ class App extends Component {
     this.setState({ filterString: newState.filterString })
   }
 
-  toggleReservationView = () => {
-    // console.log('click on toggleReservationView')
+  toggleReservationView = (e) => {
+    //console.log('click on toggleReservationView', e.target.id)
     const newState = { ...this.state }
+    //displayReservationDetail
     this.getReservations()
-    newState.displayReservations = !newState.displayReservations
-    this.setState({ displayReservations: newState.displayReservations })
+    newState.displayFuture = true
+    newState.displayPast = false
+    newState.displayUserReservationSummary = true
+    if(!newState.reservationDetail){
+      newState.displayReservations = !newState.displayReservations
+    }
+    if(e.target.id==='dashboard' || e.target.id==='summary'){
+      console.log("did we get inside dashboard?")
+      newState.displayReservationDetail = false
+      newState.reservationDetail = null
+    }
+    if(e.target.id === 'detail' || e.target.id === 'edit'){
+      newState.displayReservations = true
+      newState.displayEditReservation = false
+      newState.displayReservationDetail = true
+      newState.displayUserReservationSummary = false
+    }
+    this.setState({
+      displayReservations: newState.displayReservations,
+      reservationDetail: newState.reservationDetail,
+      displayUserReservationSummary: newState.displayUserReservationSummary,
+      displayReservationDetail: newState.displayReservationDetail,
+      displayFuture: newState.displayFuture,
+      displayPast:newState.displayPast,
+      displayEditReservation: newState.displayEditReservation
+    })
   }
+
+toggleFuturePast = (e) => {
+  console.log('this is this:', e.target.id)
+  const newState = { ...this.state }
+  if(e.target.id==='future'){
+    newState.displayPast = false
+    newState.displayFuture = true
+  } else if(e.target.id==='past'){
+    newState.displayPast = true
+    newState.displayFuture = false
+  }
+    this.setState({
+      displayPast: newState.displayPast,
+      displayFuture: newState.displayFuture
+    } )
+}
+
+toggleEditReservation = (e) =>{
+  console.log('click on:: toggleEditREservation ', e.target.id)
+  const newState = { ...this.state }
+  newState.displayEditReservation = !newState.displayEditReservation
+  newState.reservationToEditId = parseInt(e.target.id)
+  this.setState({
+    displayEditReservation: newState.displayEditReservation,
+    reservationToEditId: newState.reservationToEditId
+  })
+  console.log('reservationsId ', this.state.reservationToEditId)
+}
+
+
+reservationEditField = (e) => {
+  //this.setState({[e.target.name]: e.target.value})
+    this.setState({
+      ...this.state,
+        willCallEdits: {
+        ...this.state.willCallEdits,
+        [e.target.name]: e.target.value,
+        id: e.target.id
+      }
+  })
+  console.log('rETS', this.state.reservationEditsToSend)
+}
+
+submitReservationForm = (e) => {
+  e.preventDefault()
+  console.log('submit e target id', e.target.id)
+  console.log('this.state.willCallEdits::: ' , this.state.willCallEdits)
+  let newRETS = [ ...this.state.reservationEditsToSend ]
+  let newDisplayEditSuccess = this.state.displayEditSuccess
+  newDisplayEditSuccess = !newDisplayEditSuccess
+  newRETS.push(this.state.willCallEdits)
+  this.setState({
+    reservationEditsToSend: newRETS,
+    displayEditSuccess:newDisplayEditSuccess
+  })
+  this.handleEditSend(newRETS)
+}
+
+handleEditSend= async(newRETS)=>{
+  console.log('newRETS:::: ', newRETS)
+  newRETS.map(async(reservation)=>{
+    console.log('reservation inside patch map:::', reservation)
+    const editReservationResponse = await fetch(`http://${process.env.REACT_APP_API_URL}/reservations`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        id: parseInt(reservation.id),
+        willCallFirstName: reservation.willCallFirstName,
+        willCallLastName: reservation.willCallLastName,
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .catch()
+
+    const json = await editReservationResponse.json()
+    await console.log('editReservationResponse.json', json)
+    const e = {target: {id: "edit"}}
+
+    await this.toggleReservationView(e)
+    if(editReservationResponse.status === 200){
+      console.log('editReservationResponse', editReservationResponse.status)
+    }
+  })
+}
+
+toggleEditSuccess=()=>{
+    let newStateDisplayEditSuccess = {...this.state.displayEditSuccess}
+    newStateDisplayEditSuccess=!newStateDisplayEditSuccess
+    this.setState({displayEditSuccess: newStateDisplayEditSuccess})
+}
+
 
   toggleLoggedIn = (boolean) => {
     if (boolean === false){
@@ -390,7 +530,7 @@ class App extends Component {
     // this.getHeadliners()
     const newState = { ...this.state }
     newState.displayLoginView = !newState.displayLoginView
-    
+
     if (newState.adminView) {
       newState.adminView = !newState.adminView
       this.setState({
@@ -420,6 +560,7 @@ class App extends Component {
 
 
   responseFacebook = async (response) => {
+    console.log('searching for onLoad response facbook', response)
 
       this.setState({
         ...this.state,
@@ -434,6 +575,7 @@ class App extends Component {
 
       })
       this.toggleLoggedIn(true)
+      this.onLoad()
       const usersInfo = await fetch('http://localhost:3000/users', {
       //const usersInfo = await fetch('https://something-innocuous.herokuapp.com/users', {
         method: 'POST',
@@ -660,6 +802,7 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
+    //FIX:: timer needs to be set on the server as well or instead, because if user closes app setTimeout won't expire and inCart tickets will not release.
 
     fetch(`http://${process.env.REACT_APP_API_URL}/pickup_parties`, {
       method: 'PATCH',
@@ -716,17 +859,7 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
-    // const orderJson = await ordersResponse.json()
-    // if (this.state.userId) {
-    //   await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/users/${this.state.userId}`, {
-    //     method: 'POST',
-    //     body: JSON.stringify({ reservationId: orderJson.id }),
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     }
-    //   })
-    //   this.getReservations(this.state.userId)
-    // }
+
 
     this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [] })
 
@@ -1030,6 +1163,11 @@ postOldData = async () => {
   // console.log('post old data response', response)
 }
 
+toggleAdminView = () => {
+  let adminView = this.state.adminView
+  adminView = !adminView
+  this.setState({ adminView })
+}
   render() {
     return (
 
@@ -1037,7 +1175,7 @@ postOldData = async () => {
         <div className="App">
           {/* Desktop View */}
           <MediaQuery minWidth={8}>
-            {this.state.displayLoadingScreen ?
+            {this.state.displayLoadingScreen && !this.state.facebook.isLoggedIn ?
               <Loading
                 onLoad={this.onLoad}
                 handleBus={this.handleBus} />
@@ -1065,29 +1203,45 @@ postOldData = async () => {
                   :
                   this.state.displayLoginView ?
                   <LoginView
-                    displayReservations={this.state.displayReservations}
-                    responseGoogle={this.responseGoogle}
-                    responseSpotify={this.responseSpotify}
-                    toggleLoggedIn={this.toggleLoggedIn}
-                    userDetails={this.state.userDetails}
-                    profileClick={this.profileClick}
-                    toggleReservationView={this.toggleReservationView}
-                    userReservations={this.state.userReservations}
-                    addBorder={this.addBorder}
-                    displayShow={this.state.displayShow}
-                    filterString={this.state.filterString}
-                    showsExpandClick={this.showsExpandClick}
-                    responseFacebook={this.responseFacebook}
-                    continueAsGuest={this.continueAsGuest}
-                    facebook={this.state.facebook}
-                    postOldData={this.postOldData}/>
+                  displayReservationDetail={this.state.displayReservationDetail}
+                  displayReservations={this.state.displayReservations}
+                  responseGoogle={this.responseGoogle}
+                  responseSpotify={this.responseSpotify}
+                  toggleLoggedIn={this.toggleLoggedIn}
+                  userDetails={this.state.userDetails}
+                  profileClick={this.profileClick}
+                  toggleReservationView={this.toggleReservationView}
+                  userReservations={this.state.userReservations}
+                  addBorder={this.addBorder}
+                  displayShow={this.state.displayShow}
+                  filterString={this.state.filterString}
+                  showsExpandClick={this.showsExpandClick}
+                  responseFacebook={this.responseFacebook}
+                  continueAsGuest={this.continueAsGuest}
+                  facebook={this.state.facebook}
+                  toggleAdminView={this.toggleAdminView}
+                  expandReservationDetailsClick={this.expandReservationDetailsClick}
+                  reservationDetail={this.state.reservationDetail}
+                  toggleFuturePast={this.toggleFuturePast}
+                  displayFuture={this.state.displayFuture}
+                  displayPast={this.state.displayPast}
+                  getEventDetails={this.getEventDetails}
+                  displayUserReservationSummary={this.state.displayUserReservationSummary}
+                  toggleEditReservation={this.toggleEditReservation}
+                  displayEditReservation={this.state.displayEditReservation}
+                  reservationEditField={this.reservationEditField}
+                  submitReservationForm={this.submitReservationForm}
+                  reservationToEditId={this.state.reservationToEditId}
+                  displayEditSuccess={this.state.displayEditSuccess}
+                  toggleEditSuccess={this.toggleEditSuccess}
+                />
                   :
                   this.state.displayAboutus ?
                   <Aboutus
                     dismissBios={this.dismissBios}
                     readBios={this.readBios}
                     displayBios={this.state.displayBios}
-                    hideAboutus={this.hideAboutus} 
+                    hideAboutus={this.hideAboutus}
                   />
                   :
                   this.state.shows ?
@@ -1152,13 +1306,13 @@ postOldData = async () => {
                             updateDiscountCode={this.updateDiscountCode}
                             updatePurchaseField={this.updatePurchaseField}
                             validated={this.state.validated}
-                            validatedElements={this.state.validatedElements} 
+                            validatedElements={this.state.validatedElements}
                           />
                           </div>
                           :
                           <SponsorBox
                             showAboutus={this.showAboutus}
-                            displayAboutus={this.state.displayAboutus} 
+                            displayAboutus={this.state.displayAboutus}
                           />}
                       </div>
                         <MediaQuery maxWidth={799}>
@@ -1203,9 +1357,11 @@ postOldData = async () => {
                       </MediaQuery>
 
                     </div>
-                  </React.Fragment> 
-                  : 
-                <Loading />
+                  </React.Fragment>
+                  :
+                <Loading
+                  responseFacebook={this.responseFacebook}
+                />
               }
             </div>
             }

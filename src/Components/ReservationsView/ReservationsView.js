@@ -7,23 +7,35 @@ import ShowReservation from './ShowReservation'
 const ReservationsView = (props) => {
 
   return (
-    <div className=''>
-      <div className='container-fluid mt-3'>
-      <div className="col-12">
-        <ul className="list-group">
+    <div className='row mt-3 mr-2'>
+      <div className='col-12'>
+      <div className="">
+        <ul className="">
           {props.userReservations ?
-            <div>
-                  upcoming reservations
-                  <ShowReservation
-                    userReservations={props.userReservations} />
-                </div>
-            : ''}
+            <div className="row">
+              <div className="row">
+                <ShowReservation
+                  userReservations={props.userReservations}
+                  expandReservationDetailsClick={props.expandReservationDetailsClick}
+                  reservationDetail={props.reservationDetail}
+                  displayFuture={props.displayFuture}
+                  displayPast={props.displayPast}
+                  getEventDetails={props.getEventDetails}
+                  toggleEditReservation={props.toggleEditReservation}
+                  displayEditReservation={props.displayEditReservation}
+                  reservationEditField={props.reservationEditField}
+                  submitReservationForm={props.submitReservationForm}
+                  reservationToEditId={props.reservationToEditId}
+                  displayEditSuccess={props.displayEditSuccess}
+                  toggleEditSuccess={props.toggleEditSuccess}
+                  />
+              </div>
+            </div>
+          : ''}
         </ul>
-        </div>
-
-
       </div>
-    </div>)
+    </div>
+  </div>)
 }
 
 export default ReservationsView;
