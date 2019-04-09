@@ -97,11 +97,11 @@ class AdminView extends React.Component {
       let x = 0;
       const reservationsInterval = setInterval(()=>{
         this.getReservations()
-        if (++x === 20) {
+        if (++x === 40) {
           console.log('clear')
           clearInterval(reservationsInterval)
         }  
-      }, 5000)
+      }, 30000)
       this.setState({reservationsInterval})
     }
     else if (stop && this.state.reservationsInterval) {
