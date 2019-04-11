@@ -576,8 +576,8 @@ toggleEditSuccess=()=>{
       })
       this.toggleLoggedIn(true)
       this.onLoad()
-      const usersInfo = await fetch('https://localhost:3000/users', {
-      //const usersInfo = await fetch('https://something-innocuous.herokuapp.com/users', {
+      //const usersInfo = await fetch('https://localhost:3000/users', {
+      const usersInfo = await fetch('https://innocuous-junior.herokuapp.com/users', {
         method: 'POST',
         body: JSON.stringify({
             firstName: response.name.split(" ")[0],
