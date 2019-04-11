@@ -6,7 +6,7 @@ export default class Checkout extends React.Component {
   onToken = (token) => {
     const orderInfo = this.props.cartToSend
     orderInfo.receiptDescription = this.props.receiptDescription
-    fetch(`http://${process.env.REACT_APP_API_URL}/orders/charge`, {
+    fetch(`https://${process.env.REACT_APP_API_URL}/orders/charge`, {
       method: 'POST',
       body: JSON.stringify({
         stripeEmail: token.email,

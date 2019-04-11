@@ -131,7 +131,7 @@ class App extends Component {
 
 
   async componentDidMount() {
-    const response = await fetch(`http://${process.env.REACT_APP_API_URL}/events`)
+    const response = await fetch(`https://${process.env.REACT_APP_API_URL}/events`)
     const allShows = await response.json()
 
     //filters out expired shows and shows that don't meet criteria, and shows that are denied.
@@ -158,11 +158,11 @@ class App extends Component {
     })
 
     this.setState({ shows: newState })
-    const pickups = await fetch(`http://${process.env.REACT_APP_API_URL}/pickup_locations`)
+    const pickups = await fetch(`https://${process.env.REACT_APP_API_URL}/pickup_locations`)
     const pickupLocations = await pickups.json()
     this.setState({ pickupLocations })
 
-    const getPickupParties = await fetch(`http://${process.env.REACT_APP_API_URL}/pickup_parties`)
+    const getPickupParties = await fetch(`https://${process.env.REACT_APP_API_URL}/pickup_parties`)
     const pickupParties = await getPickupParties.json()
     this.setState({ pickupParties })
   }
@@ -286,7 +286,7 @@ class App extends Component {
     const userId = this.state.facebook.userDetails.id
     // console.log('userId inside getReservations:::: ', userId)
     if (userId) {
-      const reservations = await fetch(`http://${process.env.REACT_APP_API_URL}/orders/${userId}`)
+      const reservations = await fetch(`https://${process.env.REACT_APP_API_URL}/orders/${userId}`)
       const userReservations = await reservations.json()
       const newState = { ...this.State }
       //newState.userId = userId
@@ -313,7 +313,7 @@ class App extends Component {
 
     const ticketQuantity = this.state.ticketQuantity
     const eventId = this.state.inCart[0].id
-    const response = await fetch(`http://${process.env.REACT_APP_API_URL}/discount_codes/${this.state.discountCode}`)
+    const response = await fetch(`https://${process.env.REACT_APP_API_URL}/discount_codes/${this.state.discountCode}`)
     const json = await response.json()
 
     const result = json.filter((discountObj) => discountObj.eventsId === eventId)[0]
@@ -471,7 +471,7 @@ handleEditSend= async(newRETS)=>{
   console.log('newRETS:::: ', newRETS)
   newRETS.map(async(reservation)=>{
     console.log('reservation inside patch map:::', reservation)
-    const editReservationResponse = await fetch(`http://${process.env.REACT_APP_API_URL}/reservations`, {
+    const editReservationResponse = await fetch(`https://${process.env.REACT_APP_API_URL}/reservations`, {
       method: 'PATCH',
       body: JSON.stringify({
         id: parseInt(reservation.id),
@@ -576,7 +576,7 @@ toggleEditSuccess=()=>{
       })
       this.toggleLoggedIn(true)
       this.onLoad()
-      const usersInfo = await fetch('http://localhost:3000/users', {
+      const usersInfo = await fetch('https://localhost:3000/users', {
       //const usersInfo = await fetch('https://something-innocuous.herokuapp.com/users', {
         method: 'POST',
         body: JSON.stringify({
@@ -804,7 +804,7 @@ toggleEditSuccess=()=>{
     this.setState(newState)
     //FIX:: timer needs to be set on the server as well or instead, because if user closes app setTimeout won't expire and inCart tickets will not release.
 
-    fetch(`http://${process.env.REACT_APP_API_URL}/pickup_parties`, {
+    fetch(`https://${process.env.REACT_APP_API_URL}/pickup_parties`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -816,7 +816,7 @@ toggleEditSuccess=()=>{
       }
     })
 
-    setTimeout(fetch(`http://${process.env.REACT_APP_API_URL}/pickup_parties`, {
+    setTimeout(fetch(`https://${process.env.REACT_APP_API_URL}/pickup_parties`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -852,7 +852,7 @@ toggleEditSuccess=()=>{
     const cartObj = this.state.cartToSend
     cartObj.userId = this.state.facebook.userDetails.id
     // console.log('cartObj inside purchase.....', cartObj)
-    const ordersResponse = await fetch(`http://${process.env.REACT_APP_API_URL}/orders`, {
+    const ordersResponse = await fetch(`https://${process.env.REACT_APP_API_URL}/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
       headers: {
@@ -1153,7 +1153,7 @@ toggleEditSuccess=()=>{
 postOldData = async () => {
   const newEventsArr = this.state.oldStuff
   console.log('inSide post old data function', newEventsArr)
-  // const response = await fetch('http://localhost:3000/fuel', {
+  // const response = await fetch('https://localhost:3000/fuel', {
   //   method: 'POST',
   //   body: JSON.stringify(newEventsArr),
   //   headers: {
@@ -1188,8 +1188,8 @@ toggleAdminView = () => {
                 profileClick={this.profileClick}
                 logout={this.logout}
                 spotifyResponse={this.state.spotifyResponse}
-                userDashboard={this.userDashboard} 
-                adminView={this.state.adminView}                
+                userDashboard={this.userDashboard}
+                adminView={this.state.adminView}
                 />
 
                 {this.state.adminView ?
@@ -1198,8 +1198,8 @@ toggleAdminView = () => {
                     searchShows={this.searchShows}
                     shows={this.state.shows}
                     showsExpandClick={this.showsExpandClick}
-                    userDetails={this.state.facebook.userDetails} 
-                  /> 
+                    userDetails={this.state.facebook.userDetails}
+                  />
                   :
                   this.state.displayLoginView ?
                   <LoginView
