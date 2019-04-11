@@ -10,7 +10,9 @@ const ShowDetailView = (props) => {
   let headlinerBio
   if (props.displayShow) {
     show = props.displayShow
+    if(show.headlinerBio){
     headlinerBio = show.headlinerBio.split('<a')[0]
+    }
   }
 
 
