@@ -6,7 +6,7 @@ import ReservationsList from './ReservationsList';
 
 
 class AdminView extends React.Component {
-  
+
   state = {
     displayUserCheckin: false,
     displayList: 'ShowList',
@@ -25,13 +25,13 @@ class AdminView extends React.Component {
     console.log('mounted')
     this.setState({pickupLocations: this.props.pickupLocations})
   }
-  
+
   searchItems = event => {
     const newState = { ...this.state }
     newState.filterString = event.target.value
     this.setState({ filterString: newState.filterString })
   }
-  
+
   toggleProperty = async (property) => {
     let newState = {...this.state}
     newState.filterString = ''
@@ -64,7 +64,7 @@ class AdminView extends React.Component {
 
   getReservations = async () => {
     console.log('getting reservations');
-    await fetch(`http://${process.env.REACT_APP_API_URL}/pickup_parties/findId`, {
+    await fetch(`https://innocuous-junior.herokuapp.com/pickup_parties/findId`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -75,7 +75,7 @@ class AdminView extends React.Component {
       }
     }).then(async (response) =>  {
       const thisPickupParty = await response.json()
-      const findReservations = await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/findOrders`, {
+      const findReservations = await fetch(`https://innocuous-junior.herokuapp.com/reservations/findOrders`, {
         method: 'PATCH',
         body: JSON.stringify({
           pickupPartiesId: thisPickupParty.id,
@@ -86,7 +86,7 @@ class AdminView extends React.Component {
       })
       const reservations = await findReservations.json()
       this.setState({
-        reservations, 
+        reservations,
         thisCapacity: thisPickupParty.capacity})
     })
   }
@@ -100,7 +100,7 @@ class AdminView extends React.Component {
         if (++x === 40) {
           console.log('clear')
           clearInterval(reservationsInterval)
-        }  
+        }
       }, 30000)
       this.setState({reservationsInterval})
     }
@@ -113,7 +113,7 @@ class AdminView extends React.Component {
 
   toggleCheckedIn = async (isCheckedIn, reservation) => {
     let newStatus = isCheckedIn ? 2 : 1
-    await fetch(`http://${process.env.REACT_APP_API_URL}/reservations/${reservation.id}`, {
+    await fetch(`https://innocuous-junior.herokuapp.com/reservations/${reservation.id}`, {
         method: 'PATCH',
         body: JSON.stringify({
           status: newStatus,
@@ -140,15 +140,15 @@ class AdminView extends React.Component {
     })[0]
     this.setState({thisPickup})
   }
-  
+
   render (){
     let { isStaff, isAdmin, isDriver } = this.props.userDetails
 
     return(
       <div className="container AdminView" style={{ Height: '100%' }}>
-        {this.state.displayUserCheckin ? 
-          <UserCheckin 
-            eventId={this.state.eventId}  
+        {this.state.displayUserCheckin ?
+          <UserCheckin
+            eventId={this.state.eventId}
             filterString={this.state.filterString}
             getReservations={this.getReservations}
             displayList={this.state.displayList}
@@ -157,25 +157,25 @@ class AdminView extends React.Component {
             pickupLocationId={this.state.pickupLocationId}
             makeSelection={this.makeSelection}
             reservations={this.state.reservations}
-            searchItems={this.searchItems} 
+            searchItems={this.searchItems}
             shows={this.props.shows}
-            stopRefreshing={this.refreshReservations} 
+            stopRefreshing={this.refreshReservations}
             thisShow={this.state.thisShow}
             thisPickup={this.state.thisPickup}
             thisCapacity={this.state.thisCapacity}
             toggleCheckedIn={this.toggleCheckedIn}
             toggleProperty={this.toggleProperty}
-          /> 
-          : 
+          />
+          :
           <div className="col mt-2 adminButtons">
-            {isAdmin ? 
-              <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>console.log('also click also')}>Admin Panel</button> 
+            {isAdmin ?
+              <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>console.log('also click also')}>Admin Panel</button>
             : ''}
-            {isDriver ? 
-              <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>console.log('also click')}>Driver Shifts</button> 
+            {isDriver ?
+              <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>console.log('also click')}>Driver Shifts</button>
             : ''}
-            {isStaff ? 
-              <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>this.toggleProperty('displayUserCheckin')}>Rider Check-In</button> 
+            {isStaff ?
+              <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>this.toggleProperty('displayUserCheckin')}>Rider Check-In</button>
             : ''}
           </div>
         }
