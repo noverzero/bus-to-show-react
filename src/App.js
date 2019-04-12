@@ -598,8 +598,8 @@ toggleEditSuccess=()=>{
           userDetails: newState.userDetails
         }
       })
-      // console.log('userObj response to work with', userObj)
-      // console.log('this.state.facebook.userDetails::::', this.state.facebook.userDetails)
+      console.log('userObj response to work with', userObj)
+      console.log('this.state.facebook.userDetails::::', this.state.facebook.userDetails)
       //this.props.getReservations(json.id)
   }
 
@@ -751,6 +751,8 @@ toggleEditSuccess=()=>{
 
   addToCart = async () => {
     const newState = { ...this.state }
+    console.log('THIS.STATE.facebook.userDetails.id::: ', this.state.facebook.userDetails.id)
+    console.log('newState.facebook.userDetails.id::: ', newState.facebook.userDetails.id)
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const basePrice = Number(pickupLocation.basePrice)
     const ticketQuantity = parseInt(this.state.ticketQuantity)
@@ -774,7 +776,7 @@ toggleEditSuccess=()=>{
     newState.cartToSend.ticketQuantity = 0
     newState.cartToSend.totalCost = 0
     newState.cartToSend.discountCode = null
-    newState.cartToSend.userId = newState.facebook.userDetails.userId
+    newState.cartToSend.userId = newState.facebook.userDetails.id
     newState.validatedElements = {
       fName: null,
       lName: null,
