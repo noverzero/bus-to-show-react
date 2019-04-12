@@ -134,13 +134,7 @@ const LoginView = (props) => {
                 <strong>My Reservations</strong>
               </div>
               <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
-                <strong>Fuel Savings Calculator</strong>
-              </div>
-              <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
-                <strong>All Events</strong>
-              </div>
-              <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
-                <strong>About Us</strong>
+                <strong>Back to Events</strong>
               </div>
             </div>
 
@@ -246,21 +240,15 @@ const LoginView = (props) => {
                 :
                 <div>
                 {(isStaff || isAdmin || isDriver) ?
-                <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleAdminView}>
-                  <strong>Employees</strong>
-                </div> : ''}
-                <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleReservationView}>
-                  <strong>My Reservations</strong>
-                </div>
-                <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
-                  <strong>Fuel Savings Calculator</strong>
-                </div>
-                <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
-                  <strong>All Events</strong>
-                </div>
-                <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
-                  <strong>About Us</strong>
-                </div>
+                  <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleAdminView}>
+                    <strong>Employees</strong>
+                  </div> : ''}
+                  <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={toggleReservationView}>
+                    <strong>My Reservations</strong>
+                  </div>
+                  <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={profileClick}>
+                    <strong>Back to Events</strong>
+                  </div>
               </div>
 
             }

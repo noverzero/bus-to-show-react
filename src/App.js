@@ -392,6 +392,7 @@ class App extends Component {
       console.log("did we get inside dashboard?")
       newState.displayReservationDetail = false
       newState.reservationDetail = null
+      newState.displayUserReservationSummary = false
     }
     if(e.target.id === 'detail' || e.target.id === 'edit'){
       newState.displayReservations = true
