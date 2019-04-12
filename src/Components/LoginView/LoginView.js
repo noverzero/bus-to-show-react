@@ -26,6 +26,12 @@ const LoginView = (props) => {
 
   return (
     <div className='container-fluid'>
+    {!props.displayReservationDetail && props.displayUserReservationSummary
+    ?
+    <div className="alert alert-warning cart-item-font" role="alert">Note: This view only displays the reservations you made while you were logged in.  If you made reservations as a guest (not logged in), including all reservations made before 4/11/19 (when this feature was launched) do not display, they are still in our system under your name, but they are not linked to your account. Confirmation emails are sent to the email address you enter at time of checkout regardless of whether or not you are logged in.
+    </div>
+    : ''
+    }
     <MediaQuery minWidth={800}>
       <div className="w-25 mx-auto">
         <div className='row p-2 mb-4'>
@@ -146,7 +152,7 @@ const LoginView = (props) => {
       </div>
       </MediaQuery>
       <MediaQuery maxWidth={799}>
-        <div className="w-50 mx-auto">
+        <div className="mx-auto">
           <div className='row p-2'>
             {!facebook.isLoggedIn ?
             <div className='col-12 text-center'>
