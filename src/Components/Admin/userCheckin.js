@@ -6,22 +6,25 @@ import PickupsList from './PickupsList'
 import ReservationsList from './ReservationsList'
 
 const UserCheckin = (props) => {
-  let { thisShow, thisPickup, searchItems, toggleProperty, filterString, 
-      shows, makeSelection, displayList, pickupLocations, reservations, 
+  let { thisShow, thisPickup, searchItems, toggleProperty, filterString,
+      shows, makeSelection, displayList, pickupLocations, reservations,
       toggleCheckedIn, thisCapacity, stopRefreshing } = props
-  
+      
   let thisDate
 
-  const previousProperty = ( 
-      displayList === 'ShowList' ? 'displayUserCheckin' : 
-      displayList === 'PickupsList' ? 'ShowList' : 
-      displayList === 'ReservationsList' ? 'PickupsList' : 
+  const previousProperty = (
+      displayList === 'ShowList' ? 'displayUserCheckin' :
+      displayList === 'PickupsList' ? 'ShowList' :
+      displayList === 'ReservationsList' ? 'PickupsList' :
       null)
 
   const shortName = (locationName) => {
     if (locationName) return locationName = locationName.split('- ')[1]
   }
 
+  const city = (locationName) => {
+    if (locationName) return locationName = locationName.split('- ')[0]
+  }
   const headerLabel = (displayList) => {
     if(thisShow) {
       thisDate = thisShow.date
@@ -30,19 +33,17 @@ const UserCheckin = (props) => {
     if(thisPickup) thisPickup = thisPickup.locationName
     if (displayList === 'ShowList') return (
       <div>Select a Show<br/>
-        Select a Pickup Location<br/>
-        Capacity: ... / Sold ...
       </div>)
-    
+
     else if (displayList === 'PickupsList') return (
       <div>{thisDate} - {thisShow}<br/>
         Select a Pickup Location<br/>
-        Capacity: ... / Sold ...
+
       </div>)
-    else if (displayList === 'ReservationsList' && thisCapacity) return (
+    else if (displayList === 'ReservationsList' ) return (
       <div>{thisDate} - {thisShow}<br />
-        {shortName(thisPickup)}<br/>
-        Capacity: {thisCapacity} / Sold: {reservations.length}
+        {city(thisPickup)} - {shortName(thisPickup)}<br/>
+        Cap: {thisCapacity + reservations.length} / Avail: {thisCapacity} / Sold: {reservations.length}
       </div>)
     else return ''
   }
@@ -66,11 +67,11 @@ const UserCheckin = (props) => {
     const newHeight = window.innerHeight - totalHeight
     console.log(newHeight);
     return `${newHeight}px`
-    
+
   }
 
   return (
-    
+
     <div className='ShowList mt-2' style={{ maxHeight: '100%'}}>
     <div className='admin-list-header text-center ml-n1 mr-n1'>
       {headerLabel(displayList)}
@@ -96,24 +97,24 @@ const UserCheckin = (props) => {
                 shows={shows}
                 toggleProperty={toggleProperty}
               />
-            </div>  
+            </div>
             <div className={displayList === 'PickupsList' ? '' : 'hidden'}>
               <PickupsList
                 filterString={filterString}
                 makeSelection={makeSelection}
                 pickupLocations={pickupLocations}
                 resetStuff={resetStuff}
-              />  
+              />
             </div>
             <div>
-            {displayList === 'ReservationsList' ? 
+            {displayList === 'ReservationsList' ?
               <ReservationsList
                 filterString={filterString}
                 reservations={reservations}
                 toggleCheckedIn={toggleCheckedIn}
-              /> 
+              />
             : '' }
-            </div>  
+            </div>
           </ul>
         </div>
       </div>

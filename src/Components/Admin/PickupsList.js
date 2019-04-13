@@ -8,7 +8,11 @@ const PickupsList = (props) => {
   const shortName = (locationName) => {
     return locationName = locationName.split('- ')[1]
   }
-  
+
+  const city = (locationName) => {
+    if (locationName) return locationName = locationName.split('- ')[0]
+  }
+
   const shortAddress = (streetAddress) => {
     return streetAddress = streetAddress.split(', CO')[0]
   }
@@ -21,12 +25,12 @@ const PickupsList = (props) => {
       {filterPickups.length > 0 ?
 
         filterPickups.map(location =>
-        <li className="list-group-item admin-list-item" 
-            key={location.id} 
+        <li className="list-group-item admin-list-item"
+            key={location.id}
             id={location.id}>
           <div className="row" id={location.id}>
-            <div className="col-md-10 list-item-font" style={{fontSize: '1rem'}} id={location.id}> 
-              <strong>{shortName(location.locationName)}</strong>
+            <div className="col-md-10 list-item-font" style={{fontSize: '1rem'}} id={location.id}>
+              <strong>{city(location.locationName)} - {shortName(location.locationName)}</strong>
               <br />
               {shortAddress(location.streetAddress)}
               <br />
@@ -39,7 +43,7 @@ const PickupsList = (props) => {
                 Select
               </button>
           </div>
-        </li>) 
+        </li>)
         : 'Pickup location not found'}
     </div>
   )
