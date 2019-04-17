@@ -64,7 +64,7 @@ class AdminView extends React.Component {
 
   getReservations = async () => {
     console.log('getting reservations');
-    await fetch(`https://innocuous-junior.herokuapp.com/pickup_parties/findId`, {
+    await fetch(`https://bts-test-backend.herokuapp.com/pickup_parties/findId`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -75,7 +75,7 @@ class AdminView extends React.Component {
       }
     }).then(async (response) =>  {
       const thisPickupParty = await response.json()
-      const findReservations = await fetch(`https://innocuous-junior.herokuapp.com/reservations/findOrders`, {
+      const findReservations = await fetch(`https://bts-test-backend.herokuapp.com/reservations/findOrders`, {
         method: 'PATCH',
         body: JSON.stringify({
           pickupPartiesId: thisPickupParty.id,
@@ -113,7 +113,7 @@ class AdminView extends React.Component {
 
   toggleCheckedIn = async (isCheckedIn, reservation) => {
     let newStatus = isCheckedIn ? 2 : 1
-    await fetch(`https://innocuous-junior.herokuapp.com/reservations/${reservation.id}`, {
+    await fetch(`https://bts-test-backend.herokuapp.com/reservations/${reservation.id}`, {
         method: 'PATCH',
         body: JSON.stringify({
           status: newStatus,

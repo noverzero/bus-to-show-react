@@ -131,7 +131,7 @@ class App extends Component {
 
 
   async componentDidMount() {
-    const response = await fetch(`https://innocuous-junior.herokuapp.com/events`)
+    const response = await fetch(`https://bts-test-backend.herokuapp.com/events`)
     const allShows = await response.json()
 
     //filters out expired shows and shows that don't meet criteria, and shows that are denied.
@@ -158,11 +158,11 @@ class App extends Component {
     })
 
     this.setState({ shows: newState })
-    const pickups = await fetch(`https://innocuous-junior.herokuapp.com/pickup_locations`)
+    const pickups = await fetch(`https://bts-test-backend.herokuapp.com/pickup_locations`)
     const pickupLocations = await pickups.json()
     this.setState({ pickupLocations })
 
-    const getPickupParties = await fetch(`https://innocuous-junior.herokuapp.com/pickup_parties`)
+    const getPickupParties = await fetch(`https://bts-test-backend.herokuapp.com/pickup_parties`)
     const pickupParties = await getPickupParties.json()
     this.setState({ pickupParties })
   }
@@ -286,7 +286,7 @@ class App extends Component {
     const userId = this.state.facebook.userDetails.id
     // console.log('userId inside getReservations:::: ', userId)
     if (userId) {
-      const reservations = await fetch(`https://innocuous-junior.herokuapp.com/orders/${userId}`)
+      const reservations = await fetch(`https://bts-test-backend.herokuapp.com/orders/${userId}`)
       const userReservations = await reservations.json()
       const newState = { ...this.State }
       //newState.userId = userId
@@ -313,7 +313,7 @@ class App extends Component {
 
     const ticketQuantity = this.state.ticketQuantity
     const eventId = this.state.inCart[0].id
-    const response = await fetch(`https://innocuous-junior.herokuapp.com/discount_codes/${this.state.discountCode}`)
+    const response = await fetch(`https://bts-test-backend.herokuapp.com/discount_codes/${this.state.discountCode}`)
     const json = await response.json()
 
     const result = json.filter((discountObj) => discountObj.eventsId === eventId)[0]
@@ -472,7 +472,7 @@ handleEditSend= async(newRETS)=>{
   console.log('newRETS:::: ', newRETS)
   newRETS.map(async(reservation)=>{
     console.log('reservation inside patch map:::', reservation)
-    const editReservationResponse = await fetch(`https://innocuous-junior.herokuapp.com/reservations`, {
+    const editReservationResponse = await fetch(`https://bts-test-backend.herokuapp.com/reservations`, {
       method: 'PATCH',
       body: JSON.stringify({
         id: parseInt(reservation.id),
@@ -578,7 +578,7 @@ toggleEditSuccess=()=>{
       this.toggleLoggedIn(true)
       this.onLoad()
       //const usersInfo = await fetch('https://localhost:3000/users', {
-      const usersInfo = await fetch('https://innocuous-junior.herokuapp.com/users', {
+      const usersInfo = await fetch('https://bts-test-backend.herokuapp.com/users', {
         method: 'POST',
         body: JSON.stringify({
             firstName: response.name.split(" ")[0],
@@ -807,7 +807,7 @@ toggleEditSuccess=()=>{
     this.setState(newState)
     //FIX:: timer needs to be set on the server as well or instead, because if user closes app setTimeout won't expire and inCart tickets will not release.
 
-    fetch(`https://innocuous-junior.herokuapp.com/pickup_parties`, {
+    fetch(`https://bts-test-backend.herokuapp.com/pickup_parties`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -819,7 +819,7 @@ toggleEditSuccess=()=>{
       }
     })
 
-    setTimeout(fetch(`https://innocuous-junior.herokuapp.com/pickup_parties`, {
+    setTimeout(fetch(`https://bts-test-backend.herokuapp.com/pickup_parties`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -855,7 +855,7 @@ toggleEditSuccess=()=>{
     const cartObj = this.state.cartToSend
     cartObj.userId = this.state.facebook.userDetails.id
     // console.log('cartObj inside purchase.....', cartObj)
-    const ordersResponse = await fetch(`https://innocuous-junior.herokuapp.com/orders`, {
+    const ordersResponse = await fetch(`https://bts-test-backend.herokuapp.com/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
       headers: {
