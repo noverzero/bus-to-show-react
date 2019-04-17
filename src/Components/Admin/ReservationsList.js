@@ -36,7 +36,7 @@ const ReservationsList = (props) => {
           let toggleStatus = reservation.status
 
           if (reservation.status == 3) return null
-
+          if (reservation.status == 1 || reservation.status == 2) 
           return <li className="list-group-item admin-list-item"
             key={reservation.id}
             id={reservation.id}
