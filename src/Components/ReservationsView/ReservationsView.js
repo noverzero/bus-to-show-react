@@ -6,54 +6,36 @@ import ShowReservation from './ShowReservation'
 
 const ReservationsView = (props) => {
 
-
   return (
-    <div className='Shows'>
-      <div className='container mt-3'>
-        <div className="list-group">
-          <div className="list-group-item show-header">
-
-            <div className="row show-list-flex">
-
-              <div className="col-2 mb-3 ml-5" >
-                <strong>Date  </strong>
-              </div>
-              <div className="col-2 mb-3" >
-                <strong>Event  </strong>
-              </div>
-              <div className="col-2 mb-3" >
-                <strong>Start Time  </strong>
-              </div>
-              <div className="col-2 mb-3 mr-2" >
-                <strong>Will Call Name  </strong>
-              </div>
-              <div className="col-2 mb-3 mr-2" >
-                <strong>Pickup Location  </strong>
-              </div>
-              <div className="col-2 mr-2">
+    <div className='row mt-3 mr-2'>
+      <div className='col-12'>
+      <div className="">
+        <ul className="">
+          {props.userReservations ?
+            <div className="row">
+              <div className="row">
+                <ShowReservation
+                  userReservations={props.userReservations}
+                  expandReservationDetailsClick={props.expandReservationDetailsClick}
+                  reservationDetail={props.reservationDetail}
+                  displayFuture={props.displayFuture}
+                  displayPast={props.displayPast}
+                  getEventDetails={props.getEventDetails}
+                  toggleEditReservation={props.toggleEditReservation}
+                  displayEditReservation={props.displayEditReservation}
+                  reservationEditField={props.reservationEditField}
+                  submitReservationForm={props.submitReservationForm}
+                  reservationToEditId={props.reservationToEditId}
+                  displayEditSuccess={props.displayEditSuccess}
+                  toggleEditSuccess={props.toggleEditSuccess}
+                  />
               </div>
             </div>
-
-            <ul className="list-group">
-
-              {props.reservations ?
-                <div>
-                  <div className="row ">
-                    <div className="col-md-12">
-                      <ShowReservation
-                        addBorder={props.addBorder}
-                        displayShow={props.displayShow}
-                        reservations={props.reservations} />
-                    </div>
-                  </div>
-                </div>
-                : ''}
-            </ul>
-
-          </div>
-        </div>
+          : ''}
+        </ul>
       </div>
-    </div>)
+    </div>
+  </div>)
 }
 
 export default ReservationsView;

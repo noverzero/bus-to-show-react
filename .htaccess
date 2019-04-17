@@ -1,0 +1,84 @@
+
+RewriteEngine on
+
+RewriteOptions inherit
+RewriteRule ^fdgd$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^redrocks\-discount\-presales\/050217\-tue\-chance\-the\-rapper\-bus\-to\-red\-rocks\-and\-back\-discounted\-presale\-1$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^redrocks\-discount\-presales\/20170423\-snoop\-dogg\-wiz\-khalifa$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^20170423snoopdogg$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^redrocks\-discount\-presales\/20170420flosstradamus$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^20170420flosstradamus$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^treyanastasio$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^redrocks\-discount\-presales\/20170419methodmanredman$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^thescarlet$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^ttv$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^LCDSOUNDSYSTEM$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^filmontherocks$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^cervantesmasterpiece$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^bts\-bus\-party\-to\-chromeo\-cut\-copy\-8\-05\-14$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^bus\-party\-to\-black\-keys\-at\-pepsi\-center\-11\-13\-14\/$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^bustoshow\.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.bustoshow\.org$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^bus\-party\-to\-boys\-noize\-bauuer\-at\-ogden\-theatre\-10\-22\-14\/$ "https\:\/\/bustoshow\.org\/" [R=301,L]
+RewriteCond %{REQUEST_URI} !^/$
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule .* / [L,R=302]

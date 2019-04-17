@@ -4,13 +4,10 @@ import moment from 'moment'
 import '../../App.css';
 
 const CartItem = (props) => {
-  // console.log('CI', props)
 
   // const pickupTime = props.lastDepartureTime
   // const firstBusLoad = props.firstBusLoad
   // const pickupLocation = props.pickupLocations.find(location => parseInt(location.id) === parseInt(props.pickupLocationId))
-  // console.log('pickupTime', pickupTime)
-  // console.log('momentstuff', moment(pickupTime, 'hhmm a').minute(30))
   // const defaultFirstBus = moment((moment(pickupTime, 'hhmm a').format('kkmm')-30), 'hhmm a').format('hh:mm a')
 
   const pickupTime = props.lastDepartureTime
@@ -24,7 +21,7 @@ const CartItem = (props) => {
     time2 = 45
     time3 = [(time3.split('-')[0] - 1)].concat(time2).join('')
   }
-  // console.log('showsINcart--------', props.showsInCart[0])
+
   const defaultFirstBus = moment(time3, 'hmm').format('h:mm')
   return (
     <div className='CartItem'>
@@ -57,9 +54,6 @@ const CartItem = (props) => {
 
             </li>)
         }
-      </MediaQuery>
-      <MediaQuery maxWidth={7}>
-
       </MediaQuery>
     </div>
   )

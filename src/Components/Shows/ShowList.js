@@ -4,7 +4,12 @@ import Show from './Show'
 import MediaQuery from 'react-responsive';
 
 const ShowList = (props) => {
-  // console.log('showlist', props)
+
+  // const calcHeightVal = () => { 
+  //   const newHeight = window.innerWidth > 800 ? window.innerHeight - 150 : window.innerHeight - 315
+  //   return `${newHeight}px`
+  // }
+  // style={{ maxHeight: calcHeightVal()}}
 
   return (
     <div className='ShowList'>
@@ -39,7 +44,7 @@ const ShowList = (props) => {
                 </div>
 
               </div>
-              <ul className="list-group">
+              <ul className="list-group" >
                 {props.shows ?
                   <div>
                     <Show
@@ -60,49 +65,6 @@ const ShowList = (props) => {
         </div>
       </MediaQuery>
       {/* End Desktop View */}
-
-      {/* Mobile View */}
-      <MediaQuery maxWidth={7}>
-        <div className="list-group">
-          <div className="list-group-item show-header">
-            <div className="row show-list-flex">
-              <div className="col-3 mb-3" onClick={props.sortByDate}>
-                <button type="button" className="btn btn-outline-light sort-btn">
-                  <strong>Date  </strong>
-                  <i className={props.sortedByDate ? "fa fa-sort-down" : ''}></i>
-                </button>
-              </div>
-              <div className="col-3 mb-3" onClick={props.sortByArtist}>
-                <button type="button" className="btn btn-outline-light sort-btn">
-                  <strong>Event  </strong>
-                  <i className={props.sortedByArtist ? "fa fa-sort-down" : ''}></i>
-                </button>
-              </div>
-              <div className="col-6 mb-3" >
-                <form className="form-inline float-right">
-                  <input onKeyUp={props.searchShows} className="form-control search-bar" type="search" placeholder="Search..." aria-label="Search"></input>
-                </form>
-              </div>
-            </div>
-            <ul className="list-group">
-              {props.shows ?
-                <div>
-                  <Show
-                    addBorder={props.addBorder}
-                    displayShow={props.displayShow}
-                    filterString={props.filterString}
-                    handleWarning={props.handleWarning}
-                    inCart={props.inCart}
-                    mobileShowsExpandClick={props.mobileShowsExpandClick}
-                    ShowsExpandClick={props.ShowsExpandClick}
-                    shows={props.shows}/>
-                </div>
-                : ''}
-            </ul>
-          </div>
-        </div>
-      </MediaQuery>
-      {/* End Mobile View */}
     </div>
 
 
