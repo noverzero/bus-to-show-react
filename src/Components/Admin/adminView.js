@@ -35,6 +35,7 @@ class AdminView extends React.Component {
   toggleProperty = async (property) => {
     let newState = {...this.state}
     newState.filterString = ''
+    console.log('property inside toggleProperty', property)
     if (property === 'displayUserCheckin') {
     newState.displayUserCheckin = !newState.displayUserCheckin
     newState.displayList = 'ShowList'
