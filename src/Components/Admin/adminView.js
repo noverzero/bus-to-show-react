@@ -3,10 +3,11 @@ import '../../App.css';
 import UserCheckin from './userCheckin'
 import PickupsList from './PickupsList';
 import ReservationsList from './ReservationsList';
-import AdminPanel from './AdminPanel'
+import AdminEdit from './Edit/AdminEdit'
 
 
 class AdminView extends React.Component {
+  //child of App.js
 
   state = {
     displayUserCheckin: false,
@@ -15,15 +16,16 @@ class AdminView extends React.Component {
     filterString: '',
     pickupLocationId: null,
     pickupLocations: null,
+    pickupParties: null,
     reservations: [],
     thisShow: null,
     thisPickup: null
 
   }
-  // { shows, pickupLocations, searchItems, userDetails } = this.props
+  // { shows, pickupLocations, pickupParties, searchItems, userDetails } = this.props
 
   componentDidMount(){
-    console.log('mounted')
+    console.log('pickupLocations on Mount', this.props.pickupLocations)
     this.setState({pickupLocations: this.props.pickupLocations})
   }
 
@@ -156,7 +158,25 @@ class AdminView extends React.Component {
         ?
          <div>
             {this.state.displayAdminPanel ?
-              <AdminPanel
+              <AdminEdit
+                eventId={this.state.eventId}
+                filterString={this.state.filterString}
+                getReservations={this.getReservations}
+                displayList={this.state.displayList}
+                displayUserCheckin={this.state.displayUserCheckin}
+                pickupLocations={this.state.pickupLocations}
+                pickupLocationId={this.state.pickupLocationId}
+                pickupParties={this.state.pickupParties}
+                makeSelection={this.makeSelection}
+                reservations={this.state.reservations}
+                searchItems={this.searchItems}
+                shows={this.props.shows}
+                stopRefreshing={this.refreshReservations}
+                thisShow={this.state.thisShow}
+                thisPickup={this.state.thisPickup}
+                thisCapacity={this.state.thisCapacity}
+                toggleCheckedIn={this.toggleCheckedIn}
+                toggleProperty={this.toggleProperty}
               />
               : ''
             }
@@ -169,6 +189,7 @@ class AdminView extends React.Component {
                 displayUserCheckin={this.state.displayUserCheckin}
                 pickupLocations={this.state.pickupLocations}
                 pickupLocationId={this.state.pickupLocationId}
+                pickupParties={this.state.pickupParties}
                 makeSelection={this.makeSelection}
                 reservations={this.state.reservations}
                 searchItems={this.searchItems}

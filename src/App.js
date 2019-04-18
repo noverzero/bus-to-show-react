@@ -1217,6 +1217,7 @@ toggleAdminView = () => {
                 {this.state.adminView ?
                   <AdminView
                     pickupLocations={this.state.pickupLocations}
+                    pickupParties={this.state.pickupParties}
                     searchShows={this.searchShows}
                     shows={this.state.shows}
                     showsExpandClick={this.showsExpandClick}
