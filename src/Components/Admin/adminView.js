@@ -3,6 +3,7 @@ import '../../App.css';
 import UserCheckin from './userCheckin'
 import PickupsList from './PickupsList';
 import ReservationsList from './ReservationsList';
+import AdminPanel from './AdminPanel'
 
 
 class AdminView extends React.Component {
@@ -40,6 +41,10 @@ class AdminView extends React.Component {
     newState.displayUserCheckin = !newState.displayUserCheckin
     newState.displayList = 'ShowList'
     await this.setState(newState)}
+    else if (property === 'displayAdminPanel'){
+      newState.displayAdminPanel = true
+      await this.setState(newState)
+    }
     else {
       newState.displayList = property
       await this.setState(newState)
@@ -147,30 +152,41 @@ class AdminView extends React.Component {
 
     return(
       <div className="container AdminView" style={{ Height: '100%' }}>
-        {this.state.displayUserCheckin ?
-          <UserCheckin
-            eventId={this.state.eventId}
-            filterString={this.state.filterString}
-            getReservations={this.getReservations}
-            displayList={this.state.displayList}
-            displayUserCheckin={this.state.displayUserCheckin}
-            pickupLocations={this.state.pickupLocations}
-            pickupLocationId={this.state.pickupLocationId}
-            makeSelection={this.makeSelection}
-            reservations={this.state.reservations}
-            searchItems={this.searchItems}
-            shows={this.props.shows}
-            stopRefreshing={this.refreshReservations}
-            thisShow={this.state.thisShow}
-            thisPickup={this.state.thisPickup}
-            thisCapacity={this.state.thisCapacity}
-            toggleCheckedIn={this.toggleCheckedIn}
-            toggleProperty={this.toggleProperty}
-          />
-          :
+       {this.state.displayAdminPanel || this.state.displayUserCheckin
+        ?
+         <div>
+            {this.state.displayAdminPanel ?
+              <AdminPanel
+              />
+              : ''
+            }
+            {this.state.displayUserCheckin ?
+              <UserCheckin
+                eventId={this.state.eventId}
+                filterString={this.state.filterString}
+                getReservations={this.getReservations}
+                displayList={this.state.displayList}
+                displayUserCheckin={this.state.displayUserCheckin}
+                pickupLocations={this.state.pickupLocations}
+                pickupLocationId={this.state.pickupLocationId}
+                makeSelection={this.makeSelection}
+                reservations={this.state.reservations}
+                searchItems={this.searchItems}
+                shows={this.props.shows}
+                stopRefreshing={this.refreshReservations}
+                thisShow={this.state.thisShow}
+                thisPickup={this.state.thisPickup}
+                thisCapacity={this.state.thisCapacity}
+                toggleCheckedIn={this.toggleCheckedIn}
+                toggleProperty={this.toggleProperty}
+              />
+              : ''
+            }
+        </div>
+      :
           <div className="col mt-2 adminButtons">
             {isAdmin ?
-              <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>console.log('also click also')}>Admin Panel</button>
+              <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>this.toggleProperty('displayAdminPanel')}>Admin Panel</button>
             : ''}
             {isDriver ?
               <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>console.log('also click')}>Driver Shifts</button>
@@ -179,7 +195,7 @@ class AdminView extends React.Component {
               <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>this.toggleProperty('displayUserCheckin')}>Rider Check-In</button>
             : ''}
           </div>
-        }
+      }
       </div>
     )
   }
