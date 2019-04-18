@@ -154,9 +154,9 @@ class AdminView extends React.Component {
 
     return(
       <div className="container AdminView" style={{ Height: '100%' }}>
-       {this.state.displayAdminPanel || this.state.displayUserCheckin
+        {this.state.displayAdminPanel || this.state.displayUserCheckin
         ?
-         <div>
+          <div>
             {this.state.displayAdminPanel ?
               <AdminEdit
                 eventId={this.state.eventId}
