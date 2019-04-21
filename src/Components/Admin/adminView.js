@@ -19,14 +19,21 @@ class AdminView extends React.Component {
     pickupParties: null,
     reservations: [],
     thisShow: null,
-    thisPickup: null
+    thisPickup: null,
+    theseParties: [],
+    theseLocations: []
 
   }
   // { shows, pickupLocations, pickupParties, searchItems, userDetails } = this.props
 
   componentDidMount(){
     console.log('pickupLocations on Mount', this.props.pickupLocations)
-    this.setState({pickupLocations: this.props.pickupLocations})
+    console.log('PICKUPPARTIES on Mount', this.props.pickupParties)
+
+    this.setState({
+      pickupLocations: this.props.pickupLocations,
+      pickupParties: this.props.pickupParties
+    })
   }
 
   searchItems = event => {
@@ -54,6 +61,7 @@ class AdminView extends React.Component {
   }
 
   makeSelection = async (target, targetId, next) => {
+    console.log('next inside makeSelection::: ', next, 'targetId', targetId)
     this.setState({filterString: ''})
     let newState = {...this.state}
     newState[target] = targetId
@@ -61,7 +69,9 @@ class AdminView extends React.Component {
     await this.setState(newState)
     this.toggleProperty(next)
     if (next === 'PickupsList') {
+      //targetId === eventId
       this.findShow(targetId)
+      this.findParties(targetId)
     }
     else if (next === 'ReservationsList') {
       this.getReservations()
@@ -141,9 +151,32 @@ class AdminView extends React.Component {
     this.setState({thisShow})
   }
 
+  findParties = (targetId) => {
+    const newState = { ...this.state }
+    //find and set to state the parties that match the event Id
+    newState.theseParties = this.props.pickupParties.filter(party =>party.eventId === targetId )
+
+    this.setState({
+      theseParties: newState.theseParties
+    })
+    //find and set to state the pickup Location Object for ONLY the locations that correspond to this Event (aka theseParties).
+    this.state.pickupLocations.forEach(location =>{
+      newState.theseParties.forEach(party =>{
+        if(location.id === party.pickupLocationId){
+          newState.theseLocations.push(location)
+        }
+      })
+    })
+
+    this.setState({
+      theseLocations: newState.theseLocations
+    })
+  }
+
+
   findPickup = (targetId) => {
-    let thisPickup = this.props.pickupLocations.filter(pickup=>{
-      if (pickup.id === targetId) return pickup
+    let thisPickup = this.props.pickupParties.filter(pickup=>{
+      if (pickup.pickupLocationId === targetId) return pickup
       else return null
     })[0]
     this.setState({thisPickup})
@@ -174,6 +207,8 @@ class AdminView extends React.Component {
                 stopRefreshing={this.refreshReservations}
                 thisShow={this.state.thisShow}
                 thisPickup={this.state.thisPickup}
+                theseParties={this.state.theseParties}
+                theseLocations={this.state.theseLocations}
                 thisCapacity={this.state.thisCapacity}
                 toggleCheckedIn={this.toggleCheckedIn}
                 toggleProperty={this.toggleProperty}
@@ -197,6 +232,8 @@ class AdminView extends React.Component {
                 stopRefreshing={this.refreshReservations}
                 thisShow={this.state.thisShow}
                 thisPickup={this.state.thisPickup}
+                theseParties={this.state.theseParties}
+                theseLocations={this.state.theseLocations}
                 thisCapacity={this.state.thisCapacity}
                 toggleCheckedIn={this.toggleCheckedIn}
                 toggleProperty={this.toggleProperty}
