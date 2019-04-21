@@ -152,6 +152,10 @@ class AdminView extends React.Component {
   }
 
   findParties = (targetId) => {
+    this.setState({
+      theseParties: [],
+      theseLocations: []
+    })
     const newState = { ...this.state }
     //find and set to state the parties that match the event Id
     newState.theseParties = this.props.pickupParties.filter(party =>party.eventId === targetId )
