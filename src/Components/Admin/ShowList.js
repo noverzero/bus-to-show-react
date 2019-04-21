@@ -26,7 +26,7 @@ const ShowList = (props) => {
                 <div className="col-md-10 list-item-font" id={show.id} style={{  borderRadius: '1px', padding: '.1rem .5rem', fontSize: '1rem'}}>
                 <strong>{show.headliner}</strong>
                 <br style={{fontSize: '.8rem'}}/>
-                {show.date} - {show.venue}
+                {show.date} - {show.venue.split(" ").splice(0,2).join(" ")}
                 <br />
                 </div>
                   <button
