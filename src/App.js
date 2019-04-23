@@ -204,12 +204,22 @@ class App extends Component {
     }
   }
 
+  getPickupParties = async (eventId) => {
+    const response = await fetch(`${fetchUrl}/pickup_parties/findParties`, {
+      method: 'PATCH',
+      body: JSON.stringify({ eventId }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
 
+  const result = await response.json()
+  return result
+  }
 
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
   selectPickupLocationId = async event => {
     const newState = { ...this.state }
-    // console.log('change in selectPickupLocationId')
 
     if (parseInt(event.target.value) !== newState.pickupPartyId) {
       newState.ticketQuantity = null
@@ -225,7 +235,6 @@ class App extends Component {
     if (parseInt(event.target.value)) {
       newState.pickupPartyId = event.target.value
       newState.displayQuantity = true
-
     }
     else {
       newState.displayQuantity = false
@@ -251,8 +260,20 @@ class App extends Component {
 
     if (matchedParty) {
       //FIX THIS!!!! CAPACITY NEEDS TO COME FROM RESERVATIONS MATCHING PICKUP PARTYID RATHER THAN PICKUPPARTY.CAPACITY.  CAPACITY WAS SUPPOSED TO BE TOTAL NUMBER OF SEATS ASSIGNED TO PICKUP PARTY.  IT SHOULD NOT DECREMENT ON ORDER!!!
-      const capacityLessInCart = parseInt(matchedParty.capacity) - parseInt(matchedParty.inCart)
-      numArray = [...Array(capacityLessInCart).keys()].map(i => i + 1)
+      const currentReservations = await fetch(`${fetchUrl}/reservations/findOrders`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          pickupPartiesId: matchedParty.id,
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      const reservations = await currentReservations.json()
+
+      const availableTickets = parseInt(matchedParty.capacity) - parseInt(reservations.length)
+
+      numArray = [...Array(availableTickets).keys()].map(i => i + 1)
       newState.ticketsAvailable = numArray
     }
     else {
@@ -710,20 +731,12 @@ class App extends Component {
 
     } else {
       //return array of pickupParties assigned to this event
-      console.log(clickedShow)
-      const response = await fetch(`${fetchUrl}/pickup_parties/findParties`, {
-          method: 'PATCH',
-          body: JSON.stringify({
-            eventId: clickedShow.id,
-          }),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-      const assignedPickupParties = await response.json()
-      console.log(assignedPickupParties);
-
-      const pickupLocations = newState.pickupLocations
+      
+      const assignedPickupParties = await this.getPickupParties(clickedShow.id)
+      
+      const currentPickups = assignedPickupParties.map(party => party.pickupLocationId)
+      const pickupLocations = newState.pickupLocations.filter(loc => currentPickups.includes(loc.id))
+      
       await assignedPickupParties.map(party => pickupLocations.map(location => {
         if (location.id === party.pickupLocationId) {
           party.LocationName = location.locationName
