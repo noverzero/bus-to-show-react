@@ -5,6 +5,8 @@ import PickupsList from './PickupsList';
 import ReservationsList from './ReservationsList';
 import AdminEdit from './Edit/AdminEdit'
 
+const fetchUrl = `http://localhost:3000`
+// const fetchUrl = `https://bts-test-backend.herokuapp.com`
 
 class AdminView extends React.Component {
   //child of App.js
@@ -72,7 +74,7 @@ class AdminView extends React.Component {
 
   getReservations = async () => {
     console.log('getting reservations');
-    await fetch(`https://bts-test-backend.herokuapp.com/pickup_parties/findId`, {
+    await fetch(`${fetchUrl}/pickup_parties/findId`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -83,7 +85,7 @@ class AdminView extends React.Component {
       }
     }).then(async (response) =>  {
       const thisPickupParty = await response.json()
-      const findReservations = await fetch(`https://bts-test-backend.herokuapp.com/reservations/findOrders`, {
+      const findReservations = await fetch(`${fetchUrl}/reservations/findOrders`, {
         method: 'PATCH',
         body: JSON.stringify({
           pickupPartiesId: thisPickupParty.id,
@@ -121,7 +123,7 @@ class AdminView extends React.Component {
 
   toggleCheckedIn = async (isCheckedIn, reservation) => {
     let newStatus = isCheckedIn ? 2 : 1
-    await fetch(`https://bts-test-backend.herokuapp.com/reservations/${reservation.id}`, {
+    await fetch(`${fetchUrl}/reservations/${reservation.id}`, {
         method: 'PATCH',
         body: JSON.stringify({
           status: newStatus,
@@ -157,7 +159,7 @@ class AdminView extends React.Component {
         {this.state.displayAdminPanel || this.state.displayUserCheckin
         ?
           <div>
-            {this.state.displayAdminPanel ?
+            {this.state.displayAdminPanel &&
               <AdminEdit
                 eventId={this.state.eventId}
                 filterString={this.state.filterString}
@@ -178,9 +180,8 @@ class AdminView extends React.Component {
                 toggleCheckedIn={this.toggleCheckedIn}
                 toggleProperty={this.toggleProperty}
               />
-              : ''
             }
-            {this.state.displayUserCheckin ?
+            {this.state.displayUserCheckin &&
               <UserCheckin
                 eventId={this.state.eventId}
                 filterString={this.state.filterString}
@@ -201,20 +202,19 @@ class AdminView extends React.Component {
                 toggleCheckedIn={this.toggleCheckedIn}
                 toggleProperty={this.toggleProperty}
               />
-              : ''
             }
         </div>
       :
           <div className="col mt-2 adminButtons">
-            {isAdmin ?
+            {isAdmin &&
               <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>this.toggleProperty('displayAdminPanel')}>Admin Panel</button>
-            : ''}
-            {isDriver ?
+            }
+            {isDriver &&
               <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>console.log('also click')}>Driver Shifts</button>
-            : ''}
-            {isStaff ?
+            }
+            {isStaff &&
               <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>this.toggleProperty('displayUserCheckin')}>Rider Check-In</button>
-            : ''}
+            }
           </div>
       }
       </div>

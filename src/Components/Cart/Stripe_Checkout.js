@@ -1,12 +1,15 @@
 import React from 'react';
 import StripeCheckout from 'react-stripe-checkout'
 
+const fetchUrl = `http://localhost:3000`
+// const fetchUrl = `https://bts-test-backend.herokuapp.com`
+
 export default class Checkout extends React.Component {
 
   onToken = (token) => {
     const orderInfo = this.props.cartToSend
     orderInfo.receiptDescription = this.props.receiptDescription
-    fetch(`https://bts-test-backend.herokuapp.com/orders/charge`, {
+    fetch(`${fetchUrl}/orders/charge`, {
       method: 'POST',
       body: JSON.stringify({
         stripeEmail: token.email,

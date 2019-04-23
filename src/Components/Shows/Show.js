@@ -31,21 +31,14 @@ const Show = (props) => {
                 {show.support2 ? <React.Fragment> and more! <br /> </React.Fragment> : ''}
                 {show.venue}
               </div>
-
-              {props.inCart.length > 0 ?
                 <button
                   id={show.id}
-                  // onClick={props.addBorder}
-                  onClick={props.handleWarning}
+                  onClick={e => {
+                    if (props.inCart.length > 0) props.handleWarning()
+                    else onEmptyCartDetailClick(e)
+                  }}
                   type="button"
                   className='btn detail-btn my-4 col-md-2'>Details</button>
-                :
-                <button
-                  id={show.id}
-                  // onClick={props.addBorder}
-                  onClick={e => onEmptyCartDetailClick(e)}
-                  type="button"
-                  className='btn detail-btn my-4 col-md-2'>Details</button>}
             </div>
 
           </li>) :

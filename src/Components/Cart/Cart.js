@@ -135,7 +135,7 @@ const Cart = (props) => {
                             <input
                               onChange={props.updatePurchaseField}
                               type="text"
-                              className={`form-control ${props.validatedElements.fName ? 'is-valid' : ''}`}
+                              className={`form-control ${props.validatedElements.firstName ? 'is-valid' : ''}`}
                               id="firstName"
                               placeholder="First Name"
                               required />
@@ -145,7 +145,7 @@ const Cart = (props) => {
                             <input
                               onChange={props.updatePurchaseField}
                               type="text"
-                              className={`form-control ${props.validatedElements.lName ? 'is-valid' : ''}`}
+                              className={`form-control ${props.validatedElements.lastName ? 'is-valid' : ''}`}
                               id="lastName"
                               placeholder="Last Name"
                               required />
@@ -163,7 +163,22 @@ const Cart = (props) => {
                               required />
                             <div className="invalid-feedback">
                               Please provide a valid email.
+                            </div>
+                          </div>
                         </div>
+                        <div className="form-row">
+                          <div className="col-md-8 mb-3">
+                            <label htmlFor="phone">Phone</label>
+                            <input
+                              onChange={props.updatePurchaseField}
+                              type="phone"
+                              className={`form-control ${props.validatedElements.phone ? 'is-valid' : ''}`}
+                              id="phone"
+                              placeholder="Phone number xxx-xxx-xxxx"
+                              required />
+                            <div className="invalid-feedback">
+                              Please provide a valid phone number.
+                            </div>
                           </div>
                         </div>
 

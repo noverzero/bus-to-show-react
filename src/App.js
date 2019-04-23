@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 // import { BrowserRouter } from "react-router-dom"
 import Validator from 'validator'
 import MediaQuery from 'react-responsive'
-import moment from 'moment'
+import moment, { locale } from 'moment'
 
 // Styling
 import './App.css';
@@ -33,7 +33,8 @@ ReactGA.pageview('/app');
 // preferredLocation: "" }
 // userID: "10102849492705992"
 
-
+const fetchUrl = `http://localhost:3000`
+// const fetchUrl = `https://bts-test-backend.herokuapp.com`
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -100,13 +101,13 @@ class App extends Component {
     facebook: {
       isLoggedIn: true,
       userID: "10156117602853997",
-      name: "Dustin Huth",
-      email: "dustin@thebasicsfund.org",
-      picture: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10156117602853997&height=50&width=50&ext=1558131060&hash=AeRi5pTwWWMca1Y8",
+      name: "Jake Mosher",
+      email: "jakeypoo@boner.com",
+      picture: "",
       userDetails: {
-        email: "dustin@thebasicsfund.org",
-        firstName: "Milbert",
-        lastName: "Huth",
+        email: "jakeypoo@boner.com",
+        firstName: "Jake",
+        lastName: "Mosher",
         id: 105,
         isAdmin: true,
         isDeactivated: false,
@@ -148,9 +149,8 @@ class App extends Component {
     willCallEdits: {},
   }
 
-
   async componentDidMount() {
-    const response = await fetch(`https://bts-test-backend.herokuapp.com/events`)
+    const response = await fetch(`${fetchUrl}/events`)
     const allShows = await response.json()
 
     //filters out expired shows and shows that don't meet criteria, and shows that are denied.
@@ -177,11 +177,11 @@ class App extends Component {
     })
 
     this.setState({ shows: newState })
-    const pickups = await fetch(`https://bts-test-backend.herokuapp.com/pickup_locations`)
+    const pickups = await fetch(`${fetchUrl}/pickup_locations`)
     const pickupLocations = await pickups.json()
     this.setState({ pickupLocations })
 
-    const getPickupParties = await fetch(`https://bts-test-backend.herokuapp.com/pickup_parties`)
+    const getPickupParties = await fetch(`${fetchUrl}/pickup_parties`)
     const pickupParties = await getPickupParties.json()
     this.setState({ pickupParties })
   }
@@ -305,7 +305,7 @@ class App extends Component {
     const userId = this.state.facebook.userDetails.id
     // console.log('userId inside getReservations:::: ', userId)
     if (userId) {
-      const reservations = await fetch(`https://bts-test-backend.herokuapp.com/orders/${userId}`)
+      const reservations = await fetch(`${fetchUrl}/orders/${userId}`)
       const userReservations = await reservations.json()
       const newState = { ...this.State }
       //newState.userId = userId
@@ -332,7 +332,7 @@ class App extends Component {
 
     const ticketQuantity = this.state.ticketQuantity
     const eventId = this.state.inCart[0].id
-    const response = await fetch(`https://bts-test-backend.herokuapp.com/discount_codes/${this.state.discountCode}`)
+    const response = await fetch(`${fetchUrl}/discount_codes/${this.state.discountCode}`)
     const json = await response.json()
 
     const result = json.filter((discountObj) => discountObj.eventsId === eventId)[0]
@@ -430,97 +430,95 @@ class App extends Component {
     })
   }
 
-toggleFuturePast = (e) => {
-  console.log('this is this:', e.target.id)
-  const newState = { ...this.state }
-  if(e.target.id==='future'){
-    newState.displayPast = false
-    newState.displayFuture = true
-  } else if(e.target.id==='past'){
-    newState.displayPast = true
-    newState.displayFuture = false
+  toggleFuturePast = (e) => {
+    console.log('this is this:', e.target.id)
+    const newState = { ...this.state }
+    if(e.target.id==='future'){
+      newState.displayPast = false
+      newState.displayFuture = true
+    } else if(e.target.id==='past'){
+      newState.displayPast = true
+      newState.displayFuture = false
+    }
+      this.setState({
+        displayPast: newState.displayPast,
+        displayFuture: newState.displayFuture
+      } )
   }
+
+  toggleEditReservation = (e) =>{
+    console.log('click on:: toggleEditREservation ', e.target.id)
+    const newState = { ...this.state }
+    newState.displayEditReservation = !newState.displayEditReservation
+    newState.reservationToEditId = parseInt(e.target.id)
     this.setState({
-      displayPast: newState.displayPast,
-      displayFuture: newState.displayFuture
-    } )
-}
+      displayEditReservation: newState.displayEditReservation,
+      reservationToEditId: newState.reservationToEditId
+    })
+    console.log('reservationsId ', this.state.reservationToEditId)
+  }
 
-toggleEditReservation = (e) =>{
-  console.log('click on:: toggleEditREservation ', e.target.id)
-  const newState = { ...this.state }
-  newState.displayEditReservation = !newState.displayEditReservation
-  newState.reservationToEditId = parseInt(e.target.id)
-  this.setState({
-    displayEditReservation: newState.displayEditReservation,
-    reservationToEditId: newState.reservationToEditId
-  })
-  console.log('reservationsId ', this.state.reservationToEditId)
-}
+  reservationEditField = (e) => {
+    //this.setState({[e.target.name]: e.target.value})
+      this.setState({
+        ...this.state,
+          willCallEdits: {
+          ...this.state.willCallEdits,
+          [e.target.name]: e.target.value,
+          id: e.target.id
+        }
+    })
+    console.log('rETS', this.state.reservationEditsToSend)
+  }
 
-
-reservationEditField = (e) => {
-  //this.setState({[e.target.name]: e.target.value})
+  submitReservationForm = (e) => {
+    e.preventDefault()
+    console.log('submit e target id', e.target.id)
+    console.log('this.state.willCallEdits::: ' , this.state.willCallEdits)
+    let newRETS = [ ...this.state.reservationEditsToSend ]
+    let newDisplayEditSuccess = this.state.displayEditSuccess
+    newDisplayEditSuccess = !newDisplayEditSuccess
+    newRETS.push(this.state.willCallEdits)
     this.setState({
-      ...this.state,
-        willCallEdits: {
-        ...this.state.willCallEdits,
-        [e.target.name]: e.target.value,
-        id: e.target.id
-      }
-  })
-  console.log('rETS', this.state.reservationEditsToSend)
-}
+      reservationEditsToSend: newRETS,
+      displayEditSuccess:newDisplayEditSuccess
+    })
+    this.handleEditSend(newRETS)
+  }
 
-submitReservationForm = (e) => {
-  e.preventDefault()
-  console.log('submit e target id', e.target.id)
-  console.log('this.state.willCallEdits::: ' , this.state.willCallEdits)
-  let newRETS = [ ...this.state.reservationEditsToSend ]
-  let newDisplayEditSuccess = this.state.displayEditSuccess
-  newDisplayEditSuccess = !newDisplayEditSuccess
-  newRETS.push(this.state.willCallEdits)
-  this.setState({
-    reservationEditsToSend: newRETS,
-    displayEditSuccess:newDisplayEditSuccess
-  })
-  this.handleEditSend(newRETS)
-}
+  handleEditSend= async(newRETS)=>{
+    console.log('newRETS:::: ', newRETS)
+    newRETS.map(async(reservation)=>{
+      console.log('reservation inside patch map:::', reservation)
+      const editReservationResponse = await fetch(`${fetchUrl}/reservations`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          id: parseInt(reservation.id),
+          willCallFirstName: reservation.willCallFirstName,
+          willCallLastName: reservation.willCallLastName,
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .catch()
 
-handleEditSend= async(newRETS)=>{
-  console.log('newRETS:::: ', newRETS)
-  newRETS.map(async(reservation)=>{
-    console.log('reservation inside patch map:::', reservation)
-    const editReservationResponse = await fetch(`https://bts-test-backend.herokuapp.com/reservations`, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        id: parseInt(reservation.id),
-        willCallFirstName: reservation.willCallFirstName,
-        willCallLastName: reservation.willCallLastName,
-      }),
-      headers: {
-        'Content-Type': 'application/json'
+      const json = await editReservationResponse.json()
+      await console.log('editReservationResponse.json', json)
+      const e = {target: {id: "edit"}}
+
+      await this.toggleReservationView(e)
+      if(editReservationResponse.status === 200){
+        console.log('editReservationResponse', editReservationResponse.status)
       }
     })
-    .catch()
-
-    const json = await editReservationResponse.json()
-    await console.log('editReservationResponse.json', json)
-    const e = {target: {id: "edit"}}
-
-    await this.toggleReservationView(e)
-    if(editReservationResponse.status === 200){
-      console.log('editReservationResponse', editReservationResponse.status)
-    }
-  })
 }
 
-toggleEditSuccess=()=>{
+  toggleEditSuccess=()=>{
     let newStateDisplayEditSuccess = {...this.state.displayEditSuccess}
     newStateDisplayEditSuccess=!newStateDisplayEditSuccess
     this.setState({displayEditSuccess: newStateDisplayEditSuccess})
-}
-
+  }
 
   toggleLoggedIn = (boolean) => {
     if (boolean === false){
@@ -596,9 +594,7 @@ toggleEditSuccess=()=>{
       })
       this.toggleLoggedIn(true)
       this.onLoad()
-      //const usersInfo = await fetch('https://localhost:3000/users', {
-      const usersInfo = await fetch('https://bts-test-backend.herokuapp.com/users', {
-        method: 'POST',
+      const usersInfo = await fetch(`${fetchUrl}/users`, {
         body: JSON.stringify({
             firstName: response.name.split(" ")[0],
             lastName: response.name.split(" ")[1],
@@ -691,7 +687,7 @@ toggleEditSuccess=()=>{
     })
   }
   // Show Functions
-  showsExpandClick = event => {
+  showsExpandClick = async (event) => {
     const newState = { ...this.state }
     //immediately clear previously selected pickupPartyId from State.
     newState.pickupPartyId = null
@@ -714,6 +710,7 @@ toggleEditSuccess=()=>{
 
     } else {
       //return array of pickupParties assigned to this event
+
         const assignedPickupParties = this.state.pickupParties.filter(party => clickedShow.id === party.eventId)
         const pickupLocations = newState.pickupLocations
         assignedPickupParties.map(party => pickupLocations.map(location => {
@@ -771,8 +768,8 @@ toggleEditSuccess=()=>{
 
   addToCart = async () => {
     const newState = { ...this.state }
-    console.log('THIS.STATE.facebook.userDetails.id::: ', this.state.facebook.userDetails.id)
-    console.log('newState.facebook.userDetails.id::: ', newState.facebook.userDetails.id)
+    // console.log('THIS.STATE.facebook.userDetails.id::: ', this.state.facebook.userDetails.id)
+    // console.log('newState.facebook.userDetails.id::: ', newState.facebook.userDetails.id)
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const basePrice = Number(pickupLocation.basePrice)
     const ticketQuantity = parseInt(this.state.ticketQuantity)
@@ -798,11 +795,12 @@ toggleEditSuccess=()=>{
     newState.cartToSend.discountCode = null
     newState.cartToSend.userId = newState.facebook.userDetails.id
     newState.validatedElements = {
-      fName: null,
-      lName: null,
+      firstName: null,
+      lastName: null,
       email: null,
-      wCFName: null,
-      wCLName: null
+      phone: null,
+      wcFirstName: null,
+      wcLastName: null
     }
 
     this.setState({
@@ -826,7 +824,7 @@ toggleEditSuccess=()=>{
     this.setState(newState)
     //FIX:: timer needs to be set on the server as well or instead, because if user closes app setTimeout won't expire and inCart tickets will not release.
 
-    fetch(`https://bts-test-backend.herokuapp.com/pickup_parties`, {
+    fetch(`${fetchUrl}/pickup_parties`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -838,7 +836,7 @@ toggleEditSuccess=()=>{
       }
     })
 
-    setTimeout(fetch(`https://bts-test-backend.herokuapp.com/pickup_parties`, {
+    setTimeout(fetch(`${fetchUrl}/pickup_parties`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -874,7 +872,7 @@ toggleEditSuccess=()=>{
     const cartObj = this.state.cartToSend
     cartObj.userId = this.state.facebook.userDetails.id
     // console.log('cartObj inside purchase.....', cartObj)
-    const ordersResponse = await fetch(`https://bts-test-backend.herokuapp.com/orders`, {
+    const ordersResponse = await fetch(`${fetchUrl}/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
       headers: {
@@ -891,24 +889,27 @@ toggleEditSuccess=()=>{
     const newState = { ...this.state }
     const updateField = event.target.id
     const value = event.target.value
-    const vE = newState.validatedElements
+    const validElems = newState.validatedElements
     let discountCode = ''
 
     // Checks fields via npm package validator
     if (updateField === 'email' && Validator.isEmail(value) && !Validator.isEmpty(value)) {
-      vE.email = value
+      validElems.email = value
     }
     else if (updateField === 'firstName' && Validator.isAlpha(value) && !Validator.isEmpty(value)) {
-      vE.fName = value
+      validElems.firstName = value
     }
     else if (updateField === 'lastName' && Validator.isAlpha(value) && !Validator.isEmpty(value)) {
-      vE.lName = value
+      validElems.lastName = value
     }
     else if (updateField === 'willCallFirstName' && Validator.isAlpha(value)) {
-      vE.wCFName = value
+      validElems.wcFirstName = value
     }
     else if (updateField === 'willCallLastName' && Validator.isAlpha(value)) {
-      vE.wCLName = value
+      validElems.wcLastName = value
+    }
+    else if (updateField === 'phone' && Validator.isMobilePhone(value, 'en-US') && !Validator.isEmpty(value)) {
+      validElems.phone = value
     }
     else if (updateField === 'discountCode') {
       discountCode = value

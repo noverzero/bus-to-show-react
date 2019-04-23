@@ -1,6 +1,5 @@
 import React from 'react'
 import '../../App.css';
-// import MediaQuery from 'react-responsive';
 import ShowList from './ShowList'
 import PickupsList from './PickupsList'
 import ReservationsList from './ReservationsList'
@@ -107,13 +106,13 @@ const UserCheckin = (props) => {
               />
             </div>
             <div>
-            {displayList === 'ReservationsList' ?
+            {displayList === 'ReservationsList' &&
               <ReservationsList
                 filterString={filterString}
                 reservations={reservations}
                 toggleCheckedIn={toggleCheckedIn}
               />
-            : '' }
+            }
             </div>
           </ul>
         </div>
