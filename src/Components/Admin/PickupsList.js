@@ -3,8 +3,8 @@ import '../../App.css';
 
 
 const PickupsList = (props) => {
-  let { pickupLocations, makeSelection, resetStuff, filterString } = props
-
+  let { pickupLocations, pickupParties, makeSelection, theseParties, theseLocations, resetStuff, filterString } = props
+console.log('theseParties----- ', theseParties, 'theseLocations--------', theseLocations,)
   const shortName = (locationName) => {
     return locationName = locationName.split('- ')[1]
   }
@@ -18,7 +18,7 @@ const PickupsList = (props) => {
   }
 
   filterString = filterString.toLowerCase()
-  let filterPickups = pickupLocations.filter(pickup => pickup.locationName.toLowerCase().includes(filterString) || pickup.streetAddress.toLowerCase().includes(filterString))
+  let filterPickups = theseLocations.filter(pickup => pickup.locationName.toLowerCase().includes(filterString) || pickup.streetAddress.toLowerCase().includes(filterString))
 
   return (
     <div className='Pickups'>

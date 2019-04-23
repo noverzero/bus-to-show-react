@@ -5,10 +5,10 @@ import PickupsList from './PickupsList'
 import ReservationsList from './ReservationsList'
 
 const UserCheckin = (props) => {
-  let { thisShow, thisPickup, searchItems, toggleProperty, filterString,
-      shows, makeSelection, displayList, pickupLocations, reservations,
+  let { thisShow, thisPickup, thisParty, searchItems, toggleProperty, filterString,
+      shows, makeSelection, displayList, pickupLocations, pickupParties, theseParties, theseLocations, reservations,
       toggleCheckedIn, thisCapacity, stopRefreshing } = props
-      
+
   let thisDate
 
   const previousProperty = (
@@ -102,6 +102,9 @@ const UserCheckin = (props) => {
                 filterString={filterString}
                 makeSelection={makeSelection}
                 pickupLocations={pickupLocations}
+                pickupParties={pickupParties}
+                theseParties={theseParties}
+                theseLocations={theseLocations}
                 resetStuff={resetStuff}
               />
             </div>
