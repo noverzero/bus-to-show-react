@@ -181,9 +181,9 @@ class App extends Component {
     const pickupLocations = await pickups.json()
     this.setState({ pickupLocations })
 
-    const getPickupParties = await fetch(`${fetchUrl}/pickup_parties`)
-    const pickupParties = await getPickupParties.json()
-    this.setState({ pickupParties })
+    // const getPickupParties = await fetch(`${fetchUrl}/pickup_parties`)
+    // const pickupParties = await getPickupParties.json()
+    // this.setState({ pickupParties })
   }
 
   //status: over-ridden by onclick event in the "ride with us button" where called in "loading.js"
@@ -710,15 +710,26 @@ class App extends Component {
 
     } else {
       //return array of pickupParties assigned to this event
-
-        const assignedPickupParties = this.state.pickupParties.filter(party => clickedShow.id === party.eventId)
-        const pickupLocations = newState.pickupLocations
-        assignedPickupParties.map(party => pickupLocations.map(location => {
-          if (location.id === party.pickupLocationId) {
-            party.LocationName = location.locationName
+      console.log(clickedShow)
+      const response = await fetch(`${fetchUrl}/pickup_parties/findParties`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            eventId: clickedShow.id,
+          }),
+          headers: {
+            'Content-Type': 'application/json'
           }
         })
-        )
+      const assignedPickupParties = await response.json()
+      console.log(assignedPickupParties);
+
+      const pickupLocations = newState.pickupLocations
+      await assignedPickupParties.map(party => pickupLocations.map(location => {
+        if (location.id === party.pickupLocationId) {
+          party.LocationName = location.locationName
+        }
+      })
+      )
       //set initial state of show details view
       newState.displayQuantity = false
       newState.displayDetailCartView = true
