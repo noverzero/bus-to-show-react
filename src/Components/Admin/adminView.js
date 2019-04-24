@@ -10,8 +10,10 @@ class AdminView extends React.Component {
   //child of App.js
 
   state = {
+    displayEditEvent: false,
     displayUserCheckin: false,
     displayList: 'ShowList',
+    allFutureShowsEvenHidden: null,
     eventId: null,
     filterString: '',
     pickupLocationId: null,
@@ -26,11 +28,35 @@ class AdminView extends React.Component {
   }
   // { shows, pickupLocations, pickupParties, searchItems, userDetails } = this.props
 
-  componentDidMount(){
+  async componentDidMount(){
     console.log('pickupLocations on Mount', this.props.pickupLocations)
     console.log('PICKUPPARTIES on Mount', this.props.pickupParties)
+    const response = await fetch(`https://bts-test-backend.herokuapp.com/events/`)
+    const allShows = await response.json()
+    //filters out expired shows and shows that don't meet criteria, and shows that are denied.
+    const dateCheck = (show) => {
+      const showDate = Date.parse(show.date)
+      const today = new Date()
+      const yesterday = today.setDate(today.getDate() - 1)
+
+      if (showDate < yesterday) {
+        return false
+      } else {
+        return true
+      }
+    }
+    const futureShows = allShows.filter(dateCheck)
+
+    this.setState({ allFutureShowsEvenHidden: futureShows })
+
+    const sortedFutureShows = this.state.allFutureShowsEvenHidden.sort((show1, show2) => {
+      const a = new Date(show1.date)
+      const b = new Date(show2.date)
+      return a - b
+    })
 
     this.setState({
+      allFutureShowsEvenHidden: sortedFutureShows,
       pickupLocations: this.props.pickupLocations,
       pickupParties: this.props.pickupParties
     })
@@ -51,7 +77,12 @@ class AdminView extends React.Component {
     newState.displayList = 'ShowList'
     await this.setState(newState)}
     else if (property === 'displayAdminPanel'){
+      newState.displayList = 'EditShowList'
       newState.displayAdminPanel = true
+      await this.setState(newState)
+    }
+    else if (property === 'EditShow'){
+      newState.displayList = 'EditShowPanel'
       await this.setState(newState)
     }
     else {
@@ -78,6 +109,19 @@ class AdminView extends React.Component {
       this.findPickup(targetId)
       this.refreshReservations()
     }
+    else if (next === 'EditShow'){
+      this.getEventToEdit(targetId)
+      this.findParties(targetId)
+    }
+  }
+
+  getEventToEdit = async (targetId) => {
+    let thisShow = this.state.allFutureShowsEvenHidden.filter(show=>{
+      if (show.id === targetId) return show
+      else return null
+    })[0]
+    this.setState({thisShow})
+    console.log('this.state.thisShow' , this.state.thisShow)
   }
 
   getReservations = async () => {
@@ -207,7 +251,7 @@ class AdminView extends React.Component {
                 makeSelection={this.makeSelection}
                 reservations={this.state.reservations}
                 searchItems={this.searchItems}
-                shows={this.props.shows}
+                shows={this.state.allFutureShowsEvenHidden}
                 stopRefreshing={this.refreshReservations}
                 thisShow={this.state.thisShow}
                 thisPickup={this.state.thisPickup}

@@ -2,19 +2,19 @@ import React from 'react'
 import '../../../App.css';
 // import MediaQuery from 'react-responsive';
 import EditShowList from './EditShowList'
-import PickupsList from '../PickupsList'
+import EditShowPanel from './EditShowPanel'
 import ReservationsList from '../ReservationsList'
 
 const AdminEdit = (props) => {
-  let { thisShow, thisPickup, searchItems, toggleProperty, filterString,
-      shows, makeSelection, displayList, pickupLocations, pickupParties, reservations,
+  let { thisShow, thisPickup, thisParty, searchItems, toggleProperty, filterString,
+      shows, makeSelection, displayList, pickupLocations, pickupParties, theseParties, theseLocations, reservations,
       toggleCheckedIn, thisCapacity, stopRefreshing } = props
 
   let thisDate
 
   const previousProperty = (
-      displayList === 'ShowList' ? 'displayUserCheckin' :
-      displayList === 'PickupsList' ? 'ShowList' :
+      displayList === 'EditShowList' ? 'displayUserCheckin' :
+      displayList === 'PickupsList' ? 'EditShowList' :
       displayList === 'ReservationsList' ? 'PickupsList' :
       null)
 
@@ -31,7 +31,7 @@ const AdminEdit = (props) => {
       thisShow = thisShow.headliner
     }
     if(thisPickup) thisPickup = thisPickup.locationName
-    if (displayList === 'ShowList') return (
+    if (displayList === 'EditShowList') return (
       <div>Select a Show<br/>
       </div>)
 
@@ -89,7 +89,7 @@ const AdminEdit = (props) => {
             </div>
           </div>
           <ul className="list-group adminlist" id="adminList" style={{height: '100%'}}>
-            <div className={displayList === 'ShowList' ? '' : 'hidden'}>
+            <div className={displayList === 'EditShowList' ? '' : 'hidden'}>
               <EditShowList
                 filterString={filterString}
                 makeSelection={makeSelection}
@@ -98,17 +98,19 @@ const AdminEdit = (props) => {
                 toggleProperty={toggleProperty}
               />
             </div>
-            <div className={displayList === 'PickupsList' ? '' : 'hidden'}>
-              <PickupsList
+            <div className={displayList === 'EditShowPanel' ? '' : 'hidden'}>
+              <EditShowPanel
                 filterString={filterString}
                 makeSelection={makeSelection}
-                pickupParties={pickupParties}
                 pickupLocations={pickupLocations}
+                pickupParties={pickupParties}
+                theseParties={theseParties}
+                theseLocations={theseLocations}
                 resetStuff={resetStuff}
               />
             </div>
             <div>
-            {displayList === 'ReservationsList' ?
+            {displayList === 'reservations' ?
               <ReservationsList
                 filterString={filterString}
                 reservations={reservations}
