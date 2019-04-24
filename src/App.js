@@ -869,11 +869,11 @@ class App extends Component {
       headers: {
         'Content-Type': 'application/json'
       }
-    }), 600000)
+    }), 6000)
 
     setTimeout(() => {
       this.setState({ inCart: [] })
-    }, 600000)
+    }, 6000)
   }
 
   viewCart = () => {
@@ -1288,7 +1288,7 @@ class App extends Component {
                 {this.state.adminView ?
                   <AdminView
                     pickupLocations={this.state.pickupLocations}
-                    pickupParties={this.state.pickupParties}
+                    // pickupParties={this.state.pickupParties}
                     searchShows={this.searchShows}
                     shows={this.state.shows}
                     showsExpandClick={this.showsExpandClick}

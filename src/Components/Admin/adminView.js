@@ -28,14 +28,27 @@ class AdminView extends React.Component {
   }
   // { shows, pickupLocations, pickupParties, searchItems, userDetails } = this.props
 
-  componentDidMount(){
+  componentDidMount = async() => {
     console.log('pickupLocations on Mount', this.props.pickupLocations)
-    console.log('PICKUPPARTIES on Mount', this.props.pickupParties)
-
-    this.setState({
+    const pickupParties = await this.getPickupParties()
+    
+    await this.setState({
       pickupLocations: this.props.pickupLocations,
-      pickupParties: this.props.pickupParties
+      pickupParties: pickupParties
     })
+  }
+  
+  getPickupParties = async () => {
+    const response = await fetch(`${fetchUrl}/pickup_parties`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    
+    const result = await response.json()
+    console.log('PICKUPPARTIES on Mount', result)
+  return result
   }
 
   searchItems = event => {
@@ -160,7 +173,7 @@ class AdminView extends React.Component {
     })
     const newState = { ...this.state }
     //find and set to state the parties that match the event Id
-    newState.theseParties = this.props.pickupParties.filter(party =>party.eventId === targetId )
+    newState.theseParties = newState.pickupParties.filter(party =>party.eventId === targetId )
 
     this.setState({
       theseParties: newState.theseParties
@@ -181,7 +194,7 @@ class AdminView extends React.Component {
 
 
   findPickup = (targetId) => {
-    let thisPickup = this.props.pickupParties.filter(pickup=>{
+    let thisPickup = this.state.pickupParties.filter(pickup=>{
       if (pickup.pickupLocationId === targetId) return pickup
       else return null
     })[0]
