@@ -113,7 +113,7 @@ const ShowDetailView = (props) => {
                         </div>
                         <form className="needs-validation">
                           <div className="form-group">
-                            {props.ticketsAvailable.length === 0 ?
+                            {props.ticketsAvailable.length < 1 ?
                               <button
                                 className="btn btn-danger"
                                 disabled="disabled"

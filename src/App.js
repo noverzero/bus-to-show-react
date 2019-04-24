@@ -267,12 +267,14 @@ class App extends Component {
         }
       })
       const reservations = await currentReservations.json()
-      console.log(reservations.length, matchedParty.capacity)
+      console.log('res', reservations.length, 'cap', matchedParty.capacity)
 
       const availableTickets = parseInt(matchedParty.capacity) - parseInt(reservations.length)
-
-      numArray = [...Array(availableTickets).keys()].map(i => i + 1)
-      newState.ticketsAvailable = numArray
+      if (availableTickets < 1) newState.ticketsAvailable = []
+      else if (availableTickets >= 1) {
+        numArray = [...Array(availableTickets).keys()].map(i => i + 1)
+        newState.ticketsAvailable = numArray
+      }
     }
     else {
       console.log('Error!! No MatchedParty in selectPickupLocationId')
@@ -908,71 +910,120 @@ class App extends Component {
     const newState = { ...this.state }
     const updateField = event.target.id
     const value = event.target.value
-    const validElems = newState.validatedElements
+    const newValidElems = newState.validatedElements
     let discountCode = ''
 
+    // regex to validate phone number, allowable formats are:
+    // xxx-xxx-xxxx / xxx.xxx.xxxx / xxx xxx xxxx
+
+    const phoneNumber = (inputtxt) => {
+      var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
+      if(inputtxt.match(phoneno)) return true
+      else return false
+    }
+
     // Checks fields via npm package validator
-    if (updateField === 'email' && Validator.isEmail(value) && !Validator.isEmpty(value)) {
-      validElems.email = value
+    switch (updateField){
+      case 'email':
+        if (Validator.isEmail(value) && !Validator.isEmpty(value)) {
+          newValidElems.email = value
+        }
+        break;
+      case 'firstName':
+        if (Validator.isAlpha(value) && !Validator.isEmpty(value)) {
+          newValidElems.firstName = value
+        }
+        break;
+      case 'lastName':
+        if (Validator.isAlpha(value) && !Validator.isEmpty(value)) {
+          newValidElems.lastName = value
+        }
+        break;
+      case 'willCallFirstName':
+        if (Validator.isAlpha(value)) {
+          newValidElems.wcFirstName = value
+        }
+        break;
+      case 'willCallLastName':
+        if (Validator.isAlpha(value)) {
+          newValidElems.wcLastName = value
+        }
+        break;
+      case 'phone':
+        if (phoneNumber(value) && !Validator.isEmpty(value)) {
+          newValidElems.phone = value
+        }
+        break;
+      case 'discountCode':
+        discountCode = value
+        break;
+      default:
+        return 'Please input valid items';
     }
-    else if (updateField === 'firstName' && Validator.isAlpha(value) && !Validator.isEmpty(value)) {
-      validElems.firstName = value
-    }
-    else if (updateField === 'lastName' && Validator.isAlpha(value) && !Validator.isEmpty(value)) {
-      validElems.lastName = value
-    }
-    else if (updateField === 'willCallFirstName' && Validator.isAlpha(value)) {
-      validElems.wcFirstName = value
-    }
-    else if (updateField === 'willCallLastName' && Validator.isAlpha(value)) {
-      validElems.wcLastName = value
-    }
-    else if (updateField === 'phone' && Validator.isMobilePhone(value, 'en-US') && !Validator.isEmpty(value)) {
-      validElems.phone = value
-    }
-    else if (updateField === 'discountCode') {
-      discountCode = value
-    }
-    else {
-      return 'Please input valid items'
-    }
+    // if (updateField === 'email' && Validator.isEmail(value) && !Validator.isEmpty(value)) {
+    //   validElems.email = value
+    // } 
+    // else if (updateField === 'firstName' && Validator.isAlpha(value) && !Validator.isEmpty(value)) {
+    //   validElems.firstName = value
+    // }
+    // else if (updateField === 'lastName' && Validator.isAlpha(value) && !Validator.isEmpty(value)) {
+    //   validElems.lastName = value
+    // }
+    // else if (updateField === 'willCallFirstName' && Validator.isAlpha(value)) {
+    //   validElems.wcFirstName = value
+    // }
+    // else if (updateField === 'willCallLastName' && Validator.isAlpha(value)) {
+    //   validElems.wcLastName = value
+    // }
+    // else if (updateField === 'phone' && phoneNumber(value) && !Validator.isEmpty(value)) {
+    //   validElems.phone = value
+    // }
+    // else if (updateField === 'discountCode') {
+    //   discountCode = value
+    // }
+    // else {
+    //   return 'Please input valid items'
+    // }
 
     this.setState({ validatedElements: newState.validatedElements })
 
     // Populates cartToSend
-    if (this.state.validatedElements.fName
-      && this.state.validatedElements.lName
-      && this.state.validatedElements.email) {
+    if (this.state.validatedElements.firstName
+      && this.state.validatedElements.lastName
+      && this.state.validatedElements.email
+      && this.state.validatedElements.phone) {
 
-      const cTS = newState.cartToSend
+      const newCart = newState.cartToSend
       newState.validated = true
 
-      cTS.firstName = this.state.validatedElements.fName
-      cTS.lastName = this.state.validatedElements.lName
-      cTS.email = this.state.validatedElements.email
-      cTS.eventId = this.state.inCart[0].id
-      cTS.ticketQuantity = parseInt(this.state.ticketQuantity)
-      cTS.pickupLocationId = parseInt(this.state.pickupLocationId)
-      cTS.totalCost = Number(this.state.totalCost)
-      cTS.discountCode = discountCode
-      cTS.userId = newState.facebook.userDetails.userId
+      newCart.firstName = this.state.validatedElements.firstName
+      newCart.lastName = this.state.validatedElements.lastName
+      newCart.email = this.state.validatedElements.email
+      newCart.phone = this.state.validatedElements.phone
+      newCart.eventId = this.state.inCart[0].id
+      newCart.ticketQuantity = parseInt(this.state.ticketQuantity)
+      newCart.pickupLocationId = parseInt(this.state.pickupLocationId)
+      newCart.totalCost = Number(this.state.totalCost)
+      newCart.discountCode = discountCode
+      newCart.userId = newState.facebook.userDetails.userId
 
-      if (this.state.validatedElements.wCFName) {
-        cTS.willCallFirstName = this.state.validatedElements.wCFName
-      }
-      else {
-        cTS.willCallFirstName = this.state.validatedElements.fName
-      }
+      this.state.validatedElements.wCFName ?
+        newCart.willCallFirstName = this.state.validatedElements.wcFirstName
+      :
+        newCart.willCallFirstName = this.state.validatedElements.firstName
+      
 
-      if (this.state.validatedElements.wCLName) {
-        cTS.willCallLastName = this.state.validatedElements.wCLName
-      }
-      else {
-        cTS.willCallLastName = this.state.validatedElements.lName
-      }
+      this.state.validatedElements.wCLName ?
+        newCart.willCallLastName = this.state.validatedElements.wcLastName
+      :
+        newCart.willCallLastName = this.state.validatedElements.lastName
+      
 
-      this.setState({ cartToSend: newState.cartToSend })
-      this.setState({ validated: newState.validated })
+      this.setState({ 
+        cartToSend: newState.cartToSend,
+        validated: newState.validated          
+      })
+      // this.setState({ validated: newState.validated })
     }
     else {
       console.log('Please continue to complete the form!')
