@@ -174,7 +174,7 @@ const Cart = (props) => {
                               type="phone"
                               className={`form-control ${props.validatedElements.phone ? 'is-valid' : ''}`}
                               id="phone"
-                              placeholder="Phone number xxx-xxx-xxxx"
+                              placeholder="Phone number (XXX-XXX-XXXX)"
                               required />
                             <div className="invalid-feedback">
                               Please provide a valid phone number.

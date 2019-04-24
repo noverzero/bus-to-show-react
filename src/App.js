@@ -253,10 +253,7 @@ class App extends Component {
     }
     newState.lastDepartureTime = moment(matchedParty.lastBusDepartureTime, 'LT').format('h:mm A')
 
-
-
     let numArray = []
-
 
     if (matchedParty) {
       //FIX THIS!!!! CAPACITY NEEDS TO COME FROM RESERVATIONS MATCHING PICKUP PARTYID RATHER THAN PICKUPPARTY.CAPACITY.  CAPACITY WAS SUPPOSED TO BE TOTAL NUMBER OF SEATS ASSIGNED TO PICKUP PARTY.  IT SHOULD NOT DECREMENT ON ORDER!!!
@@ -270,6 +267,7 @@ class App extends Component {
         }
       })
       const reservations = await currentReservations.json()
+      console.log(reservations.length, matchedParty.capacity)
 
       const availableTickets = parseInt(matchedParty.capacity) - parseInt(reservations.length)
 
@@ -792,8 +790,7 @@ class App extends Component {
 
   addToCart = async () => {
     const newState = { ...this.state }
-    // console.log('THIS.STATE.facebook.userDetails.id::: ', this.state.facebook.userDetails.id)
-    // console.log('newState.facebook.userDetails.id::: ', newState.facebook.userDetails.id)
+    
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const basePrice = Number(pickupLocation.basePrice)
     const ticketQuantity = parseInt(this.state.ticketQuantity)
@@ -801,10 +798,10 @@ class App extends Component {
     const processingFee = Number((basePrice * ticketQuantity) * (0.1))
     const cost = ((basePrice * ticketQuantity) - totalSavings + processingFee)
     newState.totalCost = cost.toFixed(2)
-
+    
     const sPickupId = parseInt(this.state.pickupLocationId)
     const sEventId = parseInt(this.state.displayShow.id)
-    const pickupParty = this.state.pickupParties.find(party => party.pickupLocationId === sPickupId && party.eventId === sEventId)
+    const pickupParty = this.state.assignedParties.find(party => party.pickupLocationId === sPickupId && party.eventId === sEventId)
     const firstBusLoad = pickupParty.firstBusLoadTime
     const lastDepartureTime = moment(pickupParty.lastBusDepartureTime, 'hhmm').format('h:mm')
     newState.cartToSend.eventId = null
@@ -904,9 +901,7 @@ class App extends Component {
       }
     })
 
-
     this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [] })
-
   }
 
   updatePurchaseField = event => {
@@ -1160,61 +1155,61 @@ class App extends Component {
     this.setState({ adminView })
   }
 
- getHeadliners = async () => {
-  const eventsArr = await this.getEventbriteData('', 1, [])
+  getHeadliners = async () => {
+    const eventsArr = await this.getEventbriteData('', 1, [])
 
-  .then((eventsArr)=> {
-    console.log('chicken')
-    //console.log('eventsArr', eventsArr)
-  let newEventsArr = []
-  for(let ii = 0; ii < eventsArr.length; ii++){
-    console.log('monkey')
-    newEventsArr[ii] = {}
-    let ticketClasses = []
-    ticketClasses = eventsArr[ii].ticket_classes
-    //console.log('ticketClasses', ticketClasses)
+    .then((eventsArr)=> {
+      console.log('chicken')
+      //console.log('eventsArr', eventsArr)
+    let newEventsArr = []
+    for(let ii = 0; ii < eventsArr.length; ii++){
+      console.log('monkey')
+      newEventsArr[ii] = {}
+      let ticketClasses = []
+      ticketClasses = eventsArr[ii].ticket_classes
+      //console.log('ticketClasses', ticketClasses)
 
-      let eventTotal = 0
-      let departures = {}
-      if (ticketClasses){
-        for(let jj = 0; jj < ticketClasses.length; jj++){
-          console.log('zebra')
-          eventTotal += ticketClasses[jj].quantity_sold
-          departures[ticketClasses[jj].name] = ticketClasses[jj].quantity_sold
+        let eventTotal = 0
+        let departures = {}
+        if (ticketClasses){
+          for(let jj = 0; jj < ticketClasses.length; jj++){
+            console.log('zebra')
+            eventTotal += ticketClasses[jj].quantity_sold
+            departures[ticketClasses[jj].name] = ticketClasses[jj].quantity_sold
+          }
         }
-      }
-    newEventsArr[ii].headliner = eventsArr[ii].name.text.substring((0), eventsArr[ii].name.text.indexOf("*")-1)
-    newEventsArr[ii].date = eventsArr[ii].start.local.substring(0, 10)
-    newEventsArr[ii].venue =  eventsArr[ii].name.text.substring((eventsArr[ii].name.text.lastIndexOf("*")+5), eventsArr[ii].name.text.lastIndexOf("(")-1)
-    newEventsArr[ii].totalSales = eventTotal
-    newEventsArr[ii].departures = departures
+      newEventsArr[ii].headliner = eventsArr[ii].name.text.substring((0), eventsArr[ii].name.text.indexOf("*")-1)
+      newEventsArr[ii].date = eventsArr[ii].start.local.substring(0, 10)
+      newEventsArr[ii].venue =  eventsArr[ii].name.text.substring((eventsArr[ii].name.text.lastIndexOf("*")+5), eventsArr[ii].name.text.lastIndexOf("(")-1)
+      newEventsArr[ii].totalSales = eventTotal
+      newEventsArr[ii].departures = departures
+    }
+    console.log('headlinersArr', newEventsArr)
+    const newState = { ...this.state }
+    newState.oldStuff = newEventsArr
+    this.setState({oldStuff: newState.oldStuff})
+    return newEventsArr
+  })
   }
-  console.log('headlinersArr', newEventsArr)
-  const newState = { ...this.state }
-  newState.oldStuff = newEventsArr
-  this.setState({oldStuff: newState.oldStuff})
-  return newEventsArr
-})
-}
 
-postOldData = async () => {
-  const newEventsArr = this.state.oldStuff
-  console.log('inSide post old data function', newEventsArr)
-  // const response = await fetch('https://localhost:3000/fuel', {
-  //   method: 'POST',
-  //   body: JSON.stringify(newEventsArr),
-  //   headers: {
-  //     'Content-Type': 'application/json'
-  //   }
-  // })
-  // console.log('post old data response', response)
-}
+  postOldData = async () => {
+    const newEventsArr = this.state.oldStuff
+    console.log('inSide post old data function', newEventsArr)
+    // const response = await fetch('https://localhost:3000/fuel', {
+    //   method: 'POST',
+    //   body: JSON.stringify(newEventsArr),
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   }
+    // })
+    // console.log('post old data response', response)
+  }
 
-toggleAdminView = () => {
-  let adminView = this.state.adminView
-  adminView = !adminView
-  this.setState({ adminView })
-}
+  toggleAdminView = () => {
+    let adminView = this.state.adminView
+    adminView = !adminView
+    this.setState({ adminView })
+  }
   render() {
     return (
 
