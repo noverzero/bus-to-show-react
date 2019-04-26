@@ -123,11 +123,11 @@ const Cart = (props) => {
                     totalCost={Number(props.totalCost).toFixed(2)} />
                 </div>
               </div>
+              <div className="alert alert-warning">Cart will reset in 10 minutes</div>
               {props.showsInCart ?
                 <div className="list-group-item" >
                   <div className="row">
                     <div className="col-md-12">
-
                       <form className="needs-validation" onSubmit={props.handleSubmit}>
                         <div className="form-row">
                           <div className="col-md-4 mb-3">
