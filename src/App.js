@@ -864,6 +864,8 @@ class App extends Component {
     window.addEventListener("beforeunload", this.clearCartOnClose);
   }
 
+// functions to handle setting and clearing of timer and incart qtys
+
   ticketTimer = (condition) => {
     let newState = {...this.state}
     // console.log(newState.ticketTimer)
