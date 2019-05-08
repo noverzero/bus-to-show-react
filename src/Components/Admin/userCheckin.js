@@ -5,9 +5,9 @@ import PickupsList from './PickupsList'
 import ReservationsList from './ReservationsList'
 
 const UserCheckin = (props) => {
-  let { thisShow, thisPickup, thisParty, searchItems, toggleProperty, filterString,
-      shows, makeSelection, displayList, pickupLocations, pickupParties, theseParties, theseLocations, reservations,
-      toggleCheckedIn, thisCapacity, stopRefreshing } = props
+  let { 
+    thisShow, thisPickup, thisParty, thisLocation, searchItems, toggleProperty, filterString, shows, makeSelection, displayList, pickupLocations, pickupParties, theseParties, theseLocations, reservations, toggleCheckedIn, thisCapacity, stopRefreshing 
+  } = props
 
   let thisDate
 
@@ -24,12 +24,13 @@ const UserCheckin = (props) => {
   const city = (locationName) => {
     if (locationName) return locationName = locationName.split('- ')[0]
   }
+
   const headerLabel = (displayList) => {
     if(thisShow) {
       thisDate = thisShow.date
       thisShow = thisShow.headliner
     }
-    if(thisPickup) thisPickup = thisPickup.locationName
+    if(thisLocation) thisLocation = thisLocation.locationName
     if (displayList === 'ShowList') return (
       <div>Select a Show<br/>
       </div>)
@@ -37,12 +38,11 @@ const UserCheckin = (props) => {
     else if (displayList === 'PickupsList') return (
       <div>{thisDate} - {thisShow}<br/>
         Select a Pickup Location<br/>
-
       </div>)
     else if (displayList === 'ReservationsList' ) return (
       <div>{thisDate} - {thisShow}<br />
-        {city(thisPickup)} - {shortName(thisPickup)}<br/>
-        Cap: {thisCapacity + reservations.length} / Avail: {thisCapacity} / Sold: {reservations.length}
+        {city(thisLocation)} - {shortName(thisLocation)}<br/>
+        Cap: {thisCapacity} / Avail: {thisCapacity - reservations.length} / Sold: {reservations.length}
       </div>)
     else return ''
   }
@@ -59,12 +59,8 @@ const UserCheckin = (props) => {
     let header = document.getElementsByClassName('Header')[0]
     var styles = window.getComputedStyle(header);
     var margin = parseFloat(styles['marginTop']) + parseFloat(styles['marginBottom']);
-
     let totalHeight = Math.ceil(header.offsetHeight + margin)
-    console.log(totalHeight)
-    console.log(window.innerHeight);
     const newHeight = window.innerHeight - totalHeight
-    console.log(newHeight);
     return `${newHeight}px`
 
   }

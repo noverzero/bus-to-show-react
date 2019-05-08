@@ -1,8 +1,8 @@
 import React from 'react'
 import '../../App.css';
 import UserCheckin from './userCheckin'
-import PickupsList from './PickupsList';
-import ReservationsList from './ReservationsList';
+// import PickupsList from './PickupsList';
+// import ReservationsList from './ReservationsList';
 import AdminEdit from './Edit/AdminEdit'
 
 const fetchUrl = `http://localhost:3000`
@@ -29,9 +29,7 @@ class AdminView extends React.Component {
   // { shows, pickupLocations, pickupParties, searchItems, userDetails } = this.props
 
   componentDidMount = async() => {
-    console.log('pickupLocations on Mount', this.props.pickupLocations)
     const pickupParties = await this.getPickupParties()
-    
     await this.setState({
       pickupLocations: this.props.pickupLocations,
       pickupParties: pickupParties
@@ -45,9 +43,7 @@ class AdminView extends React.Component {
         'Content-Type': 'application/json'
       }
     })
-    
     const result = await response.json()
-    console.log('PICKUPPARTIES on Mount', result)
   return result
   }
 
@@ -60,7 +56,6 @@ class AdminView extends React.Component {
   toggleProperty = async (property) => {
     let newState = {...this.state}
     newState.filterString = ''
-    console.log('property inside toggleProperty', property)
     if (property === 'displayUserCheckin') {
     newState.displayUserCheckin = !newState.displayUserCheckin
     newState.displayList = 'ShowList'
@@ -76,7 +71,6 @@ class AdminView extends React.Component {
   }
 
   makeSelection = async (target, targetId, next) => {
-    console.log('next inside makeSelection::: ', next, 'targetId', targetId)
     this.setState({filterString: ''})
     let newState = {...this.state}
     newState[target] = targetId
@@ -96,7 +90,6 @@ class AdminView extends React.Component {
   }
 
   getReservations = async () => {
-    console.log('getting reservations');
     await fetch(`${fetchUrl}/pickup_parties/findId`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -126,19 +119,16 @@ class AdminView extends React.Component {
 
   refreshReservations = (stop) => {
     if (!stop) {
-      console.log('getting')
       let x = 0;
       const reservationsInterval = setInterval(()=>{
         this.getReservations()
         if (++x === 40) {
-          console.log('clear')
           clearInterval(reservationsInterval)
         }
       }, 30000)
       this.setState({reservationsInterval})
     }
     else if (stop && this.state.reservationsInterval) {
-      console.log('stopping')
       clearInterval(this.state.reservationsInterval)
     }
 
@@ -198,7 +188,10 @@ class AdminView extends React.Component {
       if (pickup.pickupLocationId === targetId) return pickup
       else return null
     })[0]
-    this.setState({thisPickup})
+    let thisLocation = this.state.pickupLocations.filter(location=>
+      (location.id === targetId) && location
+    )[0]
+    this.setState({thisPickup, thisLocation})
   }
 
   render (){
@@ -253,6 +246,7 @@ class AdminView extends React.Component {
                 theseParties={this.state.theseParties}
                 theseLocations={this.state.theseLocations}
                 thisCapacity={this.state.thisCapacity}
+                thisLocation={this.state.thisLocation}
                 toggleCheckedIn={this.toggleCheckedIn}
                 toggleProperty={this.toggleProperty}
               />

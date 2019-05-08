@@ -16,12 +16,8 @@ const ReservationsList = (props) => {
   let filterRezzies = reservations.filter(rezzy => rezzy.orderedByFirstName.toLowerCase().includes(filterString) || rezzy.orderedByLastName.toLowerCase().includes(filterString) ||rezzy.willCallLastName.toLowerCase().includes(filterString) || rezzy.willCallFirstName.toLowerCase().includes(filterString))
 
   const isPresent =(status)=>{
-    if (status === 1) {
-      return <span id="switchLabel" style={{color: '#ff420f'}}>Absent</span>
-    }
-    else if (status === 2) {
-      return <span id="switchLabel" style={{color: '#460088'}}>Present</span>
-    }
+    if (~~status === 1) return( <span id="switchLabel" style={{color: '#ff420f'}}>Absent</span>)
+    else if (~~status === 2) return (<span id="switchLabel" style={{color: '#460088'}}>Present</span>)
   }
 
 
@@ -33,10 +29,11 @@ const ReservationsList = (props) => {
           const { willCallFirstName, willCallLastName, orderedByFirstName, orderedByLastName } = reservation
           const lastName = willCallLastName
           const firstName = willCallFirstName
-          let toggleStatus = reservation.status
+          let toggleStatus = ~~reservation.status
 
-          if (reservation.status == 3) return null  //reservation status 3 === refunded (don't display)
-          if (reservation.status == 1 || reservation.status == 2)
+          if (toggleStatus === 3) return null  //reservation status 3 === refunded (don't display)
+          if (toggleStatus === 1 || toggleStatus === 2)
+          
           return <li className="list-group-item admin-list-item"
             key={reservation.id}
             id={reservation.id}
