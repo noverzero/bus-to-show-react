@@ -172,8 +172,6 @@ class App extends Component {
       return a - b
     })
 
-    // this.setState({ allShows })
-
     allShows = allShows.sort((show1, show2) => {
       const a = new Date(show1.date)
       const b = new Date(show2.date)
@@ -182,7 +180,6 @@ class App extends Component {
 
     const pickups = await fetch(`${fetchUrl}/pickup_locations`)
     const pickupLocations = await pickups.json()
-    // this.setState({ allShows })
     this.setState({ pickupLocations, allShows, userShows })
 
     // const getPickupParties = await fetch(`${fetchUrl}/pickup_parties`)
@@ -730,7 +727,7 @@ class App extends Component {
     this.setState({
       pickupPartyId: newState.pickupPartyId
     })
-    const clickedShow = newState.shows.find(show => (parseInt(show.id) === parseInt(event.target.id)))
+    const clickedShow = newState.userShows.find(show => (parseInt(show.id) === parseInt(event.target.id)))
     if(clickedShow.external){
       newState.displayShowDetails = false
       newState.displayExternalShowDetails = true
