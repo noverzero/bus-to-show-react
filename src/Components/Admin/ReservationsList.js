@@ -28,7 +28,6 @@ const ReservationsList = (props) => {
   return (
     <div className='Reservations'>
       {filterRezzies.length > 0 ?
-
         filterRezzies.map(reservation => {
           const { willCallFirstName, willCallLastName, orderedByFirstName, orderedByLastName } = reservation
           const lastName = willCallLastName
@@ -37,7 +36,8 @@ const ReservationsList = (props) => {
 
           if (reservation.status == 3) return null  //reservation status 3 === refunded (don't display)
           if (reservation.status == 1 || reservation.status == 2)
-          return <li className="list-group-item admin-list-item"
+          return  (
+        <li className="list-group-item admin-list-item"
             key={reservation.id}
             id={reservation.id}
             style={{  borderRadius: '1px', padding: '.1rem .5rem' }}>
@@ -59,6 +59,7 @@ const ReservationsList = (props) => {
             </div>
           </div>
         </li>
+          )
         }
         )
         : 'Reservations not found'}

@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import Validator from 'validator'
 import MediaQuery from 'react-responsive'
 import moment, { locale } from 'moment'
+// import socketIo from 'socket.io-client'
 
 // Styling
 import './App.css';
@@ -153,7 +154,6 @@ class App extends Component {
   async componentDidMount() {
     const response = await fetch(`${fetchUrl}/events`)
     const allShows = await response.json()
-
     //filters out expired shows and shows that don't meet criteria, and shows that are denied.
     const dateCheck = (show) => {
       const showDate = Date.parse(show.date)

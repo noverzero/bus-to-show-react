@@ -3,126 +3,149 @@ import '../../App.css';
 import ShowList from './ShowList'
 import PickupsList from './PickupsList'
 import ReservationsList from './ReservationsList'
+import io from 'socket.io-client'
 
-const UserCheckin = (props) => {
-  let { thisShow, thisPickup, thisParty, searchItems, toggleProperty, filterString,
-      shows, makeSelection, displayList, pickupLocations, pickupParties, theseParties, theseLocations, reservations,
-      toggleCheckedIn, thisCapacity, stopRefreshing } = props
+const fetchUrl = `http://localhost:3000`
+// const fetchUrl = `https://bts-test-backend.herokuapp.com`
 
-  let thisDate
 
-  const previousProperty = (
-      displayList === 'ShowList' ? 'displayUserCheckin' :
-      displayList === 'PickupsList' ? 'ShowList' :
-      displayList === 'ReservationsList' ? 'PickupsList' :
-      null)
+class UserCheckin extends React.Component {
 
-  const shortName = (locationName) => {
-    if (locationName) return locationName = locationName.split('- ')[1]
+  state = {
+    pickupLocations: this.props.pickupLocations,
   }
 
-  const city = (locationName) => {
-    if (locationName) return locationName = locationName.split('- ')[0]
+  componentDidMount = () => {
+    let socket = io(this.props.socket)
+    socket.emit('getEventsInfo')
+    socket.on('events', data => {
+      console.log(data)
+    })
   }
-  const headerLabel = (displayList) => {
-    if(thisShow) {
-      thisDate = thisShow.date
-      thisShow = thisShow.headliner
+
+  
+  
+  render (){
+    let { thisShow, thisPickup, thisParty, searchItems, toggleProperty, 
+          filterString, shows, makeSelection, displayList, pickupLocations, 
+          pickupParties, theseParties, theseLocations, reservations,
+          toggleCheckedIn, thisCapacity, stopRefreshing 
+        } = this.props
+    console.log('render', thisPickup)
+    console.log('pu locs',this.state.pickupLocations)
+    let thisDate
+
+    const previousProperty = (
+        displayList === 'ShowList' ? 'displayUserCheckin' :
+        displayList === 'PickupsList' ? 'ShowList' :
+        displayList === 'ReservationsList' ? 'PickupsList' :
+        null)
+
+    const shortName = (locationName) => {
+      if (locationName) return locationName = locationName.split('- ')[1]
     }
-    if(thisPickup) thisPickup = thisPickup.locationName
-    if (displayList === 'ShowList') return (
-      <div>Select a Show<br/>
-      </div>)
 
-    else if (displayList === 'PickupsList') return (
-      <div>{thisDate} - {thisShow}<br/>
-        Select a Pickup Location<br/>
+    const city = (locationName) => {
+      if (locationName) return locationName = locationName.split('- ')[0]
+    }
+    const headerLabel = (displayList) => {
+      if(thisShow) {
+        thisDate = thisShow.date
+        thisShow = thisShow.headliner
+      }
+      if(thisPickup) thisPickup = thisPickup.locationName
+      if (displayList === 'ShowList') return (
+        <div>Select a Show<br/>
+        </div>)
 
-      </div>)
-    else if (displayList === 'ReservationsList' ) return (
-      <div>{thisDate} - {thisShow}<br />
-        {city(thisPickup)} - {shortName(thisPickup)}<br/>
-        Cap: {thisCapacity + reservations.length} / Avail: {thisCapacity} / Sold: {reservations.length}
-      </div>)
-    else return ''
-  }
+      else if (displayList === 'PickupsList') return (
+        <div>{thisDate} - {thisShow}<br/>
+          Select a Pickup Location<br/>
 
-  const resetStuff = () => {
-    const searchBar = document.getElementById('search')
-    const adminList = document.getElementById('adminList')
-    searchBar.value = ''
-    adminList.scrollTop = 0
-    // reservations = ''
-  }
+        </div>)
+      else if (displayList === 'ReservationsList' ) {
+        console.log('header', thisPickup)
+        return (
+        <div>{thisDate} - {thisShow}<br />
+          {city(thisPickup)} - {shortName(thisPickup)}<br/>
+          Cap: {thisCapacity + reservations.length} / Avail: {thisCapacity} / Sold: {reservations.length}
+        </div>)
+      }
+      else return ''
+    }
 
-  const calcHeightVal = () => {
-    let header = document.getElementsByClassName('Header')[0]
-    var styles = window.getComputedStyle(header);
-    var margin = parseFloat(styles['marginTop']) + parseFloat(styles['marginBottom']);
+    const resetStuff = () => {
+      const searchBar = document.getElementById('search')
+      const adminList = document.getElementById('adminList')
+      searchBar.value = ''
+      adminList.scrollTop = 0
+      // reservations = ''
+    }
 
-    let totalHeight = Math.ceil(header.offsetHeight + margin)
-    console.log(totalHeight)
-    console.log(window.innerHeight);
-    const newHeight = window.innerHeight - totalHeight
-    console.log(newHeight);
-    return `${newHeight}px`
+    const calcHeightVal = () => {
+      let header = document.getElementsByClassName('Header')[0]
+      var styles = window.getComputedStyle(header);
+      var margin = parseFloat(styles['marginTop']) + parseFloat(styles['marginBottom']);
 
-  }
+      let totalHeight = Math.ceil(header.offsetHeight + margin)
+      const newHeight = window.innerHeight - totalHeight
+      return `${newHeight}px`
 
-  return (
+    }
 
-    <div className='ShowList mt-2' style={{ maxHeight: '100%'}}>
-    <div className='admin-list-header text-center ml-n1 mr-n1'>
-      {headerLabel(displayList)}
-    </div>
-      <div className="list-group mr-n1 ml-n1">
-        <div className="list-group-item show-header" style={{ maxHeight: calcHeightVal()}}>
-          <div className="row show-list-flex">
-            <div className="col-3 mb-3" >
-              <button type="button" className="btn btn-outline-light" onClick={e=>{resetStuff(); toggleProperty(previousProperty); stopRefreshing(true)}}>Back</button>
+    return (
+
+      <div className='ShowList mt-2' style={{ maxHeight: '100%'}}>
+      <div className='admin-list-header text-center ml-n1 mr-n1'>
+        {headerLabel(displayList)}
+      </div>
+        <div className="list-group mr-n1 ml-n1">
+          <div className="list-group-item show-header" style={{ maxHeight: calcHeightVal()}}>
+            <div className="row show-list-flex">
+              <div className="col-3 mb-3" >
+                <button type="button" className="btn btn-outline-light" onClick={e=>{resetStuff(); toggleProperty(previousProperty); stopRefreshing(true)}}>Back</button>
+              </div>
+              <div className="col-9 mb-3" >
+                <form className="form-inline float-right">
+                  <input onChange={searchItems} className="form-control search-bar" type="search" placeholder="Search..." aria-label="Search" id="search"></input>
+                </form>
+              </div>
             </div>
-            <div className="col-9 mb-3" >
-              <form className="form-inline float-right">
-                <input onChange={searchItems} className="form-control search-bar" type="search" placeholder="Search..." aria-label="Search" id="search"></input>
-              </form>
-            </div>
+            <ul className="list-group adminlist" id="adminList" style={{height: '100%'}}>
+              <div className={displayList === 'ShowList' ? '' : 'hidden'}>
+                <ShowList
+                  filterString={filterString}
+                  makeSelection={makeSelection}
+                  resetStuff={resetStuff}
+                  shows={shows}
+                  toggleProperty={toggleProperty}
+                />
+              </div>
+              <div className={displayList === 'PickupsList' ? '' : 'hidden'}>
+                <PickupsList
+                  filterString={filterString}
+                  makeSelection={makeSelection}
+                  pickupLocations={pickupLocations}
+                  pickupParties={pickupParties}
+                  theseParties={theseParties}
+                  theseLocations={theseLocations}
+                  resetStuff={resetStuff}
+                />
+              </div>
+              <div>
+              {displayList === 'ReservationsList' &&
+                <ReservationsList
+                  filterString={filterString}
+                  reservations={reservations}
+                  toggleCheckedIn={toggleCheckedIn}
+                />
+              }
+              </div>
+            </ul>
           </div>
-          <ul className="list-group adminlist" id="adminList" style={{height: '100%'}}>
-            <div className={displayList === 'ShowList' ? '' : 'hidden'}>
-              <ShowList
-                filterString={filterString}
-                makeSelection={makeSelection}
-                resetStuff={resetStuff}
-                shows={shows}
-                toggleProperty={toggleProperty}
-              />
-            </div>
-            <div className={displayList === 'PickupsList' ? '' : 'hidden'}>
-              <PickupsList
-                filterString={filterString}
-                makeSelection={makeSelection}
-                pickupLocations={pickupLocations}
-                pickupParties={pickupParties}
-                theseParties={theseParties}
-                theseLocations={theseLocations}
-                resetStuff={resetStuff}
-              />
-            </div>
-            <div>
-            {displayList === 'ReservationsList' &&
-              <ReservationsList
-                filterString={filterString}
-                reservations={reservations}
-                toggleCheckedIn={toggleCheckedIn}
-              />
-            }
-            </div>
-          </ul>
         </div>
       </div>
-    </div>
-  )
-
+    )
+  }
 }
-
 export default UserCheckin

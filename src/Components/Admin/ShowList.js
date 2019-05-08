@@ -31,7 +31,7 @@ const ShowList = (props) => {
                 </div>
                   <button
                     id={show.id}
-                    onClick={e=> {resetStuff(); makeSelection('eventId', show.id, 'PickupsList') }}
+                    onClick={e=> {resetStuff(); makeSelection('eventId', show.id, 'PickupsList')}}
                     type="button"
                     className='btn admin-detail-btn my-2 col-md-2'>Select</button>
               </div>

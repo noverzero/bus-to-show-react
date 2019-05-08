@@ -4,7 +4,6 @@ import '../../App.css';
 
 const PickupsList = (props) => {
   let { pickupLocations, pickupParties, makeSelection, theseParties, theseLocations, resetStuff, filterString } = props
-console.log('theseParties----- ', theseParties, 'theseLocations--------', theseLocations,)
   const shortName = (locationName) => {
     return locationName = locationName.split('- ')[1]
   }

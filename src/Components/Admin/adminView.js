@@ -4,13 +4,14 @@ import UserCheckin from './userCheckin'
 import PickupsList from './PickupsList';
 import ReservationsList from './ReservationsList';
 import AdminEdit from './Edit/AdminEdit'
+import io from 'socket.io-client'
 
 const fetchUrl = `http://localhost:3000`
 // const fetchUrl = `https://bts-test-backend.herokuapp.com`
 
 class AdminView extends React.Component {
   //child of App.js
-
+  
   state = {
     displayUserCheckin: false,
     displayList: 'ShowList',
@@ -24,20 +25,43 @@ class AdminView extends React.Component {
     thisPickup: null,
     theseParties: [],
     theseLocations: []
-
   }
-  // { shows, pickupLocations, pickupParties, searchItems, userDetails } = this.props
-
+  // const { shows, pickupLocations, pickupParties, searchItems, userDetails } = this.props
+  
   componentDidMount = async() => {
-    console.log('pickupLocations on Mount', this.props.pickupLocations)
+    // console.log('pickupLocations on Mount', this.props.pickupLocations)
     const pickupParties = await this.getPickupParties()
     
     await this.setState({
       pickupLocations: this.props.pickupLocations,
       pickupParties: pickupParties
     })
+    // await this.setState({
+    //   pickupLocations: this.props.pickupLocations
+    // })
   }
   
+  connectToSocket = () => {
+    let newState = {...this.state}
+    // const socketTest = io.connect(`${fetchUrl}/`, {transports: ['websocket']})
+    const socketTest = io.connect(`${fetchUrl}/`)
+    socketTest.on('hello', data => {
+    console.log('socket data', data)
+    })
+    newState.socket = socketTest
+    this.setState(newState)
+  }
+
+  // getEventsInfo = (socket) => {
+  //   socket.emit('getEventsInfo', data=> {
+  //     console.log(data)
+  //   })
+  // }  
+
+  disconnectSocket = (socket) => {
+    socket.emit('disconnect')
+  }
+
   getPickupParties = async () => {
     const response = await fetch(`${fetchUrl}/pickup_parties`, {
       method: 'GET',
@@ -47,7 +71,7 @@ class AdminView extends React.Component {
     })
     
     const result = await response.json()
-    console.log('PICKUPPARTIES on Mount', result)
+    // console.log('PICKUPPARTIES on Mount', result)
   return result
   }
 
@@ -60,12 +84,13 @@ class AdminView extends React.Component {
   toggleProperty = async (property) => {
     let newState = {...this.state}
     newState.filterString = ''
-    console.log('property inside toggleProperty', property)
+    // console.log('property inside toggleProperty', property)
     if (property === 'displayUserCheckin') {
     newState.displayUserCheckin = !newState.displayUserCheckin
     newState.displayList = 'ShowList'
     await this.setState(newState)}
     else if (property === 'displayAdminPanel'){
+      this.disconnectSocket(newState.socket)
       newState.displayAdminPanel = true
       await this.setState(newState)
     }
@@ -126,19 +151,16 @@ class AdminView extends React.Component {
 
   refreshReservations = (stop) => {
     if (!stop) {
-      console.log('getting')
       let x = 0;
       const reservationsInterval = setInterval(()=>{
         this.getReservations()
         if (++x === 40) {
-          console.log('clear')
           clearInterval(reservationsInterval)
         }
       }, 30000)
       this.setState({reservationsInterval})
     }
     else if (stop && this.state.reservationsInterval) {
-      console.log('stopping')
       clearInterval(this.state.reservationsInterval)
     }
 
@@ -202,6 +224,7 @@ class AdminView extends React.Component {
   }
 
   render (){
+    
     let { isStaff, isAdmin, isDriver } = this.props.userDetails
 
     return(
@@ -255,6 +278,7 @@ class AdminView extends React.Component {
                 thisCapacity={this.state.thisCapacity}
                 toggleCheckedIn={this.toggleCheckedIn}
                 toggleProperty={this.toggleProperty}
+                socket={this.state.socket}
               />
             }
         </div>
@@ -267,7 +291,9 @@ class AdminView extends React.Component {
               <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>console.log('also click')}>Driver Shifts</button>
             }
             {isStaff &&
-              <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>this.toggleProperty('displayUserCheckin')}>Rider Check-In</button>
+              <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>{this.connectToSocket()
+                this.toggleProperty('displayUserCheckin')
+              }}>Rider Check-In</button>
             }
           </div>
       }
