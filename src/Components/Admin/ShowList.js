@@ -6,6 +6,26 @@ import moment from 'moment'
 const ShowList = (props) => {
 //child of userCheckin.JS
   let { filterString, shows, makeSelection, resetStuff } = props
+  
+  const dateCheck = (show) => {
+    const showDate = Date.parse(show.date)
+    const today = new Date()
+    const startDate = today.setHours(today.getHours() - 36)
+    if (showDate < startDate) {
+      return false
+    } else {
+      return true
+    }
+  }
+  shows = shows.filter(dateCheck)
+    .filter(show => {
+      return show.meetsCriteria === true && show.isDenied === false
+    })
+    .sort((show1, show2) => {
+    const a = new Date(show1.date)
+    const b = new Date(show2.date)
+    return a - b
+  })
 
   filterString = filterString.toLowerCase()
   let filterShows = shows.filter(show => show.headliner.toLowerCase().includes(filterString))

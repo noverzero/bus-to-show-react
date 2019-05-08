@@ -24,15 +24,15 @@ class AdminView extends React.Component {
     thisPickup: null,
     theseParties: [],
     theseLocations: []
-
   }
-  // { shows, pickupLocations, pickupParties, searchItems, userDetails } = this.props
 
   componentDidMount = async() => {
     const pickupParties = await this.getPickupParties()
+
+
     await this.setState({
       pickupLocations: this.props.pickupLocations,
-      pickupParties: pickupParties
+      pickupParties: pickupParties,
     })
   }
   

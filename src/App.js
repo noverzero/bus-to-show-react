@@ -152,35 +152,38 @@ class App extends Component {
 
   async componentDidMount() {
     const response = await fetch(`${fetchUrl}/events`)
-    const allShows = await response.json()
+    let allShows = await response.json()
 
     //filters out expired shows and shows that don't meet criteria, and shows that are denied.
     const dateCheck = (show) => {
       const showDate = Date.parse(show.date)
       const today = new Date()
-      const yesterday = today.setDate(today.getDate() - 1)
-
-      if (showDate < yesterday) {
+      const startDate = today.setDate(today.getDate() - 1)
+      if (showDate < startDate) {
         return false
       } else {
         return true
       }
     }
     const currentShows = allShows.filter(dateCheck)
-    const shows = currentShows.filter(show => show.meetsCriteria === true && show.isDenied === false)
-
-    this.setState({ shows: shows })
-
-    const newState = this.state.shows.sort((show1, show2) => {
+    const userShows = currentShows.filter(show => show.meetsCriteria === true && show.isDenied === false).sort((show1, show2) => {
       const a = new Date(show1.date)
       const b = new Date(show2.date)
       return a - b
     })
 
-    this.setState({ shows: newState })
+    // this.setState({ allShows })
+
+    allShows = allShows.sort((show1, show2) => {
+      const a = new Date(show1.date)
+      const b = new Date(show2.date)
+      return a - b
+    })
+
     const pickups = await fetch(`${fetchUrl}/pickup_locations`)
     const pickupLocations = await pickups.json()
-    this.setState({ pickupLocations })
+    // this.setState({ allShows })
+    this.setState({ pickupLocations, allShows, userShows })
 
     // const getPickupParties = await fetch(`${fetchUrl}/pickup_parties`)
     // const pickupParties = await getPickupParties.json()
@@ -1136,7 +1139,7 @@ class App extends Component {
   // }
 
   sortByArtist = () => {
-    let newState = this.state.shows.sort((show1, show2) => {
+    let newState = this.state.userShows.sort((show1, show2) => {
       let a = show1.headliner.toLowerCase().split(" ").join("")
       let b = show2.headliner.toLowerCase().split(" ").join("")
       if (a < b) {
@@ -1151,7 +1154,7 @@ class App extends Component {
   }
 
   sortByDate = () => {
-    let newState = this.state.shows.sort((show1, show2) => {
+    let newState = this.state.userShows.sort((show1, show2) => {
       let a = new Date(show1.date)
       let b = new Date(show2.date)
       return a - b
@@ -1316,7 +1319,7 @@ class App extends Component {
                     pickupLocations={this.state.pickupLocations}
                     // pickupParties={this.state.pickupParties}
                     searchShows={this.searchShows}
-                    shows={this.state.shows}
+                    shows={this.state.allShows}
                     showsExpandClick={this.showsExpandClick}
                     userDetails={this.state.facebook.userDetails}
                   />
@@ -1364,7 +1367,7 @@ class App extends Component {
                     hideAboutus={this.hideAboutus}
                   />
                   :
-                  this.state.shows ?
+                  this.state.userShows ?
                     <React.Fragment>
                       <div className='content-section pt-4'>
                         <div className='col-md-6 float-right'>
@@ -1414,7 +1417,7 @@ class App extends Component {
                             returnToShows={this.returnToShows}
                             selectPickupLocationId={this.selectPickupLocationId}
                             selectTicketQuantity={this.selectTicketQuantity}
-                            shows={this.state.shows}
+                            shows={this.state.userShows}
                             showsExpandClick={this.showsExpandClick}
                             showsInCart={this.state.inCart}
                             startTimer={this.state.startTimer}
@@ -1447,7 +1450,7 @@ class App extends Component {
                           handleWarning={this.handleWarning}
                           inCart={this.state.inCart}
                           searchShows={this.searchShows}
-                          shows={this.state.shows}
+                          shows={this.state.userShows}
                           showsExpandClick={this.showsExpandClick}
                           sortByArtist={this.sortByArtist}
                           sortByDate={this.sortByDate}
@@ -1466,7 +1469,7 @@ class App extends Component {
                           handleWarning={this.handleWarning}
                           inCart={this.state.inCart}
                           searchShows={this.searchShows}
-                          shows={this.state.shows}
+                          shows={this.state.userShows}
                           showsExpandClick={this.showsExpandClick}
                           sortByArtist={this.sortByArtist}
                           sortByDate={this.sortByDate}
