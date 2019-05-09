@@ -181,10 +181,6 @@ class App extends Component {
     const pickups = await fetch(`${fetchUrl}/pickup_locations`)
     const pickupLocations = await pickups.json()
     this.setState({ pickupLocations, allShows, userShows })
-
-    // const getPickupParties = await fetch(`${fetchUrl}/pickup_parties`)
-    // const pickupParties = await getPickupParties.json()
-    // this.setState({ pickupParties })
   }
 
   //status: over-ridden by onclick event in the "ride with us button" where called in "loading.js"
@@ -214,11 +210,11 @@ class App extends Component {
       }
     })
 
-  let result = await response.json()
-  result = result.sort( (a, b) => {
-    return a.id - b.id
-  })
-  return result
+    let result = await response.json()
+    result = result.sort( (a, b) => {
+      return a.id - b.id
+    })
+    return result
   }
 
   refreshPickupParty = async (pickupId) => {
@@ -228,9 +224,8 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
-
-  const result = await response.json()
-  return result
+    const result = await response.json()
+    return result
   }
 
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
