@@ -894,7 +894,7 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-    this.ticketTimer(true, 100000, true)
+    this.ticketTimer(true, 30000, true)
     // const pickupPartyId = parseInt(this.state.pickupPartyId)
     // const ticketQty = parseInt(this.state.ticketQuantity)
     // this.addTicketsInCart(pickupPartyId, ticketQty)
@@ -947,9 +947,9 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
-    pickupLocationId ? this.ticketTimer(true, 5000, false, pickupPartyId)
+    pickupLocationId ? this.ticketTimer(true, 10000, false, pickupPartyId)
     :
-    this.ticketTimer(true, 5000)
+    this.ticketTimer(true, 10000)
   }
 
   clearTicketsInCart = (pickupPartyId, ticketQty) => {
@@ -992,9 +992,13 @@ class App extends Component {
   }
 
   purchase = async (err) => {
-    if (err) return this.setState({purchaseFailed: true})
-
+    if (err) {
+      this.ticketTimer(false)
+      this.ticketTimer(true, 30000, true)
+      return this.setState({purchaseFailed: true})
+    }
     const cartObj = this.state.cartToSend
+    console.log('cart to send', cartObj)
     cartObj.userId = this.state.facebook.userDetails.id
     // console.log('cartObj inside purchase.....', cartObj)
     const ordersResponse = await fetch(`${fetchUrl}/orders`, {
@@ -1004,7 +1008,7 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
-
+    this.ticketTimer(false)
     this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [] })
   }
 
