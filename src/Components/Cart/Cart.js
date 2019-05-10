@@ -174,7 +174,7 @@ const Cart = (props) => {
                               type="phone"
                               className={`form-control ${props.validatedElements.phone ? 'is-valid' : ''}`}
                               id="phone"
-                              placeholder="Phone number (XXX-XXX-XXXX)"
+                              placeholder="Format: XXX-XXX-XXXX"
                               required />
                             <div className="invalid-feedback">
                               Please provide a valid phone number.
@@ -182,7 +182,7 @@ const Cart = (props) => {
                           </div>
                         </div>
 
-                        {/* Terinary to display will call name fields or button to show fields */}
+                        {/* Ternary to display will call name fields or button to show fields */}
                         {props.checked ?
                           <div className="form-row">
                             <div className="col-md-4 mb-3">

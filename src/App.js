@@ -1023,8 +1023,9 @@ class App extends Component {
     // xxx-xxx-xxxx / xxx.xxx.xxxx / xxx xxx xxxx
 
     const phoneNumber = (inputtxt) => {
-      var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
+      var phoneno = /^\(?([0-9]{3})\)?[-. ]([0-9]{3})[-. ]([0-9]{4})$/
       if(inputtxt.match(phoneno)) return true
+      else if (inputtxt.length > 12 || inputtxt.length < 12 ) return false
       else return false
     }
 
@@ -1082,7 +1083,7 @@ class App extends Component {
       newCart.lastName = this.state.validatedElements.lastName
       newCart.email = this.state.validatedElements.email
       newCart.phone = this.state.validatedElements.phone
-      newCart.eventId = this.state.cartToSend.eventId
+      newCart.eventId = this.state.inCart[0].id
       newCart.ticketQuantity = parseInt(this.state.ticketQuantity)
       newCart.pickupLocationId = parseInt(this.state.pickupLocationId)
       newCart.totalCost = Number(this.state.totalCost)
