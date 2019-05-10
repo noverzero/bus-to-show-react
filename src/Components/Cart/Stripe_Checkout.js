@@ -38,8 +38,8 @@ export default class Checkout extends React.Component {
       <React.Fragment>
         <StripeCheckout
           token={this.onToken}
-          stripeKey="pk_test_J0CdRMCGmBlrlOiGKnGgUEwT"
-          //stripeKey="pk_live_WZRwtpLAFcufugeQKbtwKobm"
+          // stripeKey="pk_test_J0CdRMCGmBlrlOiGKnGgUEwT"
+          stripeKey="pk_live_WZRwtpLAFcufugeQKbtwKobm"
           name='Bus To Show'
           description='Receipt will be emailed after purchase'
           email={email}
