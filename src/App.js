@@ -230,8 +230,12 @@ class App extends Component {
 
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
   selectPickupLocationId = async event => {
+    console.log('select pickup',event.target.value)
+    
     const newState = { ...this.state }
-    if (parseInt(event.target.value) !== newState.pickupPartyId) {
+    if (parseInt(newState.ticketQuantity)) {
+      let oldPickup = parseInt(newState.pickupPartyId)
+      this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
       newState.ticketQuantity = null
       newState.displayQuantity = false
       newState.displayAddBtn = false
@@ -241,8 +245,22 @@ class App extends Component {
         displayAddBtn: newState.displayAddBtn
       })
     }
-
+    else if (parseInt(event.target.value) !== newState.pickupPartyId) {
+      newState.ticketQuantity = null
+      newState.displayQuantity = false
+      newState.displayAddBtn = false
+      this.setState({
+        ticketQuantity: newState.ticketQuantity,
+        displayQuantity: newState.displayQuantity,
+        displayAddBtn: newState.displayAddBtn
+      })
+    }
+    
     if (parseInt(event.target.value)) {
+      newState.pickupPartyId = event.target.value
+      newState.displayQuantity = true
+    }
+    else if (parseInt(event.target.value)) {
       newState.pickupPartyId = event.target.value
       newState.displayQuantity = true
     }
@@ -265,20 +283,7 @@ class App extends Component {
     let numArray = []
 
     if (matchedParty) {
-      matchedParty = await this.refreshPickupParty(matchedParty.id)
-      const currentReservations = await fetch(`${fetchUrl}/reservations/findOrders`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          pickupPartiesId: matchedParty.id,
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      const reservations = await currentReservations.json()
-      console.log('res', reservations.length, 'cap', matchedParty.capacity, 'cart', matchedParty.inCart)
-
-      const availableTickets = parseInt(matchedParty.capacity) - parseInt(reservations.length) - parseInt(matchedParty.inCart)
+      const availableTickets = await this.refreshAvailableTickets(matchedParty.id)
       if (availableTickets < 1) newState.ticketsAvailable = []
       else if (availableTickets >= 1) {
         numArray = [...Array(availableTickets).keys()].map(i => i + 1)
@@ -286,7 +291,7 @@ class App extends Component {
       }
     }
     else {
-      // console.log('Error!! No MatchedParty in selectPickupLocationId')
+      console.log('Error!! No MatchedParty in selectPickupLocationId')
     }
     this.setState({
       ticketsAvailable: newState.ticketsAvailable,
@@ -299,19 +304,39 @@ class App extends Component {
     })
   }
 
+  refreshAvailableTickets = async (pickupPartyId) => {
+    const matchedParty = await this.refreshPickupParty(pickupPartyId)
+    const currentReservations = await fetch(`${fetchUrl}/reservations/findOrders`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        pickupPartiesId: pickupPartyId,
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const reservations = await currentReservations.json()
+    console.log('res', reservations.length, 'cap', matchedParty.capacity, 'cart', matchedParty.inCart)
+
+    const availableTickets = parseInt(matchedParty.capacity) - parseInt(reservations.length) - parseInt(matchedParty.inCart)
+      return availableTickets
+  }
+
   selectTicketQuantity = event => {
 
     const newState = { ...this.state }
+    const oldQty = parseInt(newState.ticketQuantity)
+    const pickupPartyId = parseInt(newState.pickupPartyId)
+
+    if (oldQty > 0) this.clearTicketsInCart(pickupPartyId, oldQty)
     if (event.target.value) {
       newState.displayAddBtn = true
     }
     else {
       newState.displayAddBtn = false
     }
-    newState.ticketQuantity = event.target.value
-    // const sPickupId = parseInt(this.state.pickupLocationId)
-    // const sEventId = parseInt(this.state.displayShow.id)
-    // const pickupParty = this.state.pickupParties.find(party => party.pickupLocationId === sPickupId && party.eventId === sEventId)
+    newState.ticketQuantity = parseInt(event.target.value)
+
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const subTotal = (Number(pickupLocation.basePrice) * Number(event.target.value))
     const total = ((Number(subTotal) * .1) + Number(subTotal)).toFixed(2)
@@ -321,6 +346,8 @@ class App extends Component {
       ticketQuantity: newState.ticketQuantity,
       totalCost: newState.totalCost
     })
+    // console.log(pickupLocation.id)
+    this.addTicketsInCart(pickupPartyId, newState.ticketQuantity, pickupLocation.id)
   }
 
   updateDiscountCode = event => {
@@ -695,8 +722,21 @@ class App extends Component {
   }
 
   backToCalendar = event => {
+
     const newState = { ...this.state }
     // console.log('back to calendar');
+    if (parseInt(newState.ticketQuantity)) {
+      let oldPickup = parseInt(newState.pickupPartyId)
+      this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
+      newState.ticketQuantity = null
+      newState.displayQuantity = false
+      newState.displayAddBtn = false
+      this.setState({
+        ticketQuantity: newState.ticketQuantity,
+        displayQuantity: newState.displayQuantity,
+        displayAddBtn: newState.displayAddBtn
+      })
+    }
     newState.displayExternalShowDetails = false
     newState.displayDetailCartView = false
     newState.displayShow = null
@@ -799,6 +839,7 @@ class App extends Component {
   }
 
   addToCart = async () => {
+    this.ticketTimer(false)
     const newState = { ...this.state }
   
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
@@ -853,21 +894,37 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-    const pickupPartyId = parseInt(this.state.pickupPartyId)
-    const ticketQty = parseInt(this.state.ticketQuantity)
-    this.addTicketsInCart(pickupPartyId, ticketQty)
+    this.ticketTimer(true, 100000, true)
+    // const pickupPartyId = parseInt(this.state.pickupPartyId)
+    // const ticketQty = parseInt(this.state.ticketQuantity)
+    // this.addTicketsInCart(pickupPartyId, ticketQty)
     window.addEventListener("beforeunload", this.clearCartOnClose);
   }
 
 // functions to handle setting and clearing of timer and incart qtys
 
-  ticketTimer = (condition) => {
+  ticketTimer = (condition, time, cart, pickupLocationId) => {
     let newState = {...this.state}
-    // console.log(newState.ticketTimer)
-    if (condition) {
+    let event = {
+      target: {
+        value: pickupLocationId,
+      }
+    }
+
+    if (condition && !cart) {
+      const newTicketTimer = setTimeout(() => {
+        console.log("reset timer",pickupLocationId)
+        this.confirmedRemove();
+        this.setState({pickupLocationId})
+        this.selectPickupLocationId(event)
+      }, time)
+      newState.ticketTimer = newTicketTimer
+      this.setState({ ticketTimer: newState.ticketTimer })
+    }
+    else if (condition && cart) {
       const newTicketTimer = setTimeout(() => {
         this.confirmedRemove()
-      }, 20000)
+      }, time)
       newState.ticketTimer = newTicketTimer
       this.setState({ ticketTimer: newState.ticketTimer })
     }
@@ -879,7 +936,8 @@ class App extends Component {
   }
 
 
-  addTicketsInCart = (pickupPartyId, ticketQty) => {
+  addTicketsInCart = (pickupPartyId, ticketQty, pickupLocationId) => {
+    this.ticketTimer(false)
     fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -889,10 +947,13 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
-    this.ticketTimer(true)
+    pickupLocationId ? this.ticketTimer(true, 5000, false, pickupPartyId)
+    :
+    this.ticketTimer(true, 5000)
   }
 
   clearTicketsInCart = (pickupPartyId, ticketQty) => {
+    let newState = {...this.state}
     fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -902,6 +963,9 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
+    console.log('cleared', ticketQty)
+    newState.ticketQuantity = 0
+    this.setState({ticketQuantity: newState.ticketQuantity})
     this.ticketTimer(false)
     return
   }
@@ -1084,8 +1148,11 @@ class App extends Component {
     newState.displayQuantity = false
     newState.displayAddBtn = false
     newState.startTimer = false
+    newState.pickupLocationId = null
+    // newState.ticketQuantity = 0
 
     this.setState({
+
       inCart: newState.inCart,
       displaySuccess: newState.displaySuccess,
       displayConfirmRemove: newState.displayConfirmRemove,
@@ -1106,7 +1173,9 @@ class App extends Component {
   }
 
   quantityChange = event => {
+    this.ticketTimer(false)
     const newState = { ...this.state }
+    const oldQty = parseInt(newState.ticketQuantity)
     newState.ticketQuantity = event.target.value
 
     const pickupLocation = this.state.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
@@ -1115,7 +1184,12 @@ class App extends Component {
     const processingFee = Number((basePrice * ticketQuantity) * (0.1))
     const cost = ((basePrice * ticketQuantity) + processingFee)
     newState.totalCost = cost.toFixed(2)
+    const pickupPartyId = parseInt(newState.pickupPartyId)
+    console.log(oldQty, ticketQuantity);
     this.setState({ ticketQuantity: newState.ticketQuantity, totalCost: newState.totalCost })
+    this.clearTicketsInCart(pickupPartyId, oldQty)
+    this.addTicketsInCart(pickupPartyId, ticketQuantity)    
+    this.ticketTimer(true, 120000)
   }
 
   // addBorder = () => {
