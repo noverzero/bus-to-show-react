@@ -5,11 +5,6 @@ import '../../App.css';
 
 const CartItem = (props) => {
 
-  // const pickupTime = props.lastDepartureTime
-  // const firstBusLoad = props.firstBusLoad
-  // const pickupLocation = props.pickupLocations.find(location => parseInt(location.id) === parseInt(props.pickupLocationId))
-  // const defaultFirstBus = moment((moment(pickupTime, 'hhmm a').format('kkmm')-30), 'hhmm a').format('hh:mm a')
-
   const pickupTime = props.lastDepartureTime
   const firstBusLoad = props.firstBusLoad
   const pickupLocation = props.pickupLocations.find(location => parseInt(location.id) === parseInt(props.pickupLocationId))

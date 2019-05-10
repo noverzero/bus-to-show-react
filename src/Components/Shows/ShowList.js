@@ -4,13 +4,6 @@ import Show from './Show'
 import MediaQuery from 'react-responsive';
 
 const ShowList = (props) => {
-
-  // const calcHeightVal = () => { 
-  //   const newHeight = window.innerWidth > 800 ? window.innerHeight - 150 : window.innerHeight - 315
-  //   return `${newHeight}px`
-  // }
-  // style={{ maxHeight: calcHeightVal()}}
-
   return (
     <div className='ShowList'>
       {/* Desktop View */}

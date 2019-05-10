@@ -15,11 +15,9 @@ const LoginView = (props) => {
   let futureClass = 'border'
   let pastClass = 'border'
   if (props.displayFuture){
-    console.log('futureshock')
     futureClass = 'border border-success'
     pastClass = 'border bg-light'
   } else if (props.displayPast){
-    console.log('pastshock')
     pastClass = 'border border-success'
     futureClass = 'border bg-light'
   }

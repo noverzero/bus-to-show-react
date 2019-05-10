@@ -6,7 +6,7 @@ import ReservationsList from './ReservationsList'
 
 const UserCheckin = (props) => {
   let { 
-    thisShow, thisPickup, thisParty, thisLocation, searchItems, toggleProperty, filterString, shows, makeSelection, displayList, pickupLocations, pickupParties, theseParties, theseLocations, reservations, toggleCheckedIn, thisCapacity, stopRefreshing 
+    thisShow, thisLocation, searchItems, toggleProperty, filterString, shows, makeSelection, displayList, pickupLocations, pickupParties, theseParties, theseLocations, reservations, toggleCheckedIn, thisCapacity, stopRefreshing 
   } = props
 
   let thisDate
@@ -52,7 +52,6 @@ const UserCheckin = (props) => {
     const adminList = document.getElementById('adminList')
     searchBar.value = ''
     adminList.scrollTop = 0
-    // reservations = ''
   }
 
   const calcHeightVal = () => {

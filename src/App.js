@@ -1,9 +1,8 @@
 // Packages
 import React, { Component } from 'react'
-// import { BrowserRouter } from "react-router-dom"
 import Validator from 'validator'
 import MediaQuery from 'react-responsive'
-import moment, { locale } from 'moment'
+import moment from 'moment'
 
 // Styling
 import './App.css';
@@ -21,17 +20,6 @@ import BannerRotator from './Components/BannerRotator'
 import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
-// { email: "jake136@yahoo.com",
-// firstName: "Jake",
-// id: 105,
-// isAdmin: true,
-// isDeactivated: false,
-// isDriver: true,
-// isStaff: true,
-// isWaiverSigned: false,
-// lastName: "Mosher",
-// preferredLocation: "" }
-// userID: "10102849492705992"
 
 const fetchUrl = `http://localhost:3000`
 // const fetchUrl = `https://bts-test-backend.herokuapp.com`
@@ -90,32 +78,13 @@ class App extends Component {
     displayReservations: false,
     displayUserReservationSummary: false,
     displayTimes: false,
-    // facebook: {
-    //   isLoggedIn: false,
-    //   userID: '',
-    //   name: '',
-    //   email:'',
-    //   picture:'',
-    //   userDetails: {},
-    // },
     facebook: {
-      isLoggedIn: true,
-      userID: "10156117602853997",
-      name: "Jake Mosher",
-      email: "jakeypoo@boner.com",
-      picture: "",
-      userDetails: {
-        email: "jakeypoo@boner.com",
-        firstName: "Jake",
-        lastName: "Mosher",
-        id: 105,
-        isAdmin: true,
-        isDeactivated: false,
-        isDriver: false,
-        isStaff: true,
-        isWaiverSigned: false,
-        preferredLocation: ""
-      },
+      isLoggedIn: false,
+      userID: '',
+      name: '',
+      email:'',
+      picture:'',
+      userDetails: {},
     },
     filterString: '',
     firstBusLoad: null,
@@ -230,8 +199,6 @@ class App extends Component {
 
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
   selectPickupLocationId = async event => {
-    console.log('select pickup',event.target.value)
-    
     const newState = { ...this.state }
     if (parseInt(newState.ticketQuantity)) {
       let oldPickup = parseInt(newState.pickupPartyId)
@@ -291,7 +258,7 @@ class App extends Component {
       }
     }
     else {
-      console.log('Error!! No MatchedParty in selectPickupLocationId')
+      console.error('Error!! No MatchedParty in selectPickupLocationId')
     }
     this.setState({
       ticketsAvailable: newState.ticketsAvailable,
@@ -316,8 +283,6 @@ class App extends Component {
       }
     })
     const reservations = await currentReservations.json()
-    console.log('res', reservations.length, 'cap', matchedParty.capacity, 'cart', matchedParty.inCart)
-
     const availableTickets = parseInt(matchedParty.capacity) - parseInt(reservations.length) - parseInt(matchedParty.inCart)
       return availableTickets
   }
@@ -346,7 +311,6 @@ class App extends Component {
       ticketQuantity: newState.ticketQuantity,
       totalCost: newState.totalCost
     })
-    // console.log(pickupLocation.id)
     this.addTicketsInCart(pickupPartyId, newState.ticketQuantity, pickupLocation.id)
   }
 
@@ -358,15 +322,12 @@ class App extends Component {
 
   getReservations = async () => {
     const userId = this.state.facebook.userDetails.id
-    // console.log('userId inside getReservations:::: ', userId)
     if (userId) {
       const reservations = await fetch(`${fetchUrl}/orders/${userId}`)
       const userReservations = await reservations.json()
       const newState = { ...this.State }
-      //newState.userId = userId
       newState.userReservations = await userReservations
       await this.setState({ userReservations: newState.userReservations })
-      // await console.log('userReservations', this.state.userReservations)
     }
   }
 
@@ -452,9 +413,7 @@ class App extends Component {
   }
 
   toggleReservationView = (e) => {
-    //console.log('click on toggleReservationView', e.target.id)
     const newState = { ...this.state }
-    //displayReservationDetail
     this.getReservations()
     newState.displayFuture = true
     newState.displayPast = false
@@ -463,7 +422,6 @@ class App extends Component {
       newState.displayReservations = !newState.displayReservations
     }
     if(e.target.id==='dashboard' || e.target.id==='summary'){
-      // console.log("did we get inside dashboard?")
       newState.displayReservationDetail = false
       newState.reservationDetail = null
       newState.displayUserReservationSummary = false
@@ -486,7 +444,6 @@ class App extends Component {
   }
 
   toggleFuturePast = (e) => {
-    // console.log('this is this:', e.target.id)
     const newState = { ...this.state }
     if(e.target.id==='future'){
       newState.displayPast = false
@@ -502,7 +459,6 @@ class App extends Component {
   }
 
   toggleEditReservation = (e) =>{
-    // console.log('click on:: toggleEditREservation ', e.target.id)
     const newState = { ...this.state }
     newState.displayEditReservation = !newState.displayEditReservation
     newState.reservationToEditId = parseInt(e.target.id)
@@ -510,11 +466,9 @@ class App extends Component {
       displayEditReservation: newState.displayEditReservation,
       reservationToEditId: newState.reservationToEditId
     })
-    console.log('reservationsId ', this.state.reservationToEditId)
   }
 
   reservationEditField = (e) => {
-    //this.setState({[e.target.name]: e.target.value})
       this.setState({
         ...this.state,
           willCallEdits: {
@@ -523,13 +477,10 @@ class App extends Component {
           id: e.target.id
         }
     })
-    // console.log('rETS', this.state.reservationEditsToSend)
   }
 
   submitReservationForm = (e) => {
     e.preventDefault()
-    // console.log('submit e target id', e.target.id)
-    // console.log('this.state.willCallEdits::: ' , this.state.willCallEdits)
     let newRETS = [ ...this.state.reservationEditsToSend ]
     let newDisplayEditSuccess = this.state.displayEditSuccess
     newDisplayEditSuccess = !newDisplayEditSuccess
@@ -542,9 +493,7 @@ class App extends Component {
   }
 
   handleEditSend= async(newRETS)=>{
-    // console.log('newRETS:::: ', newRETS)
     newRETS.map(async(reservation)=>{
-      // console.log('reservation inside patch map:::', reservation)
       const editReservationResponse = await fetch(`${fetchUrl}/reservations`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -557,14 +506,10 @@ class App extends Component {
         }
       })
       .catch()
-
-      const json = await editReservationResponse.json()
-      // await console.log('editReservationResponse.json', json)
+      // const json = await editReservationResponse.json()
       const e = {target: {id: "edit"}}
-
       await this.toggleReservationView(e)
       if(editReservationResponse.status === 200){
-        // console.log('editReservationResponse', editReservationResponse.status)
       }
     })
 }
@@ -600,7 +545,6 @@ class App extends Component {
   }
 
   profileClick = () => {
-    // this.getHeadliners()
     const newState = { ...this.state }
     newState.displayLoginView = !newState.displayLoginView
 
@@ -633,11 +577,8 @@ class App extends Component {
 
 
   responseFacebook = async (response) => {
-    // console.log('searching for onLoad response facbook', response)
-
       this.setState({
         ...this.state,
-          //isLoggedIn: true,
           facebook: {
             ...this.state.facebook,
             userID: response.id,
@@ -645,7 +586,6 @@ class App extends Component {
             email:response.email,
             picture:response.picture.data.url
           }
-
       })
       this.toggleLoggedIn(true)
       this.onLoad()
@@ -669,9 +609,6 @@ class App extends Component {
           userDetails: newState.userDetails
         }
       })
-      // console.log('userObj response to work with', userObj)
-      // console.log('this.state.facebook.userDetails::::', this.state.facebook.userDetails)
-      //this.props.getReservations(json.id)
   }
 
   responseGoogle = response => {
@@ -682,7 +619,6 @@ class App extends Component {
   }
 
   responseSpotify = response => {
-    // console.log(response)
     const newState = { ...this.state }
     newState.spotifyResponse = response
     newState.displayLoginView = false
@@ -724,7 +660,6 @@ class App extends Component {
   backToCalendar = event => {
 
     const newState = { ...this.state }
-    // console.log('back to calendar');
     if (parseInt(newState.ticketQuantity)) {
       let oldPickup = parseInt(newState.pickupPartyId)
       this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
@@ -776,12 +711,8 @@ class App extends Component {
       })
 
 
-    } else {
-      // need to rewrite such that pickup parties aren't grabbed until a pickup location is selected
-      //return array of pickupParties assigned to this event
-      
+    } else {      
       const assignedPickupParties = await this.getPickupParties(clickedShow.id)
-      
       const currentPickups = assignedPickupParties.map(party => party.pickupLocationId)
       const pickupLocations = newState.pickupLocations.filter(loc => currentPickups.includes(loc.id))
       
@@ -817,7 +748,6 @@ class App extends Component {
 
   returnToShows = () => {
     const newState = { ...this.state }
-    // console.log('return to shows');
     newState.displayShow = null
     newState.displaySuccess = false
     newState.displayShowList = true
@@ -895,9 +825,6 @@ class App extends Component {
     newState.startTimer = true
     this.setState(newState)
     this.ticketTimer(true, 30000, true)
-    // const pickupPartyId = parseInt(this.state.pickupPartyId)
-    // const ticketQty = parseInt(this.state.ticketQuantity)
-    // this.addTicketsInCart(pickupPartyId, ticketQty)
     window.addEventListener("beforeunload", this.clearCartOnClose);
   }
 
@@ -913,7 +840,6 @@ class App extends Component {
 
     if (condition && !cart) {
       const newTicketTimer = setTimeout(() => {
-        console.log("reset timer",pickupLocationId)
         this.confirmedRemove();
         this.setState({pickupLocationId})
         this.selectPickupLocationId(event)
@@ -963,7 +889,6 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
-    console.log('cleared', ticketQty)
     newState.ticketQuantity = 0
     this.setState({ticketQuantity: newState.ticketQuantity})
     this.ticketTimer(false)
@@ -998,10 +923,8 @@ class App extends Component {
       return this.setState({purchaseFailed: true})
     }
     const cartObj = this.state.cartToSend
-    console.log('cart to send', cartObj)
     cartObj.userId = this.state.facebook.userDetails.id
-    // console.log('cartObj inside purchase.....', cartObj)
-    const ordersResponse = await fetch(`${fetchUrl}/orders`, {
+    fetch(`${fetchUrl}/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
       headers: {
@@ -1101,29 +1024,15 @@ class App extends Component {
       :
         newCart.willCallLastName = this.state.validatedElements.lastName
       
-
       this.setState({ 
         cartToSend: newState.cartToSend,
         validated: newState.validated          
       })
-      // this.setState({ validated: newState.validated })
     }
     else {
-      console.log('Please continue to complete the form!')
+      // console.log('Please continue to complete the form!')
     }
   }
-
-  // toggleLoggedIn = (boolean) => {
-  //   const newState = { ...this.state }
-  //   newState.loggedIn = boolean
-  //   if (boolean === false) {
-  //     newState.myReservationsView = false
-  //   }
-  //   if (boolean === true && (newState.isStaff || newState.isDriver || newState.isAdmin)) {
-  //     console.log('admin')
-  //   }
-  //   this.setState({ loggedIn: newState.loggedIn, myReservationsView: newState.myReservationsView })
-  // }
 
   removeFromCart = () => {
     const newState = { ...this.state }
@@ -1154,7 +1063,6 @@ class App extends Component {
     newState.displayAddBtn = false
     newState.startTimer = false
     newState.pickupLocationId = null
-    // newState.ticketQuantity = 0
 
     this.setState({
 
@@ -1188,26 +1096,13 @@ class App extends Component {
     const ticketQuantity = parseInt(newState.ticketQuantity)
     const processingFee = Number((basePrice * ticketQuantity) * (0.1))
     const cost = ((basePrice * ticketQuantity) + processingFee)
-    newState.totalCost = cost.toFixed(2)
     const pickupPartyId = parseInt(newState.pickupPartyId)
-    console.log(oldQty, ticketQuantity);
+    newState.totalCost = cost.toFixed(2)
     this.setState({ ticketQuantity: newState.ticketQuantity, totalCost: newState.totalCost })
     this.clearTicketsInCart(pickupPartyId, oldQty)
     this.addTicketsInCart(pickupPartyId, ticketQuantity)    
     this.ticketTimer(true, 120000)
   }
-
-  // addBorder = () => {
-  //   const newState = { ...this.state }
-  //   newState.displayBorder = true
-  //   this.setState(newState)
-  //
-  //   setTimeout(() => {
-  //     const newState = { ...this.state }
-  //     newState.displayBorder = false
-  //     this.setState(newState)
-  //   }, 500)
-  // }
 
   sortByArtist = () => {
     let newState = this.state.userShows.sort((show1, show2) => {
@@ -1246,7 +1141,6 @@ class App extends Component {
       newState.cartToSend.willCallLastName = newState.cartToSend.lastName
       this.setState({ cartToSend: newState.cartToSend })
     }
-    //console.log('CTS', newState.cartToSend)
 
     newState.displayQuantity = false
     newState.displayAddBtn = false
@@ -1279,8 +1173,6 @@ class App extends Component {
 
 
   getEventbriteData = async (continuationString, val, previousFuelDataArr) => {
-    // console.log('val 1', val )
-    // console.log('get Eventbrite Data fired')
     // const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&page=${val}&expand=ticket_classes${continuationString}`)
     const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?${continuationString}token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&expand=ticket_classes`)
 
@@ -1292,10 +1184,8 @@ class App extends Component {
     continuationString = await `continuation=${continuation}&`
     //let continuationString = ''
     if(fuelData.pagination.has_more_items && val <5 ){
-      // console.log('val in if ', val)
       return await this.getEventbriteData(continuationString, val+=1, newFuelDataArr)
     } else {
-      // console.log('seeingDoubleArr!!!', newFuelDataArr)
       return newFuelDataArr
     }
   }
@@ -1310,21 +1200,16 @@ class App extends Component {
     const eventsArr = await this.getEventbriteData('', 1, [])
 
     .then((eventsArr)=> {
-      // console.log('chicken')
-      //console.log('eventsArr', eventsArr)
     let newEventsArr = []
     for(let ii = 0; ii < eventsArr.length; ii++){
-      // console.log('monkey')
       newEventsArr[ii] = {}
       let ticketClasses = []
       ticketClasses = eventsArr[ii].ticket_classes
-      //console.log('ticketClasses', ticketClasses)
 
         let eventTotal = 0
         let departures = {}
         if (ticketClasses){
           for(let jj = 0; jj < ticketClasses.length; jj++){
-            // console.log('zebra')
             eventTotal += ticketClasses[jj].quantity_sold
             departures[ticketClasses[jj].name] = ticketClasses[jj].quantity_sold
           }
@@ -1335,7 +1220,6 @@ class App extends Component {
       newEventsArr[ii].totalSales = eventTotal
       newEventsArr[ii].departures = departures
     }
-    // console.log('headlinersArr', newEventsArr)
     const newState = { ...this.state }
     newState.oldStuff = newEventsArr
     this.setState({oldStuff: newState.oldStuff})
@@ -1345,15 +1229,6 @@ class App extends Component {
 
   postOldData = async () => {
     const newEventsArr = this.state.oldStuff
-    // console.log('inSide post old data function', newEventsArr)
-    // const response = await fetch('https://localhost:3000/fuel', {
-    //   method: 'POST',
-    //   body: JSON.stringify(newEventsArr),
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   }
-    // })
-    // console.log('post old data response', response)
   }
 
   toggleAdminView = () => {
@@ -1388,7 +1263,6 @@ class App extends Component {
                 {this.state.adminView ?
                   <AdminView
                     pickupLocations={this.state.pickupLocations}
-                    // pickupParties={this.state.pickupParties}
                     searchShows={this.searchShows}
                     shows={this.state.allShows}
                     showsExpandClick={this.showsExpandClick}

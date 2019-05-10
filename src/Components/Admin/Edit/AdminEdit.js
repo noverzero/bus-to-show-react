@@ -1,6 +1,5 @@
 import React from 'react'
 import '../../../App.css';
-// import MediaQuery from 'react-responsive';
 import EditShowList from './EditShowList'
 import PickupsList from '../PickupsList'
 import ReservationsList from '../ReservationsList'
@@ -53,7 +52,6 @@ const AdminEdit = (props) => {
     const adminList = document.getElementById('adminList')
     searchBar.value = ''
     adminList.scrollTop = 0
-    // reservations = ''
   }
 
   const calcHeightVal = () => {
@@ -62,12 +60,8 @@ const AdminEdit = (props) => {
     var margin = parseFloat(styles['marginTop']) + parseFloat(styles['marginBottom']);
 
     let totalHeight = Math.ceil(header.offsetHeight + margin)
-    console.log(totalHeight)
-    console.log(window.innerHeight);
     const newHeight = window.innerHeight - totalHeight
-    console.log(newHeight);
     return `${newHeight}px`
-
   }
 
   return (
