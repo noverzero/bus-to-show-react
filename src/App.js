@@ -312,7 +312,7 @@ class App extends Component {
       ticketQuantity: newState.ticketQuantity,
       totalCost: newState.totalCost
     })
-    this.addTicketsInCart(pickupPartyId, newState.ticketQuantity, pickupLocation.id)
+    this.addTicketsInCart(pickupPartyId, newState.ticketQuantity)
   }
 
   updateDiscountCode = event => {
@@ -825,7 +825,7 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-    this.ticketTimer(true, 30000, true)
+    this.ticketTimer(true, 600000, true)
     window.addEventListener("beforeunload", this.clearCartOnClose);
   }
 
@@ -863,7 +863,7 @@ class App extends Component {
   }
 
 
-  addTicketsInCart = (pickupPartyId, ticketQty, pickupLocationId) => {
+  addTicketsInCart = (pickupPartyId, ticketQty) => {
     this.ticketTimer(false)
     fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
       method: 'PATCH',
@@ -874,9 +874,7 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
-    pickupLocationId ? this.ticketTimer(true, 10000, false, pickupPartyId)
-    :
-    this.ticketTimer(true, 10000)
+    this.ticketTimer(true, 120000)
   }
 
   clearTicketsInCart = (pickupPartyId, ticketQty) => {
@@ -920,7 +918,7 @@ class App extends Component {
   purchase = async (err) => {
     if (err) {
       this.ticketTimer(false)
-      this.ticketTimer(true, 30000, true)
+      this.ticketTimer(true, 600000, true)
       return this.setState({purchaseFailed: true})
     }
     const cartObj = this.state.cartToSend
@@ -1087,7 +1085,6 @@ class App extends Component {
   }
 
   quantityChange = event => {
-    this.ticketTimer(false)
     const newState = { ...this.state }
     const oldQty = parseInt(newState.ticketQuantity)
     newState.ticketQuantity = event.target.value
@@ -1102,7 +1099,6 @@ class App extends Component {
     this.setState({ ticketQuantity: newState.ticketQuantity, totalCost: newState.totalCost })
     this.clearTicketsInCart(pickupPartyId, oldQty)
     this.addTicketsInCart(pickupPartyId, ticketQuantity)    
-    this.ticketTimer(true, 120000)
   }
 
   sortByArtist = () => {
