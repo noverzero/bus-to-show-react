@@ -3,9 +3,7 @@ import '../App.css';
 import ShowDetailView from './Shows/ShowDetailView'
 import Cart from './Cart/Cart'
 import MediaQuery from 'react-responsive';
-import ShowList from '../Components/Shows/ShowList'
 import ExternalShowDetail from './Shows/ExternalShowDetail'
-// import logo from '../Images/Logos/bts-logo-gray.png'
 
 const DetailCartView = (props) => {
 

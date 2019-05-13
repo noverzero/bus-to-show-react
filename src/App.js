@@ -1,9 +1,8 @@
 // Packages
 import React, { Component } from 'react'
-// import { BrowserRouter } from "react-router-dom"
 import Validator from 'validator'
 import MediaQuery from 'react-responsive'
-import moment, { locale } from 'moment'
+import moment from 'moment'
 
 // Styling
 import './App.css';
@@ -21,20 +20,10 @@ import BannerRotator from './Components/BannerRotator'
 import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
-// { email: "jake136@yahoo.com",
-// firstName: "Jake",
-// id: 105,
-// isAdmin: true,
-// isDeactivated: false,
-// isDriver: true,
-// isStaff: true,
-// isWaiverSigned: false,
-// lastName: "Mosher",
-// preferredLocation: "" }
-// userID: "10102849492705992"
 
-const fetchUrl = `http://localhost:3000`
+// const fetchUrl = `http://localhost:3000`
 // const fetchUrl = `https://bts-test-backend.herokuapp.com`
+const fetchUrl = `https://innucuous-junior.herokuapp.com`
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -90,32 +79,13 @@ class App extends Component {
     displayReservations: false,
     displayUserReservationSummary: false,
     displayTimes: false,
-    // facebook: {
-    //   isLoggedIn: false,
-    //   userID: '',
-    //   name: '',
-    //   email:'',
-    //   picture:'',
-    //   userDetails: {},
-    // },
     facebook: {
-      isLoggedIn: true,
-      userID: "10156117602853997",
-      name: "Jake Mosher",
-      email: "jakeypoo@boner.com",
-      picture: "",
-      userDetails: {
-        email: "jakeypoo@boner.com",
-        firstName: "Jake",
-        lastName: "Mosher",
-        id: 105,
-        isAdmin: true,
-        isDeactivated: false,
-        isDriver: false,
-        isStaff: true,
-        isWaiverSigned: false,
-        preferredLocation: ""
-      },
+      isLoggedIn: false,
+      userID: '',
+      name: '',
+      email:'',
+      picture:'',
+      userDetails: {},
     },
     filterString: '',
     firstBusLoad: null,
@@ -181,10 +151,6 @@ class App extends Component {
     const pickups = await fetch(`${fetchUrl}/pickup_locations`)
     const pickupLocations = await pickups.json()
     this.setState({ pickupLocations, allShows, userShows })
-
-    // const getPickupParties = await fetch(`${fetchUrl}/pickup_parties`)
-    // const pickupParties = await getPickupParties.json()
-    // this.setState({ pickupParties })
   }
 
   //status: over-ridden by onclick event in the "ride with us button" where called in "loading.js"
@@ -214,11 +180,11 @@ class App extends Component {
       }
     })
 
-  let result = await response.json()
-  result = result.sort( (a, b) => {
-    return a.id - b.id
-  })
-  return result
+    let result = await response.json()
+    result = result.sort( (a, b) => {
+      return a.id - b.id
+    })
+    return result
   }
 
   refreshPickupParty = async (pickupId) => {
@@ -228,15 +194,16 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
-
-  const result = await response.json()
-  return result
+    const result = await response.json()
+    return result
   }
 
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
   selectPickupLocationId = async event => {
     const newState = { ...this.state }
-    if (parseInt(event.target.value) !== newState.pickupPartyId) {
+    if (parseInt(newState.ticketQuantity)) {
+      let oldPickup = parseInt(newState.pickupPartyId)
+      this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
       newState.ticketQuantity = null
       newState.displayQuantity = false
       newState.displayAddBtn = false
@@ -246,8 +213,22 @@ class App extends Component {
         displayAddBtn: newState.displayAddBtn
       })
     }
-
+    else if (parseInt(event.target.value) !== newState.pickupPartyId) {
+      newState.ticketQuantity = null
+      newState.displayQuantity = false
+      newState.displayAddBtn = false
+      this.setState({
+        ticketQuantity: newState.ticketQuantity,
+        displayQuantity: newState.displayQuantity,
+        displayAddBtn: newState.displayAddBtn
+      })
+    }
+    
     if (parseInt(event.target.value)) {
+      newState.pickupPartyId = event.target.value
+      newState.displayQuantity = true
+    }
+    else if (parseInt(event.target.value)) {
       newState.pickupPartyId = event.target.value
       newState.displayQuantity = true
     }
@@ -270,20 +251,7 @@ class App extends Component {
     let numArray = []
 
     if (matchedParty) {
-      matchedParty = await this.refreshPickupParty(matchedParty.id)
-      const currentReservations = await fetch(`${fetchUrl}/reservations/findOrders`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          pickupPartiesId: matchedParty.id,
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      const reservations = await currentReservations.json()
-      console.log('res', reservations.length, 'cap', matchedParty.capacity, 'cart', matchedParty.inCart)
-
-      const availableTickets = parseInt(matchedParty.capacity) - parseInt(reservations.length) - parseInt(matchedParty.inCart)
+      const availableTickets = await this.refreshAvailableTickets(matchedParty.id)
       if (availableTickets < 1) newState.ticketsAvailable = []
       else if (availableTickets >= 1) {
         numArray = [...Array(availableTickets).keys()].map(i => i + 1)
@@ -291,7 +259,7 @@ class App extends Component {
       }
     }
     else {
-      // console.log('Error!! No MatchedParty in selectPickupLocationId')
+      console.error('Error!! No MatchedParty in selectPickupLocationId')
     }
     this.setState({
       ticketsAvailable: newState.ticketsAvailable,
@@ -304,19 +272,37 @@ class App extends Component {
     })
   }
 
+  refreshAvailableTickets = async (pickupPartyId) => {
+    const matchedParty = await this.refreshPickupParty(pickupPartyId)
+    const currentReservations = await fetch(`${fetchUrl}/reservations/findOrders`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        pickupPartiesId: pickupPartyId,
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const reservations = await currentReservations.json()
+    const availableTickets = parseInt(matchedParty.capacity) - parseInt(reservations.length) - parseInt(matchedParty.inCart)
+      return availableTickets
+  }
+
   selectTicketQuantity = event => {
 
     const newState = { ...this.state }
+    const oldQty = parseInt(newState.ticketQuantity)
+    const pickupPartyId = parseInt(newState.pickupPartyId)
+
+    if (oldQty > 0) this.clearTicketsInCart(pickupPartyId, oldQty)
     if (event.target.value) {
       newState.displayAddBtn = true
     }
     else {
       newState.displayAddBtn = false
     }
-    newState.ticketQuantity = event.target.value
-    // const sPickupId = parseInt(this.state.pickupLocationId)
-    // const sEventId = parseInt(this.state.displayShow.id)
-    // const pickupParty = this.state.pickupParties.find(party => party.pickupLocationId === sPickupId && party.eventId === sEventId)
+    newState.ticketQuantity = parseInt(event.target.value)
+
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const subTotal = (Number(pickupLocation.basePrice) * Number(event.target.value))
     const total = ((Number(subTotal) * .1) + Number(subTotal)).toFixed(2)
@@ -326,6 +312,7 @@ class App extends Component {
       ticketQuantity: newState.ticketQuantity,
       totalCost: newState.totalCost
     })
+    this.addTicketsInCart(pickupPartyId, newState.ticketQuantity)
   }
 
   updateDiscountCode = event => {
@@ -336,15 +323,12 @@ class App extends Component {
 
   getReservations = async () => {
     const userId = this.state.facebook.userDetails.id
-    // console.log('userId inside getReservations:::: ', userId)
     if (userId) {
       const reservations = await fetch(`${fetchUrl}/orders/${userId}`)
       const userReservations = await reservations.json()
       const newState = { ...this.State }
-      //newState.userId = userId
       newState.userReservations = await userReservations
       await this.setState({ userReservations: newState.userReservations })
-      // await console.log('userReservations', this.state.userReservations)
     }
   }
 
@@ -430,9 +414,7 @@ class App extends Component {
   }
 
   toggleReservationView = (e) => {
-    //console.log('click on toggleReservationView', e.target.id)
     const newState = { ...this.state }
-    //displayReservationDetail
     this.getReservations()
     newState.displayFuture = true
     newState.displayPast = false
@@ -441,7 +423,6 @@ class App extends Component {
       newState.displayReservations = !newState.displayReservations
     }
     if(e.target.id==='dashboard' || e.target.id==='summary'){
-      // console.log("did we get inside dashboard?")
       newState.displayReservationDetail = false
       newState.reservationDetail = null
       newState.displayUserReservationSummary = false
@@ -464,7 +445,6 @@ class App extends Component {
   }
 
   toggleFuturePast = (e) => {
-    // console.log('this is this:', e.target.id)
     const newState = { ...this.state }
     if(e.target.id==='future'){
       newState.displayPast = false
@@ -480,7 +460,6 @@ class App extends Component {
   }
 
   toggleEditReservation = (e) =>{
-    // console.log('click on:: toggleEditREservation ', e.target.id)
     const newState = { ...this.state }
     newState.displayEditReservation = !newState.displayEditReservation
     newState.reservationToEditId = parseInt(e.target.id)
@@ -488,11 +467,9 @@ class App extends Component {
       displayEditReservation: newState.displayEditReservation,
       reservationToEditId: newState.reservationToEditId
     })
-    console.log('reservationsId ', this.state.reservationToEditId)
   }
 
   reservationEditField = (e) => {
-    //this.setState({[e.target.name]: e.target.value})
       this.setState({
         ...this.state,
           willCallEdits: {
@@ -501,13 +478,10 @@ class App extends Component {
           id: e.target.id
         }
     })
-    // console.log('rETS', this.state.reservationEditsToSend)
   }
 
   submitReservationForm = (e) => {
     e.preventDefault()
-    // console.log('submit e target id', e.target.id)
-    // console.log('this.state.willCallEdits::: ' , this.state.willCallEdits)
     let newRETS = [ ...this.state.reservationEditsToSend ]
     let newDisplayEditSuccess = this.state.displayEditSuccess
     newDisplayEditSuccess = !newDisplayEditSuccess
@@ -520,9 +494,7 @@ class App extends Component {
   }
 
   handleEditSend= async(newRETS)=>{
-    // console.log('newRETS:::: ', newRETS)
     newRETS.map(async(reservation)=>{
-      // console.log('reservation inside patch map:::', reservation)
       const editReservationResponse = await fetch(`${fetchUrl}/reservations`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -535,14 +507,10 @@ class App extends Component {
         }
       })
       .catch()
-
-      const json = await editReservationResponse.json()
-      // await console.log('editReservationResponse.json', json)
+      // const json = await editReservationResponse.json()
       const e = {target: {id: "edit"}}
-
       await this.toggleReservationView(e)
       if(editReservationResponse.status === 200){
-        // console.log('editReservationResponse', editReservationResponse.status)
       }
     })
 }
@@ -578,7 +546,6 @@ class App extends Component {
   }
 
   profileClick = () => {
-    // this.getHeadliners()
     const newState = { ...this.state }
     newState.displayLoginView = !newState.displayLoginView
 
@@ -611,11 +578,8 @@ class App extends Component {
 
 
   responseFacebook = async (response) => {
-    // console.log('searching for onLoad response facbook', response)
-
       this.setState({
         ...this.state,
-          //isLoggedIn: true,
           facebook: {
             ...this.state.facebook,
             userID: response.id,
@@ -623,7 +587,6 @@ class App extends Component {
             email:response.email,
             picture:response.picture.data.url
           }
-
       })
       this.toggleLoggedIn(true)
       this.onLoad()
@@ -647,9 +610,6 @@ class App extends Component {
           userDetails: newState.userDetails
         }
       })
-      // console.log('userObj response to work with', userObj)
-      // console.log('this.state.facebook.userDetails::::', this.state.facebook.userDetails)
-      //this.props.getReservations(json.id)
   }
 
   responseGoogle = response => {
@@ -660,7 +620,6 @@ class App extends Component {
   }
 
   responseSpotify = response => {
-    // console.log(response)
     const newState = { ...this.state }
     newState.spotifyResponse = response
     newState.displayLoginView = false
@@ -700,8 +659,20 @@ class App extends Component {
   }
 
   backToCalendar = event => {
+
     const newState = { ...this.state }
-    // console.log('back to calendar');
+    if (parseInt(newState.ticketQuantity)) {
+      let oldPickup = parseInt(newState.pickupPartyId)
+      this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
+      newState.ticketQuantity = null
+      newState.displayQuantity = false
+      newState.displayAddBtn = false
+      this.setState({
+        ticketQuantity: newState.ticketQuantity,
+        displayQuantity: newState.displayQuantity,
+        displayAddBtn: newState.displayAddBtn
+      })
+    }
     newState.displayExternalShowDetails = false
     newState.displayDetailCartView = false
     newState.displayShow = null
@@ -741,12 +712,8 @@ class App extends Component {
       })
 
 
-    } else {
-      // need to rewrite such that pickup parties aren't grabbed until a pickup location is selected
-      //return array of pickupParties assigned to this event
-      
+    } else {      
       const assignedPickupParties = await this.getPickupParties(clickedShow.id)
-      
       const currentPickups = assignedPickupParties.map(party => party.pickupLocationId)
       const pickupLocations = newState.pickupLocations.filter(loc => currentPickups.includes(loc.id))
       
@@ -782,7 +749,6 @@ class App extends Component {
 
   returnToShows = () => {
     const newState = { ...this.state }
-    // console.log('return to shows');
     newState.displayShow = null
     newState.displaySuccess = false
     newState.displayShowList = true
@@ -804,6 +770,7 @@ class App extends Component {
   }
 
   addToCart = async () => {
+    this.ticketTimer(false)
     const newState = { ...this.state }
   
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
@@ -858,21 +825,33 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-    const pickupPartyId = parseInt(this.state.pickupPartyId)
-    const ticketQty = parseInt(this.state.ticketQuantity)
-    this.addTicketsInCart(pickupPartyId, ticketQty)
+    this.ticketTimer(true, 600000, true)
     window.addEventListener("beforeunload", this.clearCartOnClose);
   }
 
 // functions to handle setting and clearing of timer and incart qtys
 
-  ticketTimer = (condition) => {
+  ticketTimer = (condition, time, cart, pickupLocationId) => {
     let newState = {...this.state}
-    // console.log(newState.ticketTimer)
-    if (condition) {
+    let event = {
+      target: {
+        value: pickupLocationId,
+      }
+    }
+
+    if (condition && !cart) {
+      const newTicketTimer = setTimeout(() => {
+        this.confirmedRemove();
+        this.setState({pickupLocationId})
+        this.selectPickupLocationId(event)
+      }, time)
+      newState.ticketTimer = newTicketTimer
+      this.setState({ ticketTimer: newState.ticketTimer })
+    }
+    else if (condition && cart) {
       const newTicketTimer = setTimeout(() => {
         this.confirmedRemove()
-      }, 20000)
+      }, time)
       newState.ticketTimer = newTicketTimer
       this.setState({ ticketTimer: newState.ticketTimer })
     }
@@ -885,6 +864,7 @@ class App extends Component {
 
 
   addTicketsInCart = (pickupPartyId, ticketQty) => {
+    this.ticketTimer(false)
     fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -894,10 +874,11 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
-    this.ticketTimer(true)
+    this.ticketTimer(true, 120000)
   }
 
   clearTicketsInCart = (pickupPartyId, ticketQty) => {
+    let newState = {...this.state}
     fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -907,6 +888,8 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
+    newState.ticketQuantity = 0
+    this.setState({ticketQuantity: newState.ticketQuantity})
     this.ticketTimer(false)
     return
   }
@@ -933,19 +916,21 @@ class App extends Component {
   }
 
   purchase = async (err) => {
-    if (err) return this.setState({purchaseFailed: true})
-
+    if (err) {
+      this.ticketTimer(false)
+      this.ticketTimer(true, 600000, true)
+      return this.setState({purchaseFailed: true})
+    }
     const cartObj = this.state.cartToSend
     cartObj.userId = this.state.facebook.userDetails.id
-    // console.log('cartObj inside purchase.....', cartObj)
-    const ordersResponse = await fetch(`${fetchUrl}/orders`, {
+    fetch(`${fetchUrl}/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
       headers: {
         'Content-Type': 'application/json'
       }
     })
-
+    this.ticketTimer(false)
     this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [] })
   }
 
@@ -960,8 +945,9 @@ class App extends Component {
     // xxx-xxx-xxxx / xxx.xxx.xxxx / xxx xxx xxxx
 
     const phoneNumber = (inputtxt) => {
-      var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
+      var phoneno = /^\(?([0-9]{3})\)?[-. ]([0-9]{3})[-. ]([0-9]{4})$/
       if(inputtxt.match(phoneno)) return true
+      else if (inputtxt.length > 12 || inputtxt.length < 12 ) return false
       else return false
     }
 
@@ -1019,7 +1005,7 @@ class App extends Component {
       newCart.lastName = this.state.validatedElements.lastName
       newCart.email = this.state.validatedElements.email
       newCart.phone = this.state.validatedElements.phone
-      newCart.eventId = this.state.cartToSend.eventId
+      newCart.eventId = this.state.inCart[0].id
       newCart.ticketQuantity = parseInt(this.state.ticketQuantity)
       newCart.pickupLocationId = parseInt(this.state.pickupLocationId)
       newCart.totalCost = Number(this.state.totalCost)
@@ -1037,29 +1023,15 @@ class App extends Component {
       :
         newCart.willCallLastName = this.state.validatedElements.lastName
       
-
       this.setState({ 
         cartToSend: newState.cartToSend,
         validated: newState.validated          
       })
-      // this.setState({ validated: newState.validated })
     }
     else {
-      console.log('Please continue to complete the form!')
+      // console.log('Please continue to complete the form!')
     }
   }
-
-  // toggleLoggedIn = (boolean) => {
-  //   const newState = { ...this.state }
-  //   newState.loggedIn = boolean
-  //   if (boolean === false) {
-  //     newState.myReservationsView = false
-  //   }
-  //   if (boolean === true && (newState.isStaff || newState.isDriver || newState.isAdmin)) {
-  //     console.log('admin')
-  //   }
-  //   this.setState({ loggedIn: newState.loggedIn, myReservationsView: newState.myReservationsView })
-  // }
 
   removeFromCart = () => {
     const newState = { ...this.state }
@@ -1089,8 +1061,10 @@ class App extends Component {
     newState.displayQuantity = false
     newState.displayAddBtn = false
     newState.startTimer = false
+    newState.pickupLocationId = null
 
     this.setState({
+
       inCart: newState.inCart,
       displaySuccess: newState.displaySuccess,
       displayConfirmRemove: newState.displayConfirmRemove,
@@ -1112,6 +1086,7 @@ class App extends Component {
 
   quantityChange = event => {
     const newState = { ...this.state }
+    const oldQty = parseInt(newState.ticketQuantity)
     newState.ticketQuantity = event.target.value
 
     const pickupLocation = this.state.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
@@ -1119,21 +1094,12 @@ class App extends Component {
     const ticketQuantity = parseInt(newState.ticketQuantity)
     const processingFee = Number((basePrice * ticketQuantity) * (0.1))
     const cost = ((basePrice * ticketQuantity) + processingFee)
+    const pickupPartyId = parseInt(newState.pickupPartyId)
     newState.totalCost = cost.toFixed(2)
     this.setState({ ticketQuantity: newState.ticketQuantity, totalCost: newState.totalCost })
+    this.clearTicketsInCart(pickupPartyId, oldQty)
+    this.addTicketsInCart(pickupPartyId, ticketQuantity)    
   }
-
-  // addBorder = () => {
-  //   const newState = { ...this.state }
-  //   newState.displayBorder = true
-  //   this.setState(newState)
-  //
-  //   setTimeout(() => {
-  //     const newState = { ...this.state }
-  //     newState.displayBorder = false
-  //     this.setState(newState)
-  //   }, 500)
-  // }
 
   sortByArtist = () => {
     let newState = this.state.userShows.sort((show1, show2) => {
@@ -1172,7 +1138,6 @@ class App extends Component {
       newState.cartToSend.willCallLastName = newState.cartToSend.lastName
       this.setState({ cartToSend: newState.cartToSend })
     }
-    //console.log('CTS', newState.cartToSend)
 
     newState.displayQuantity = false
     newState.displayAddBtn = false
@@ -1205,8 +1170,6 @@ class App extends Component {
 
 
   getEventbriteData = async (continuationString, val, previousFuelDataArr) => {
-    // console.log('val 1', val )
-    // console.log('get Eventbrite Data fired')
     // const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&page=${val}&expand=ticket_classes${continuationString}`)
     const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?${continuationString}token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&expand=ticket_classes`)
 
@@ -1218,10 +1181,8 @@ class App extends Component {
     continuationString = await `continuation=${continuation}&`
     //let continuationString = ''
     if(fuelData.pagination.has_more_items && val <5 ){
-      // console.log('val in if ', val)
       return await this.getEventbriteData(continuationString, val+=1, newFuelDataArr)
     } else {
-      // console.log('seeingDoubleArr!!!', newFuelDataArr)
       return newFuelDataArr
     }
   }
@@ -1236,21 +1197,16 @@ class App extends Component {
     const eventsArr = await this.getEventbriteData('', 1, [])
 
     .then((eventsArr)=> {
-      // console.log('chicken')
-      //console.log('eventsArr', eventsArr)
     let newEventsArr = []
     for(let ii = 0; ii < eventsArr.length; ii++){
-      // console.log('monkey')
       newEventsArr[ii] = {}
       let ticketClasses = []
       ticketClasses = eventsArr[ii].ticket_classes
-      //console.log('ticketClasses', ticketClasses)
 
         let eventTotal = 0
         let departures = {}
         if (ticketClasses){
           for(let jj = 0; jj < ticketClasses.length; jj++){
-            // console.log('zebra')
             eventTotal += ticketClasses[jj].quantity_sold
             departures[ticketClasses[jj].name] = ticketClasses[jj].quantity_sold
           }
@@ -1261,7 +1217,6 @@ class App extends Component {
       newEventsArr[ii].totalSales = eventTotal
       newEventsArr[ii].departures = departures
     }
-    // console.log('headlinersArr', newEventsArr)
     const newState = { ...this.state }
     newState.oldStuff = newEventsArr
     this.setState({oldStuff: newState.oldStuff})
@@ -1271,15 +1226,6 @@ class App extends Component {
 
   postOldData = async () => {
     const newEventsArr = this.state.oldStuff
-    // console.log('inSide post old data function', newEventsArr)
-    // const response = await fetch('https://localhost:3000/fuel', {
-    //   method: 'POST',
-    //   body: JSON.stringify(newEventsArr),
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   }
-    // })
-    // console.log('post old data response', response)
   }
 
   toggleAdminView = () => {
@@ -1314,7 +1260,6 @@ class App extends Component {
                 {this.state.adminView ?
                   <AdminView
                     pickupLocations={this.state.pickupLocations}
-                    // pickupParties={this.state.pickupParties}
                     searchShows={this.searchShows}
                     shows={this.state.allShows}
                     showsExpandClick={this.showsExpandClick}

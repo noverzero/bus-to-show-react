@@ -2,8 +2,6 @@ import React from 'react'
 import '../../App.css';
 import moment from 'moment'
 import EditReservation from './EditReservation'
-import logo from '../../Images/Logos/bts-logo-gray.png'
-// import MediaQuery from 'react-responsive';
 
 const ShowReservation = (props) => {
 
@@ -16,23 +14,20 @@ const ShowReservation = (props) => {
           countObj[createArrayOfEventIds[ii]] = count++;
       }
     }
-    //console.log('countObj', countObj)
 
   const reservationSummaryArr = []
   for (let property1 in countObj){
-   for (let ii = 0; ii < props.userReservations.length; ii++){
-     if(props.userReservations[ii].eventsId == property1){
-       props.userReservations[ii].ticketQuantity = countObj[props.userReservations[ii].eventsId]
-        reservationSummaryArr.push(props.userReservations[ii])
-        break
-     }
-   }
+    for (let ii = 0; ii < props.userReservations.length; ii++){
+      if(props.userReservations[ii].eventsId == property1){
+        props.userReservations[ii].ticketQuantity = countObj[props.userReservations[ii].eventsId]
+          reservationSummaryArr.push(props.userReservations[ii])
+          break
+      }
+    }
   }
   const reservationSummaryArrSorted = reservationSummaryArr.sort((a, b) => {
-    //console.log('date check' , new Date(a.date).getTime(), 'now::', Date.now(), 'is the show in the past?'  , new Date(a.date).getTime() < Date.now())
     return new Date(a.date).getTime() - new Date(b.date).getTime()
   })
-  //console.log('reservationSummaryArrSorted ]}}}}} ', reservationSummaryArrSorted)
 
   return (
     <div className="">

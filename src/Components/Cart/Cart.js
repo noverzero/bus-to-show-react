@@ -4,7 +4,6 @@ import CartItem from './CartItem'
 import Checkout from './Stripe_Checkout'
 import MediaQuery from 'react-responsive'
 import logo from '../../Images/Logos/bts-logo-gray.png'
-import moment from 'moment'
 
 const Cart = (props) => {
 
@@ -17,27 +16,8 @@ const Cart = (props) => {
   const showInfo = props.shows.find(show => parseInt(show.id) === parseInt(cTSendId))
 
   let savings = Number(props.afterDiscountObj.totalSavings)
-  let totalSavings = savings.toFixed(2)
   let cost = Number(props.totalCost - savings)
   let totalCost = cost.toFixed(2)
-
-  const pickupTime = props.lastDepartureTime
-  const firstBusLoad = props.firstBusLoad
-  const pickupLocation = props.pickupLocations.find(location => parseInt(location.id) === parseInt(props.pickupLocationId))
-  //const pickupSpot= pickupLocation[0]
-
-  let time1 = pickupTime.split(':')
-  let time2 = time1[1].split(' PM')[0] - 15
-  let time3 = time1[0].concat(time2)
-  if (time2 < 0) {
-    time2 = 45
-    time3 = [(time3.split('-')[0] - 1)].concat(time2).join('')
-  }
-
-  const defaultFirstBus = moment(time3, 'hmm').format('h:mm')
-
-
-  // const receiptDescription = `${props.ticketQuantity} Roundtrip Bus Spot(s) on ${moment(props.showsInCart[0].date, "MM-DD-YYYY").format("dddd")}, ${props.showsInCart[0].date} For: ${props.showsInCart[0].headliner} at ${props.showsInCart[0].venue.split(' Amphitheatre')[0]} Departing From: ${pickupLocation.locationName} ${pickupLocation.streetAddress} with last call currently scheduled at ${pickupTime} (check website for most recent time updates.)`
 
   return (
     <div className='Cart'>
@@ -174,7 +154,7 @@ const Cart = (props) => {
                               type="phone"
                               className={`form-control ${props.validatedElements.phone ? 'is-valid' : ''}`}
                               id="phone"
-                              placeholder="Phone number (XXX-XXX-XXXX)"
+                              placeholder="Format: XXX-XXX-XXXX"
                               required />
                             <div className="invalid-feedback">
                               Please provide a valid phone number.
@@ -182,7 +162,7 @@ const Cart = (props) => {
                           </div>
                         </div>
 
-                        {/* Terinary to display will call name fields or button to show fields */}
+                        {/* Ternary to display will call name fields or button to show fields */}
                         {props.checked ?
                           <div className="form-row">
                             <div className="col-md-4 mb-3">

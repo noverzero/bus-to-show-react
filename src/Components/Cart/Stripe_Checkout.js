@@ -1,8 +1,9 @@
 import React from 'react';
 import StripeCheckout from 'react-stripe-checkout'
 
-const fetchUrl = `http://localhost:3000`
+// const fetchUrl = `http://localhost:3000`
 // const fetchUrl = `https://bts-test-backend.herokuapp.com`
+const fetchUrl = `https://innucuous-junior.herokuapp.com`
 
 export default class Checkout extends React.Component {
 
@@ -37,8 +38,8 @@ export default class Checkout extends React.Component {
       <React.Fragment>
         <StripeCheckout
           token={this.onToken}
-          stripeKey="pk_test_J0CdRMCGmBlrlOiGKnGgUEwT"
-          //stripeKey="pk_live_WZRwtpLAFcufugeQKbtwKobm"
+          // stripeKey="pk_test_J0CdRMCGmBlrlOiGKnGgUEwT"
+          stripeKey="pk_live_WZRwtpLAFcufugeQKbtwKobm"
           name='Bus To Show'
           description='Receipt will be emailed after purchase'
           email={email}

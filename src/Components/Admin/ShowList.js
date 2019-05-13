@@ -1,16 +1,14 @@
 import React from 'react'
 import '../../App.css';
-import moment from 'moment'
-// import MediaQuery from 'react-responsive';
 
 const ShowList = (props) => {
 //child of userCheckin.JS
   let { filterString, shows, makeSelection, resetStuff } = props
   
   const dateCheck = (show) => {
-    const showDate = Date.parse(show.date)
+    const showDate = new Date(Date.parse(show.date))
     const today = new Date()
-    const startDate = today.setHours(today.getHours() - 36)
+    const startDate = new Date(today.setHours(today.getHours() - 48))
     if (showDate < startDate) {
       return false
     } else {

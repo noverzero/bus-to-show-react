@@ -1,7 +1,5 @@
 import React from 'react'
 import '../../App.css';
-import logo from '../../Images/Logos/bts-logo-orange.png'
-// import MediaQuery from 'react-responsive';
 import ShowReservation from './ShowReservation'
 
 const ReservationsView = (props) => {
