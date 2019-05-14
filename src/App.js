@@ -966,42 +966,59 @@ class App extends Component {
     // xxx-xxx-xxxx / xxx.xxx.xxxx / xxx xxx xxxx
 
     const phoneNumber = (inputtxt) => {
-      var phoneno = /^\(?([0-9]{3})\)?[-. ]([0-9]{3})[-. ]([0-9]{4})$/
+      var phoneno = /^\(?[(]([0-9]{3})\)?[) ]([0-9]{3})[-]([0-9]{4})$/
       if(inputtxt.match(phoneno)) return true
       else if (inputtxt.length > 12 || inputtxt.length < 12 ) return false
       else return false
     }
-
+    console.log(event.target.value)
     // Checks fields via npm package validator
     switch (updateField){
       case 'email':
         if (Validator.isEmail(value) && !Validator.isEmpty(value)) {
           newValidElems.email = value
+          console.log('true')
+        } else {
+          newValidElems.email = null
         }
         break;
       case 'firstName':
         if (Validator.isAlpha(value) && !Validator.isEmpty(value)) {
+          console.log('true')
           newValidElems.firstName = value
-        }
-        break;
+        } else {
+          newValidElems.firstName = null
+        }break;
       case 'lastName':
         if (Validator.isAlpha(value) && !Validator.isEmpty(value)) {
           newValidElems.lastName = value
+          console.log('true')
+        } else {
+          newValidElems.lastName = null
         }
         break;
       case 'willCallFirstName':
         if (Validator.isAlpha(value)) {
           newValidElems.wcFirstName = value
+          console.log('true')
+        } else {
+          newValidElems.wcFirstName = null
         }
         break;
       case 'willCallLastName':
         if (Validator.isAlpha(value)) {
           newValidElems.wcLastName = value
+          console.log('true')
+        } else {
+          newValidElems.wcLastName = null
         }
         break;
       case 'orderedByPhone':
         if (phoneNumber(value) && !Validator.isEmpty(value)) {
           newValidElems.orderedByPhone = value
+          console.log('true')
+        } else {
+          newValidElems.orderedByPhone = null
         }
         break;
       case 'discountCode':
@@ -1011,47 +1028,59 @@ class App extends Component {
         return 'Please input valid items';
     }
 
-    this.setState({ validatedElements: newState.validatedElements })
+    
+    // // Populates cartToSend
+    if (newValidElems.firstName
+      && newValidElems.lastName
+      && newValidElems.email
+      && newValidElems.orderedByPhone) {
+        console.log('all valid')
+      this.setState({ validatedElements: newValidElems })
+        const newCart = newState.cartToSend
+        newState.validated = true
+        
+        const stateValidElems = this.state.validatedElements
 
-    // Populates cartToSend
-    if (this.state.validatedElements.firstName
-      && this.state.validatedElements.lastName
-      && this.state.validatedElements.email
-      && this.state.validatedElements.orderedByPhone) {
-
-      const newCart = newState.cartToSend
-      newState.validated = true
-
-      newCart.firstName = this.state.validatedElements.firstName
-      newCart.lastName = this.state.validatedElements.lastName
-      newCart.email = this.state.validatedElements.email
-      newCart.orderedByPhone = this.state.validatedElements.orderedByPhone
+      newCart.firstName = stateValidElems.firstName
+      newCart.lastName = stateValidElems.lastName
+      newCart.email = stateValidElems.email
+      newCart.orderedByPhone = stateValidElems.orderedByPhone
       newCart.eventId = this.state.inCart[0].id
       newCart.ticketQuantity = parseInt(this.state.ticketQuantity)
       newCart.pickupLocationId = parseInt(this.state.pickupLocationId)
       newCart.totalCost = Number(this.state.totalCost)
       newCart.discountCode = discountCode
       newCart.userId = newState.facebook.userDetails.userId
-
-      this.state.validatedElements.wCFName ?
-        newCart.willCallFirstName = this.state.validatedElements.wcFirstName
-      :
-        newCart.willCallFirstName = this.state.validatedElements.firstName
-
-
-      this.state.validatedElements.wCLName ?
-        newCart.willCallLastName = this.state.validatedElements.wcLastName
-      :
-        newCart.willCallLastName = this.state.validatedElements.lastName
+      stateValidElems.wCFName ?
+        newCart.willCallFirstName = stateValidElems.wcFirstName
+        :
+        newCart.willCallFirstName = stateValidElems.firstName
+      stateValidElems.wCLName ?
+        newCart.willCallLastName = stateValidElems.wcLastName
+        :
+        newCart.willCallLastName = stateValidElems.lastName
 
       this.setState({
         cartToSend: newState.cartToSend,
         validated: newState.validated
       })
     }
-    else {
-      // console.log('Please continue to complete the form!')
-    }
+    else if (!newValidElems.firstName
+      || !newValidElems.lastName
+      || !newValidElems.email
+      || !newValidElems.orderedByPhone) {
+        newState.validated = false
+        this.setState({ validated : newState.validated })
+      }
+
+
+
+
+
+    // }
+    // else {
+    //   // console.log('Please continue to complete the form!')
+    // }
   }
 
   removeFromCart = () => {

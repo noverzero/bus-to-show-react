@@ -19,6 +19,12 @@ const Cart = (props) => {
   let cost = Number(props.totalCost - savings)
   let totalCost = cost.toFixed(2)
 
+  const maskInput = (e) => {
+    e.preventDefault()
+    var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+    e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+  }
+
   return (
     <div className='Cart'>
       {/* Desktop View */}
@@ -150,11 +156,11 @@ const Cart = (props) => {
                           <div className="col-md-8 mb-3">
                             <label htmlFor="orderedByPhone">Phone</label>
                             <input
-                              onChange={props.updatePurchaseField}
+                              onChange={e=>{maskInput(e); props.updatePurchaseField(e)}}
                               type="phone"
                               className={`form-control ${props.validatedElements.orderedByPhone ? 'is-valid' : ''}`}
                               id="orderedByPhone"
-                              placeholder="Format: XXX-XXX-XXXX"
+                              placeholder="(XXX) XXX-XXXX"
                               required />
                             <div className="invalid-feedback">
                               Please provide a valid phone number.
