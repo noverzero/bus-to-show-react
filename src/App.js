@@ -21,9 +21,9 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-// const fetchUrl = `http://localhost:3000`
+const fetchUrl = `http://localhost:3000`
 // const fetchUrl = `https://bts-test-backend.herokuapp.com`
-const fetchUrl = `https://innocuous-junior.herokuapp.com`
+// const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -79,13 +79,32 @@ class App extends Component {
     displayReservations: false,
     displayUserReservationSummary: false,
     displayTimes: false,
+    // facebook: {
+    //   isLoggedIn: false,
+    //   userID: '',
+    //   name: '',
+    //   email:'',
+    //   picture:'',
+    //   userDetails: {},
+    // },
     facebook: {
-      isLoggedIn: false,
-      userID: '',
-      name: '',
-      email:'',
-      picture:'',
-      userDetails: {},
+      isLoggedIn: true,
+      userID: "10156117602853997",
+      name: "Jake Mosher",
+      email: "jakeypoo@boner.com",
+      picture: "",
+      userDetails: {
+        email: "jakeypoo@boner.com",
+        firstName: "Jake",
+        lastName: "Mosher",
+        id: 105,
+        isAdmin: true,
+        isDeactivated: false,
+        isDriver: false,
+        isStaff: true,
+        isWaiverSigned: false,
+        preferredLocation: ""
+      },
     },
     filterString: '',
     firstBusLoad: null,
@@ -578,39 +597,40 @@ class App extends Component {
 
 
   responseFacebook = async (response) => {
-      this.setState({
-        ...this.state,
-          facebook: {
-            ...this.state.facebook,
-            userID: response.id,
-            name: response.name,
-            email:response.email,
-            picture:response.picture.data.url
-          }
-      })
-      this.toggleLoggedIn(true)
-      this.onLoad()
-      const usersInfo = await fetch(`https://innocuous-junior.herokuapp.com/users`, {
-        method: 'POST',
-        body: JSON.stringify({
-            firstName: response.name.split(" ")[0],
-            lastName: response.name.split(" ")[1],
-            email: response.email,
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-      })
-      const userObj = await usersInfo.json()
-      const newState = { ...this.State }
-      newState.userDetails = userObj
-      this.setState({
-        ...this.state,
+    console.log(response)
+    this.setState({
+      ...this.state,
         facebook: {
           ...this.state.facebook,
-          userDetails: newState.userDetails
+          userID: response.id,
+          name: response.name,
+          email:response.email,
+          picture:response.picture.data.url
         }
-      })
+    })
+    this.toggleLoggedIn(true)
+    this.onLoad()
+    const usersInfo = await fetch(`${fetchUrl}/users`, {
+      method: 'POST',
+      body: JSON.stringify({
+          firstName: response.name.split(" ")[0],
+          lastName: response.name.split(" ")[1],
+          email: response.email,
+      }),
+      headers: {
+          'Content-Type': 'application/json'
+      }
+    })
+    const userObj = await usersInfo.json()
+    const newState = { ...this.State }
+    newState.userDetails = userObj
+    this.setState({
+      ...this.state,
+      facebook: {
+        ...this.state.facebook,
+        userDetails: newState.userDetails
+      }
+    })
   }
 
   responseGoogle = response => {
