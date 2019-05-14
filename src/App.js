@@ -591,6 +591,7 @@ class App extends Component {
       this.toggleLoggedIn(true)
       this.onLoad()
       const usersInfo = await fetch(`https://innocuous-junior.herokuapp.com/users`, {
+        method: 'POST',
         body: JSON.stringify({
             firstName: response.name.split(" ")[0],
             lastName: response.name.split(" ")[1],
