@@ -148,12 +148,12 @@ const Cart = (props) => {
                         </div>
                         <div className="form-row">
                           <div className="col-md-8 mb-3">
-                            <label htmlFor="phone">Phone</label>
+                            <label htmlFor="orderedByPhone">Phone</label>
                             <input
                               onChange={props.updatePurchaseField}
                               type="phone"
-                              className={`form-control ${props.validatedElements.phone ? 'is-valid' : ''}`}
-                              id="phone"
+                              className={`form-control ${props.validatedElements.orderedByPhone ? 'is-valid' : ''}`}
+                              id="orderedByPhone"
                               placeholder="Format: XXX-XXX-XXXX"
                               required />
                             <div className="invalid-feedback">

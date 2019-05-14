@@ -801,7 +801,7 @@ class App extends Component {
       firstName: null,
       lastName: null,
       email: null,
-      phone: null,
+      orderedByPhone: null,
       wcFirstName: null,
       wcLastName: null
     }
@@ -978,9 +978,9 @@ class App extends Component {
           newValidElems.wcLastName = value
         }
         break;
-      case 'phone':
+      case 'orderedByPhone':
         if (phoneNumber(value) && !Validator.isEmpty(value)) {
-          newValidElems.phone = value
+          newValidElems.orderedByPhone = value
         }
         break;
       case 'discountCode':
@@ -996,7 +996,7 @@ class App extends Component {
     if (this.state.validatedElements.firstName
       && this.state.validatedElements.lastName
       && this.state.validatedElements.email
-      && this.state.validatedElements.phone) {
+      && this.state.validatedElements.orderedByPhone) {
 
       const newCart = newState.cartToSend
       newState.validated = true
@@ -1004,7 +1004,7 @@ class App extends Component {
       newCart.firstName = this.state.validatedElements.firstName
       newCart.lastName = this.state.validatedElements.lastName
       newCart.email = this.state.validatedElements.email
-      newCart.phone = this.state.validatedElements.phone
+      newCart.orderedByPhone = this.state.validatedElements.orderedByPhone
       newCart.eventId = this.state.inCart[0].id
       newCart.ticketQuantity = parseInt(this.state.ticketQuantity)
       newCart.pickupLocationId = parseInt(this.state.pickupLocationId)
