@@ -103,7 +103,7 @@ const Cart = (props) => {
                     totalCost={Number(props.totalCost).toFixed(2)} />
                 </div>
               </div>
-              <div className="alert alert-warning">Cart will reset in 10 minutes</div>
+              <div className="alert alert-warning">Cart will reset after 10 minutes</div>
               {props.showsInCart ?
                 <div className="list-group-item" >
                   <div className="row">
