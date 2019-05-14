@@ -223,7 +223,7 @@ class App extends Component {
         displayAddBtn: newState.displayAddBtn
       })
     }
-    
+
     if (parseInt(event.target.value)) {
       newState.pickupPartyId = event.target.value
       newState.displayQuantity = true
@@ -236,7 +236,7 @@ class App extends Component {
       newState.displayQuantity = false
       newState.displayAddBtn = false
     }
-    
+
     const statePickupPartyId = parseInt(newState.pickupPartyId)
     const stateEventId = parseInt(newState.displayShow.id)
 
@@ -590,7 +590,7 @@ class App extends Component {
       })
       this.toggleLoggedIn(true)
       this.onLoad()
-      const usersInfo = await fetch(`${fetchUrl}/users`, {
+      const usersInfo = await fetch(`https://innocuous-junior.herokuapp.com/users`, {
         body: JSON.stringify({
             firstName: response.name.split(" ")[0],
             lastName: response.name.split(" ")[1],
@@ -712,11 +712,11 @@ class App extends Component {
       })
 
 
-    } else {      
+    } else {
       const assignedPickupParties = await this.getPickupParties(clickedShow.id)
       const currentPickups = assignedPickupParties.map(party => party.pickupLocationId)
       const pickupLocations = newState.pickupLocations.filter(loc => currentPickups.includes(loc.id))
-      
+
       await assignedPickupParties.map(party => pickupLocations.map(location => {
         if (location.id === party.pickupLocationId) {
           party.LocationName = location.locationName
@@ -772,7 +772,7 @@ class App extends Component {
   addToCart = async () => {
     this.ticketTimer(false)
     const newState = { ...this.state }
-  
+
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const basePrice = Number(pickupLocation.basePrice)
     const ticketQuantity = parseInt(this.state.ticketQuantity)
@@ -780,7 +780,7 @@ class App extends Component {
     const processingFee = Number((basePrice * ticketQuantity) * (0.1))
     const cost = ((basePrice * ticketQuantity) - totalSavings + processingFee)
     newState.totalCost = cost.toFixed(2)
-    
+
     const sPickupId = parseInt(this.state.pickupLocationId)
     const sEventId = parseInt(this.state.displayShow.id)
     const pickupParty = this.state.assignedParties.find(party => party.pickupLocationId === sPickupId && party.eventId === sEventId)
@@ -894,9 +894,9 @@ class App extends Component {
     return
   }
 
-  clearCartOnClose = (ev) => { 
+  clearCartOnClose = (ev) => {
     const pickupPartyId = parseInt(this.state.pickupPartyId)
-    const ticketQty = parseInt(this.state.ticketQuantity) 
+    const ticketQty = parseInt(this.state.ticketQuantity)
     // ev.preventDefault();
     this.clearTicketsInCart(pickupPartyId, ticketQty)
     // return ev.returnValue = 'Leaving the page will clear your cart, continue?';
@@ -1016,16 +1016,16 @@ class App extends Component {
         newCart.willCallFirstName = this.state.validatedElements.wcFirstName
       :
         newCart.willCallFirstName = this.state.validatedElements.firstName
-      
+
 
       this.state.validatedElements.wCLName ?
         newCart.willCallLastName = this.state.validatedElements.wcLastName
       :
         newCart.willCallLastName = this.state.validatedElements.lastName
-      
-      this.setState({ 
+
+      this.setState({
         cartToSend: newState.cartToSend,
-        validated: newState.validated          
+        validated: newState.validated
       })
     }
     else {
@@ -1049,7 +1049,7 @@ class App extends Component {
 
   confirmedRemove = () => {
     const newState = { ...this.state }
-    
+
     const pickupPartyId = parseInt(newState.pickupPartyId)
     const ticketQty = parseInt(newState.ticketQuantity)
     this.clearTicketsInCart(pickupPartyId, ticketQty)
@@ -1098,7 +1098,7 @@ class App extends Component {
     newState.totalCost = cost.toFixed(2)
     this.setState({ ticketQuantity: newState.ticketQuantity, totalCost: newState.totalCost })
     this.clearTicketsInCart(pickupPartyId, oldQty)
-    this.addTicketsInCart(pickupPartyId, ticketQuantity)    
+    this.addTicketsInCart(pickupPartyId, ticketQuantity)
   }
 
   sortByArtist = () => {
