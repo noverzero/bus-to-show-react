@@ -5,7 +5,7 @@ import AdminEdit from './Edit/AdminEdit'
 
 // const fetchUrl = `http://localhost:3000`
 // const fetchUrl = `https://bts-test-backend.herokuapp.com`
-const fetchUrl = `https://innucuous-junior.herokuapp.com`
+const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class AdminView extends React.Component {
   //child of App.js
