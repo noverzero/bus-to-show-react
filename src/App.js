@@ -335,7 +335,6 @@ class App extends Component {
   }
 
   findDiscountCode = async () => {
-
     const ticketQuantity = this.state.ticketQuantity
     const eventId = this.state.cartToSend.eventId
     const response = await fetch(`${fetchUrl}/discount_codes/${this.state.discountCode}`)
@@ -353,10 +352,8 @@ class App extends Component {
     const today = Date.parse(new Date().toLocaleString('en-US', { timeZone: 'America/Denver' }))
 
     if (expiration < today) {
-
       return 'this code is expired'
     } else {
-
       let priceWithoutFeesPerTicket = this.state.totalCost * 10 / 11 / ticketQuantity
       let effectiveRate = (100 - result.percentage) / 100
       const afterDiscountObj = {}
@@ -565,7 +562,6 @@ class App extends Component {
     })
   }
 
-
   responseFacebook = async (response) => {
     this.setState({
       ...this.state,
@@ -625,7 +621,6 @@ class App extends Component {
 
   // Tab Functions
   tabClicked = event => {
-
     const newState = { ...this.state }
     if (event.target.id === 'cart-tab' && newState.inCart.length > 0) {
       newState.displayCart = true
@@ -649,7 +644,6 @@ class App extends Component {
   }
 
   backToCalendar = event => {
-
     const newState = { ...this.state }
     if (parseInt(newState.ticketQuantity)) {
       let oldPickup = parseInt(newState.pickupPartyId)
@@ -711,8 +705,7 @@ class App extends Component {
         if (location.id === party.pickupLocationId) {
           party.LocationName = location.locationName
         }
-      })
-      )
+      }))
       //set initial state of show details view
       newState.displayQuantity = false
       newState.displayDetailCartView = true
@@ -819,7 +812,6 @@ class App extends Component {
   }
 
 // functions to handle setting and clearing of timer and incart qtys
-
   ticketTimer = (timerOn, time, addedToCart) => {
     let newState = {...this.state}
     const pickupPartyId = parseInt(newState.pickupPartyId)
@@ -845,7 +837,6 @@ class App extends Component {
       this.setState({ ticketTimer: newState.ticketTimer })
     }
   }
-
 
   addTicketsInCart = (pickupPartyId, ticketQty) => {
     fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
@@ -987,7 +978,6 @@ class App extends Component {
       default:
         return 'Please input valid items';
     }
-
     
     // // Populates cartToSend
     if (newValidElems.firstName
@@ -1149,11 +1139,9 @@ class App extends Component {
     this.setState({ displayAboutus: true })
   }
 
-
   getEventbriteData = async (continuationString, val, previousFuelDataArr) => {
     // const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&page=${val}&expand=ticket_classes${continuationString}`)
     const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?${continuationString}token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&expand=ticket_classes`)
-
 
     const fuelData = await response.json()
     const continuation = await fuelData.pagination.continuation
