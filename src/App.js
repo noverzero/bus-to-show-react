@@ -220,9 +220,13 @@ class App extends Component {
 
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
   selectPickupLocationId = async event => {
+    console.log('selectpuloc', event.target.value)
     const newState = { ...this.state }
+    const oldPickup = parseInt(newState.pickupPartyId)
+    
+    newState.pickupPartyId = parseInt(event.target.value)
+
     if (parseInt(newState.ticketQuantity)) {
-      let oldPickup = parseInt(newState.pickupPartyId)
       this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
       newState.ticketQuantity = null
       newState.displayQuantity = false
@@ -242,24 +246,12 @@ class App extends Component {
         displayQuantity: newState.displayQuantity,
         displayAddBtn: newState.displayAddBtn
       })
-    }
-
-    if (parseInt(event.target.value)) {
-      newState.pickupPartyId = event.target.value
-      newState.displayQuantity = true
-    }
-    else if (parseInt(event.target.value)) {
-      newState.pickupPartyId = event.target.value
-      newState.displayQuantity = true
-    }
-    else {
-      newState.displayQuantity = false
-      newState.displayAddBtn = false
-    }
-
+    }    
+    
+    newState.displayQuantity = true
+    
     const statePickupPartyId = parseInt(newState.pickupPartyId)
     const stateEventId = parseInt(newState.displayShow.id)
-
     const parties = newState.assignedParties
     let matchedParty = await parties.find(party => (parseInt(party.id) === statePickupPartyId) && (parseInt(party.eventId) === stateEventId))
     newState.pickupLocationId = matchedParty.pickupLocationId
@@ -309,18 +301,16 @@ class App extends Component {
   }
 
   selectTicketQuantity = event => {
-
+    this.ticketTimer(false)
     const newState = { ...this.state }
     const oldQty = parseInt(newState.ticketQuantity)
     const pickupPartyId = parseInt(newState.pickupPartyId)
-
-    if (oldQty > 0) this.clearTicketsInCart(pickupPartyId, oldQty)
-    if (event.target.value) {
-      newState.displayAddBtn = true
-    }
-    else {
-      newState.displayAddBtn = false
-    }
+    
+    oldQty > 0 && this.clearTicketsInCart(pickupPartyId, oldQty)
+    
+    event.target.value ? newState.displayAddBtn = true 
+    : newState.displayAddBtn = false
+    
     newState.ticketQuantity = parseInt(event.target.value)
 
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
@@ -333,6 +323,7 @@ class App extends Component {
       totalCost: newState.totalCost
     })
     this.addTicketsInCart(pickupPartyId, newState.ticketQuantity)
+    this.ticketTimer(true, 20000, false)
   }
 
   updateDiscountCode = event => {
@@ -794,20 +785,19 @@ class App extends Component {
   addToCart = async () => {
     this.ticketTimer(false)
     const newState = { ...this.state }
-
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const basePrice = Number(pickupLocation.basePrice)
     const ticketQuantity = parseInt(this.state.ticketQuantity)
     const totalSavings = parseInt(this.state.afterDiscountObj.totalSavings)
     const processingFee = Number((basePrice * ticketQuantity) * (0.1))
     const cost = ((basePrice * ticketQuantity) - totalSavings + processingFee)
-    newState.totalCost = cost.toFixed(2)
-
     const sPickupId = parseInt(this.state.pickupLocationId)
     const sEventId = parseInt(this.state.displayShow.id)
     const pickupParty = this.state.assignedParties.find(party => party.pickupLocationId === sPickupId && party.eventId === sEventId)
     const firstBusLoad = pickupParty.firstBusLoadTime
     const lastDepartureTime = moment(pickupParty.lastBusDepartureTime, 'hhmm').format('h:mm')
+    
+    newState.totalCost = cost.toFixed(2)
     newState.cartToSend.eventId = null
     newState.cartToSend.pickupLocationId = null
     newState.cartToSend.firstName = ''
@@ -854,40 +844,45 @@ class App extends Component {
 
 // functions to handle setting and clearing of timer and incart qtys
 
-  ticketTimer = (timing, time, cart, pickupLocationId) => {
+  ticketTimer = (timerOn, time, cart) => {
     let newState = {...this.state}
-    let event = {
-      target: {
-        value: pickupLocationId,
-      }
-    }
+    const pickupPartyId = parseInt(newState.pickupPartyId)
+    let event = { target: { value: pickupPartyId } }
+    console.log('timerpickup', pickupPartyId)
 
-    if (timing && !cart) {
-      const newTicketTimer = setTimeout(() => {
-        this.confirmedRemove();
-        this.setState({pickupLocationId})
-        this.selectPickupLocationId(event)
-      }, time)
+    if (timerOn) {
+      const newTicketTimer = cart ? 
+          setTimeout(() => {
+            this.confirmedRemove()
+          }, time)
+        :
+          setTimeout(() => {
+            this.confirmedRemove();
+            this.selectPickupLocationId(event)
+          }, time)
+      
       newState.ticketTimer = newTicketTimer
       this.setState({ ticketTimer: newState.ticketTimer })
     }
-    else if (timing && cart) {
-      const newTicketTimer = setTimeout(() => {
-        this.confirmedRemove()
-      }, time)
-      newState.ticketTimer = newTicketTimer
-      this.setState({ ticketTimer: newState.ticketTimer })
-    }
-    else if (!timing) {
+    else {
       clearTimeout(this.state.ticketTimer)
       newState.ticketTimer = null
       this.setState({ ticketTimer: newState.ticketTimer })
     }
+    // else if (timerOn && !cart) {
+    //   const newTicketTimer = setTimeout(() => {
+    //     this.confirmedRemove();
+    //     this.setState({pickupLocationId})
+    //     this.selectPickupLocationId(event)
+    //   }, time)
+    //   newState.ticketTimer = newTicketTimer
+    //   this.setState({ ticketTimer: newState.ticketTimer })
+    // }
   }
 
 
   addTicketsInCart = (pickupPartyId, ticketQty) => {
-    this.ticketTimer(false)
+    // this.ticketTimer(false)
     fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -898,7 +893,7 @@ class App extends Component {
       }
     })
     // this.ticketTimer(true, 600000)
-    this.ticketTimer(true, 20000)
+    // this.ticketTimer(true, 20000)
   }
 
   clearTicketsInCart = (pickupPartyId, ticketQty) => {
@@ -1150,22 +1145,6 @@ class App extends Component {
     this.setState({ displayConfirmRemove: newState.displayConfirmRemove, displayWarning: newState.displayWarning })
   }
 
-  quantityChange = event => {
-    const newState = { ...this.state }
-    const oldQty = parseInt(newState.ticketQuantity)
-    newState.ticketQuantity = event.target.value
-    const pickupLocation = this.state.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
-    const basePrice = Number(pickupLocation.basePrice)
-    const ticketQuantity = parseInt(newState.ticketQuantity)
-    const processingFee = Number((basePrice * ticketQuantity) * (0.1))
-    const cost = ((basePrice * ticketQuantity) + processingFee)
-    const pickupPartyId = parseInt(newState.pickupPartyId)
-    newState.totalCost = cost.toFixed(2)
-    this.setState({ ticketQuantity: newState.ticketQuantity, totalCost: newState.totalCost })
-    this.clearTicketsInCart(pickupPartyId, oldQty)
-    this.addTicketsInCart(pickupPartyId, ticketQuantity)
-  }
-
   sortByArtist = () => {
     let newState = this.state.userShows.sort((show1, show2) => {
       let a = show1.headliner.toLowerCase().split(" ").join("")
@@ -1409,7 +1388,6 @@ class App extends Component {
                             purchaseFailed={this.state.purchaseFailed}
                             purchasePending={this.state.purchasePending}
                             purchaseSuccessful={this.state.purchaseSuccessful}
-                            quantityChange={this.quantityChange}
                             removeFromCart={this.removeFromCart}
                             returnToShows={this.returnToShows}
                             selectPickupLocationId={this.selectPickupLocationId}

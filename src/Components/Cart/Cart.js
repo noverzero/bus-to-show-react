@@ -102,7 +102,6 @@ const Cart = (props) => {
                     pickupLocationId={props.pickupLocationId}
                     pickupLocations={props.pickupLocations}
                     pickupParties={props.pickupParties}
-                    quantityChange={props.quantityChange}
                     removeFromCart={props.removeFromCart}
                     shows={props.shows}
                     showsInCart={props.showsInCart}

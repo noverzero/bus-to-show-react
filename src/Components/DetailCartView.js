@@ -71,7 +71,6 @@ const DetailCartView = (props) => {
                   purchaseClick={props.purchaseClick}
                   purchasePending={props.purchasePending}
                   purchaseSuccessful={props.purchaseSuccessful}
-                  quantityChange={props.quantityChange}
                   removeFromCart={props.removeFromCart}
                   returnToShows={props.returnToShows}
                   shows={props.shows}
