@@ -287,15 +287,12 @@ class App extends Component {
     const pickupPartyId = parseInt(newState.pickupPartyId)
     
     oldQty > 0 && this.clearTicketsInCart(pickupPartyId, oldQty)
+    event.target.value && (newState.displayAddBtn = true)    
     
-    event.target.value && (newState.displayAddBtn = true)
-    // : newState.displayAddBtn = false
-    
-    newState.ticketQuantity = parseInt(event.target.value)
-
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const subTotal = (Number(pickupLocation.basePrice) * Number(event.target.value))
     const total = ((Number(subTotal) * .1) + Number(subTotal)).toFixed(2)
+    newState.ticketQuantity = parseInt(event.target.value)
     newState.totalCost = total
     this.setState({
       displayAddBtn: newState.displayAddBtn,
