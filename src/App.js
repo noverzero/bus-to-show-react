@@ -308,8 +308,8 @@ class App extends Component {
     
     oldQty > 0 && this.clearTicketsInCart(pickupPartyId, oldQty)
     
-    event.target.value ? newState.displayAddBtn = true 
-    : newState.displayAddBtn = false
+    event.target.value && (newState.displayAddBtn = true)
+    // : newState.displayAddBtn = false
     
     newState.ticketQuantity = parseInt(event.target.value)
 
@@ -324,6 +324,7 @@ class App extends Component {
     })
     this.addTicketsInCart(pickupPartyId, newState.ticketQuantity)
     this.ticketTimer(true, 20000, false)
+    window.addEventListener("beforeunload", this.clearCartOnClose)
   }
 
   updateDiscountCode = event => {
@@ -839,7 +840,6 @@ class App extends Component {
     this.setState(newState)
     // this.ticketTimer(true, 600000, true)
     this.ticketTimer(true, 20000, true)
-    window.addEventListener("beforeunload", this.clearCartOnClose);
   }
 
 // functions to handle setting and clearing of timer and incart qtys
