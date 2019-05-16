@@ -1035,25 +1035,6 @@ class App extends Component {
         willCallFirstName: (newValidElems.wcFirstName || newValidElems.firstName),
         willCallLastName: (newValidElems.wcLastName || newValidElems.lastName)
       }
-      // newCart.firstName = stateValidElems.firstName
-      // newCart.lastName = stateValidElems.lastName
-      // newCart.email = stateValidElems.email
-      // newCart.orderedByPhone = stateValidElems.orderedByPhone
-      // newCart.eventId = this.state.inCart[0].id
-      // newCart.ticketQuantity = parseInt(this.state.ticketQuantity)
-      // newCart.pickupLocationId = parseInt(this.state.pickupLocationId)
-      // newCart.totalCost = Number(this.state.totalCost)
-      // newCart.discountCode = discountCode
-      // newCart.userId = newState.facebook.userDetails.userId
-      // stateValidElems.wCFName ?
-      //   newCart.willCallFirstName = stateValidElems.wcFirstName
-      //   :
-      //   newCart.willCallFirstName = stateValidElems.firstName
-      // stateValidElems.wCLName ?
-      //   newCart.willCallLastName = stateValidElems.wcLastName
-      //   :
-      //   newCart.willCallLastName = stateValidElems.lastName
-      // validatedElements: newValidElems,
       this.setState({
         invalidFields,
         validatedElements: newValidElems,
