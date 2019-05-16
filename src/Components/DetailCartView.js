@@ -58,8 +58,9 @@ const DetailCartView = (props) => {
                   firstBusLoad={props.firstBusLoad}
                   getPickupParty={props.getPickupParty}
                   handleCheck={props.handleCheck}
-                  handleSubmit={props.handleSubmit}
                   inCart={props.inCart}
+                  invalidFields={props.invalidFields}
+                  invalidOnSubmit={props.invalidOnSubmit}
                   lastDepartureTime={props.lastDepartureTime}
                   makePurchase={props.makePurchase}
                   pickupLocationId={props.pickupLocationId}

@@ -34,6 +34,11 @@ export default class Checkout extends React.Component {
 
   render() {
     const email = this.props.cartToSend.email
+    const selectResponse = e => {
+      this.props.validated ? 
+      this.props.makePurchase(e) :
+      this.props.invalidOnSubmit(e)
+    }
     return (
       <React.Fragment>
         <StripeCheckout
@@ -46,13 +51,13 @@ export default class Checkout extends React.Component {
           amount={this.props.totalCost * 100}
           currency='USD'
           metadata={this.props.cartToSend}
+          disabled={this.props.validated ? false : true}
         >
-          <button
-            onClick={(event) => this.props.makePurchase(event)}
+          <button    
+            onClick={e=>selectResponse(e)}
             className={`btn mr-1 ${this.props.validated ? 'btn-outline-success' : 'btn-secondary'}`}
-            disabled={this.props.validated ? '' : 'disabled'}
           >
-            Purchase
+          Purchase
           </button>
         </StripeCheckout>
       </React.Fragment>
