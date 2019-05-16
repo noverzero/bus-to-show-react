@@ -9,9 +9,6 @@ const Cart = (props) => {
 
   let cTSendId = props.cartToSend && props.cartToSend.eventId 
 
-  // if (props.cartToSend) {
-  //   cTSendId = props.cartToSend.eventId
-  // }
   const showInfo = props.shows.find(show => parseInt(show.id) === parseInt(cTSendId))
 
   let savings = Number(props.afterDiscountObj.totalSavings)
@@ -19,8 +16,8 @@ const Cart = (props) => {
   let totalCost = cost.toFixed(2)
 
   const maskPhoneInput = (e) => {
-    var num = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
-    e.target.value = !num[2] ? num[1] : '(' + num[1] + ') ' + num[2] + (num[3] ? '-' + num[3] : '')
+    var part = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
+    e.target.value = !part[2] ? part[1] : '(' + part[1] + ') ' + part[2] + (part[3] ? '-' + part[3] : '')
   }
 
   const phoneInput = (e) => {

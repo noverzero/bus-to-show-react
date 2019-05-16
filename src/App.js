@@ -847,13 +847,14 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-    this.ticketTimer(true, 600000, true)
+    // this.ticketTimer(true, 600000, true)
+    this.ticketTimer(true, 20000, true)
     window.addEventListener("beforeunload", this.clearCartOnClose);
   }
 
 // functions to handle setting and clearing of timer and incart qtys
 
-  ticketTimer = (condition, time, cart, pickupLocationId) => {
+  ticketTimer = (timing, time, cart, pickupLocationId) => {
     let newState = {...this.state}
     let event = {
       target: {
@@ -861,7 +862,7 @@ class App extends Component {
       }
     }
 
-    if (condition && !cart) {
+    if (timing && !cart) {
       const newTicketTimer = setTimeout(() => {
         this.confirmedRemove();
         this.setState({pickupLocationId})
@@ -870,14 +871,14 @@ class App extends Component {
       newState.ticketTimer = newTicketTimer
       this.setState({ ticketTimer: newState.ticketTimer })
     }
-    else if (condition && cart) {
+    else if (timing && cart) {
       const newTicketTimer = setTimeout(() => {
         this.confirmedRemove()
       }, time)
       newState.ticketTimer = newTicketTimer
       this.setState({ ticketTimer: newState.ticketTimer })
     }
-    else if (!condition) {
+    else if (!timing) {
       clearTimeout(this.state.ticketTimer)
       newState.ticketTimer = null
       this.setState({ ticketTimer: newState.ticketTimer })
@@ -896,7 +897,8 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
-    this.ticketTimer(true, 120000)
+    // this.ticketTimer(true, 600000)
+    this.ticketTimer(true, 20000)
   }
 
   clearTicketsInCart = (pickupPartyId, ticketQty) => {
@@ -940,7 +942,8 @@ class App extends Component {
   purchase = async (err) => {
     if (err) {
       this.ticketTimer(false)
-      this.ticketTimer(true, 600000, true)
+      // this.ticketTimer(true, 600000, true)
+      this.ticketTimer(true, 20000, true)
       return this.setState({purchaseFailed: true})
     }
     const cartObj = this.state.cartToSend
@@ -971,7 +974,6 @@ class App extends Component {
       else return false
     }
     
-    // Checks fields via npm package validator
     switch (updateField){
       case 'email':
         if (Validator.isEmail(value) && !Validator.isEmpty(value)) {
@@ -1041,7 +1043,7 @@ class App extends Component {
         ticketQuantity: parseInt(this.state.ticketQuantity),
         pickupLocationId: parseInt(this.state.pickupLocationId),
         totalCost: Number(this.state.totalCost),
-        discountCode: discountCode,
+        discountCode,
         userId: newState.facebook.userDetails.userId,
         willCallFirstName: (newValidElems.wcFirstName || newValidElems.firstName),
         willCallLastName: (newValidElems.wcLastName || newValidElems.lastName)
@@ -1087,7 +1089,6 @@ class App extends Component {
   invalidOnSubmit = (e) => {
     let validElems = {...this.state.validatedElements}
     let invalidFields = {...this.state.invalidFields}    
-    console.log(validElems)
 
     invalidFields.invalidFirstName = validElems.firstName ? false : true
     invalidFields.invalidLastName = validElems.lastName ? false : true
@@ -1153,7 +1154,6 @@ class App extends Component {
     const newState = { ...this.state }
     const oldQty = parseInt(newState.ticketQuantity)
     newState.ticketQuantity = event.target.value
-
     const pickupLocation = this.state.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const basePrice = Number(pickupLocation.basePrice)
     const ticketQuantity = parseInt(newState.ticketQuantity)
@@ -1186,21 +1186,13 @@ class App extends Component {
       let a = new Date(show1.date)
       let b = new Date(show2.date)
       return a - b
-
     })
     this.setState({ shows: newState, artistIcon: false, dateIcon: true })
   }
 
   makePurchase = event => {
-    const newState = { ...this.state }
     event.preventDefault()
-    const wCF = document.querySelector('#willCallFirstName')
-    const wCL = document.querySelector('#willCallLastName')
-    if (newState.checked && (!wCF.value || !wCL.value)) {
-      newState.cartToSend.willCallFirstName = newState.cartToSend.firstName
-      newState.cartToSend.willCallLastName = newState.cartToSend.lastName
-      this.setState({ cartToSend: newState.cartToSend })
-    }
+    const newState = { ...this.state }
 
     newState.displayQuantity = false
     newState.displayAddBtn = false
@@ -1242,7 +1234,7 @@ class App extends Component {
     const fuelDataArr = await fuelData.events
     const newFuelDataArr = await previousFuelDataArr.concat(fuelDataArr).flat()
     continuationString = await `continuation=${continuation}&`
-    //let continuationString = ''
+
     if(fuelData.pagination.has_more_items && val <5 ){
       return await this.getEventbriteData(continuationString, val+=1, newFuelDataArr)
     } else {
@@ -1257,8 +1249,7 @@ class App extends Component {
   }
 
   getHeadliners = async () => {
-    const eventsArr = await this.getEventbriteData('', 1, [])
-
+    await this.getEventbriteData('', 1, [])
     .then((eventsArr)=> {
     let newEventsArr = []
     for(let ii = 0; ii < eventsArr.length; ii++){
