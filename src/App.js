@@ -839,19 +839,19 @@ class App extends Component {
     newState.startTimer = true
     this.setState(newState)
     // this.ticketTimer(true, 600000, true)
-    this.ticketTimer(true, 20000, true)
+    this.ticketTimer(true, 30000, true)
   }
 
 // functions to handle setting and clearing of timer and incart qtys
 
-  ticketTimer = (timerOn, time, cart) => {
+  ticketTimer = (timerOn, time, addedToCart) => {
     let newState = {...this.state}
     const pickupPartyId = parseInt(newState.pickupPartyId)
     let event = { target: { value: pickupPartyId } }
     console.log('timerpickup', pickupPartyId)
 
     if (timerOn) {
-      const newTicketTimer = cart ? 
+      const newTicketTimer = addedToCart ? 
           setTimeout(() => {
             this.confirmedRemove()
           }, time)
@@ -869,20 +869,10 @@ class App extends Component {
       newState.ticketTimer = null
       this.setState({ ticketTimer: newState.ticketTimer })
     }
-    // else if (timerOn && !cart) {
-    //   const newTicketTimer = setTimeout(() => {
-    //     this.confirmedRemove();
-    //     this.setState({pickupLocationId})
-    //     this.selectPickupLocationId(event)
-    //   }, time)
-    //   newState.ticketTimer = newTicketTimer
-    //   this.setState({ ticketTimer: newState.ticketTimer })
-    // }
   }
 
 
   addTicketsInCart = (pickupPartyId, ticketQty) => {
-    // this.ticketTimer(false)
     fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -892,8 +882,6 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
-    // this.ticketTimer(true, 600000)
-    // this.ticketTimer(true, 20000)
   }
 
   clearTicketsInCart = (pickupPartyId, ticketQty) => {
@@ -935,6 +923,9 @@ class App extends Component {
   }
 
   purchase = async (err) => {
+    const pickupPartyId = {...this.state.pickupPartyId}
+    const ticketQty = {...this.state.ticketQuantity}
+    console.log(pickupPartyId, ticketQty)
     if (err) {
       this.ticketTimer(false)
       // this.ticketTimer(true, 600000, true)
@@ -950,6 +941,7 @@ class App extends Component {
         'Content-Type': 'application/json'
       }
     })
+    this.clearTicketsInCart(pickupPartyId, ticketQty)
     this.ticketTimer(false)
     this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [] })
   }
