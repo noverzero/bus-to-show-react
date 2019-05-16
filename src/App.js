@@ -79,32 +79,13 @@ class App extends Component {
     displayReservations: false,
     displayUserReservationSummary: false,
     displayTimes: false,
-    // facebook: {
-    //   isLoggedIn: false,
-    //   userID: '',
-    //   name: '',
-    //   email:'',
-    //   picture:'',
-    //   userDetails: {},
-    // },
     facebook: {
-      isLoggedIn: true,
-      userID: "10156117602853997",
-      name: "Jake Mosher",
-      email: "jakeypoo@boner.com",
-      picture: "",
-      userDetails: {
-        email: "jakeypoo@boner.com",
-        firstName: "Jake",
-        lastName: "Mosher",
-        id: 105,
-        isAdmin: true,
-        isDeactivated: false,
-        isDriver: false,
-        isStaff: true,
-        isWaiverSigned: false,
-        preferredLocation: ""
-      },
+      isLoggedIn: false,
+      userID: '',
+      name: '',
+      email:'',
+      picture:'',
+      userDetails: {},
     },
     filterString: '',
     firstBusLoad: null,
@@ -220,7 +201,6 @@ class App extends Component {
 
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
   selectPickupLocationId = async event => {
-    console.log('selectpuloc', event.target.value)
     const newState = { ...this.state }
     const oldPickup = parseInt(newState.pickupPartyId)
     
@@ -590,7 +570,6 @@ class App extends Component {
 
 
   responseFacebook = async (response) => {
-    console.log(response)
     this.setState({
       ...this.state,
         facebook: {
@@ -848,7 +827,6 @@ class App extends Component {
     let newState = {...this.state}
     const pickupPartyId = parseInt(newState.pickupPartyId)
     let event = { target: { value: pickupPartyId } }
-    console.log('timerpickup', pickupPartyId)
 
     if (timerOn) {
       const newTicketTimer = addedToCart ? 
@@ -925,7 +903,6 @@ class App extends Component {
   purchase = async (err) => {
     const pickupPartyId = {...this.state.pickupPartyId}
     const ticketQty = {...this.state.ticketQuantity}
-    console.log(pickupPartyId, ticketQty)
     if (err) {
       this.ticketTimer(false)
       // this.ticketTimer(true, 600000, true)
