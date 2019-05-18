@@ -203,6 +203,7 @@ class App extends Component {
   selectPickupLocationId = async event => {
     const newState = { ...this.state }
     const oldPickup = parseInt(newState.pickupPartyId)
+    this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
 
     newState.pickupPartyId = parseInt(event.target.value)
     if (event.target.value === "Select a Departure Option..."){
