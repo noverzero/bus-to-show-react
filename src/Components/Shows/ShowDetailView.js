@@ -73,7 +73,7 @@ const ShowDetailView = (props) => {
                     <form className="needs-validation">
                       <div className="form-group">
                         <select id="departureOption" className={`custom-select mt-2 ${props.displayQuantity ? 'is-valid' : ''}`} onChange={props.selectPickupLocationId} required>
-                          <option value="Select a Departure Option..." >Select a Departure Option...</option>
+                          <option id="select" value="Select a Departure Option..." >Select a Departure Option...</option>
                           {props.assignedParties ?
                             props.assignedParties.map(location => {
                               return (

@@ -205,6 +205,20 @@ class App extends Component {
     const oldPickup = parseInt(newState.pickupPartyId)
 
     newState.pickupPartyId = parseInt(event.target.value)
+    if (event.target.value === "Select a Departure Option..."){
+      newState.displayQuantity = false
+      newState.ticketsAvailable = null
+      newState.ticketQuantity = null
+      newState.displayAddBtn = false
+
+      this.setState({
+        displayQuantity: newState.displayQuantity,
+        ticketsAvailable: newState.ticketsAvailable,
+        ticketQuantity: newState.ticketQuantity,
+        displayAddBtn: newState.displayAddBtn,
+      })
+      return
+    }
 
     if (parseInt(newState.ticketQuantity)) {
       this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
@@ -217,7 +231,7 @@ class App extends Component {
         displayAddBtn: newState.displayAddBtn
       })
     }
-    else if (parseInt(event.target.value) !== newState.pickupPartyId || event.target.id === "select") {
+    else if (parseInt(event.target.value) !== newState.pickupPartyId) {
       newState.ticketQuantity = null
       newState.displayQuantity = false
       newState.displayAddBtn = false
@@ -234,21 +248,11 @@ class App extends Component {
     const stateEventId = parseInt(newState.displayShow.id)
     const parties = newState.assignedParties
     let matchedParty = await parties.find(party => (parseInt(party.id) === statePickupPartyId) && (parseInt(party.eventId) === stateEventId))
-    if (matchedParty) {
-     newState.pickupLocationId = matchedParty.pickupLocationId
-      if (matchedParty.firstBusLoadTime) {
-       newState.firstBusLoad = moment(matchedParty.firstBusLoadTime, 'LT').format('h:mm A')
-      } else {
-       newState.firstBusLoad = null
-      }
-      if (newState.lastDepartureTime){
-        newState.lastDepartureTime = moment(matchedParty.lastBusDepartureTime, 'LT').format('h:mm A')
-      } else {
-        newState.lastDepartureTime = null
-      }
-   } else {
-     newState.pickupLocationId = null
-   }
+    newState.pickupLocationId = matchedParty.pickupLocationId
+    if (matchedParty.firstBusLoadTime) {
+      newState.firstBusLoad = moment(matchedParty.firstBusLoadTime, 'LT').format('h:mm A')
+    }
+    newState.lastDepartureTime = moment(matchedParty.lastBusDepartureTime, 'LT').format('h:mm A')
 
     let numArray = []
 
