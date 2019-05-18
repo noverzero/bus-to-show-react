@@ -203,7 +203,7 @@ class App extends Component {
   selectPickupLocationId = async event => {
     const newState = { ...this.state }
     const oldPickup = parseInt(newState.pickupPartyId)
-    
+
     newState.pickupPartyId = parseInt(event.target.value)
 
     if (parseInt(newState.ticketQuantity)) {
@@ -226,10 +226,10 @@ class App extends Component {
         displayQuantity: newState.displayQuantity,
         displayAddBtn: newState.displayAddBtn
       })
-    }    
-    
+    }
+
     newState.displayQuantity = true
-    
+
     const statePickupPartyId = parseInt(newState.pickupPartyId)
     const stateEventId = parseInt(newState.displayShow.id)
     const parties = newState.assignedParties
@@ -285,10 +285,10 @@ class App extends Component {
     const newState = { ...this.state }
     const oldQty = parseInt(newState.ticketQuantity)
     const pickupPartyId = parseInt(newState.pickupPartyId)
-    
+
     oldQty > 0 && this.clearTicketsInCart(pickupPartyId, oldQty)
-    event.target.value && (newState.displayAddBtn = true)    
-    
+    event.target.value && (newState.displayAddBtn = true)
+
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const subTotal = (Number(pickupLocation.basePrice) * Number(event.target.value))
     const total = ((Number(subTotal) * .1) + Number(subTotal)).toFixed(2)
@@ -766,7 +766,8 @@ class App extends Component {
     const pickupParty = this.state.assignedParties.find(party => party.pickupLocationId === sPickupId && party.eventId === sEventId)
     const firstBusLoad = pickupParty.firstBusLoadTime
     const lastDepartureTime = moment(pickupParty.lastBusDepartureTime, 'hhmm').format('h:mm')
-    
+
+    newState.purchaseSuccessful = false
     newState.totalCost = cost.toFixed(2)
     newState.cartToSend.eventId = null
     newState.cartToSend.pickupLocationId = null
@@ -789,6 +790,7 @@ class App extends Component {
     }
 
     this.setState({
+      purchaseSuccessful: newState.purchaseSuccessful,
       cartToSend: newState.cartToSend,
       validatedElements: newState.validatedElements
     })
@@ -818,7 +820,7 @@ class App extends Component {
     let event = { target: { value: pickupPartyId } }
 
     if (timerOn) {
-      const newTicketTimer = addedToCart ? 
+      const newTicketTimer = addedToCart ?
           setTimeout(() => {
             this.confirmedRemove()
           }, time)
@@ -827,7 +829,7 @@ class App extends Component {
             this.confirmedRemove();
             this.selectPickupLocationId(event)
           }, time)
-      
+
       newState.ticketTimer = newTicketTimer
       this.setState({ ticketTimer: newState.ticketTimer })
     }
@@ -925,7 +927,7 @@ class App extends Component {
       else if (inputtxt.length > 12 || inputtxt.length < 12 ) return false
       else return false
     }
-    
+
     switch (updateField){
       case 'email':
         if (Validator.isEmail(value) && !Validator.isEmpty(value)) {
@@ -978,7 +980,7 @@ class App extends Component {
       default:
         return 'Please input valid items';
     }
-    
+
     // // Populates cartToSend
     if (newValidElems.firstName
     && newValidElems.lastName
@@ -1007,11 +1009,11 @@ class App extends Component {
       })
     }
     else if (!newValidElems.firstName ||
-            !newValidElems.lastName || 
-            !newValidElems.email || 
+            !newValidElems.lastName ||
+            !newValidElems.email ||
             !newValidElems.orderedByPhone) {
         newState.validated = false
-        this.setState({ 
+        this.setState({
           validated : newState.validated,
           validatedElements: newValidElems
         })
@@ -1020,7 +1022,7 @@ class App extends Component {
 
   invalidOnSubmit = (e) => {
     let validElems = {...this.state.validatedElements}
-    let invalidFields = {...this.state.invalidFields}    
+    let invalidFields = {...this.state.invalidFields}
 
     invalidFields.invalidFirstName = validElems.firstName ? false : true
     invalidFields.invalidLastName = validElems.lastName ? false : true
