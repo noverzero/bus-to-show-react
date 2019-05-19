@@ -75,6 +75,7 @@ const DetailCartView = (props) => {
                   returnToShows={props.returnToShows}
                   shows={props.shows}
                   showsInCart={props.inCart}
+                  ticketTimer={props.ticketTimer}
                   ticketQuantity={props.ticketQuantity}
                   totalCost={props.totalCost}
                   updateDiscountCode={props.updateDiscountCode}

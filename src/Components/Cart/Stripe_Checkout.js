@@ -8,6 +8,7 @@ import StripeCheckout from 'react-stripe-checkout'
 export default class Checkout extends React.Component {
 
   onToken = (token) => {
+    this.props.ticketTimer(false)
     const orderInfo = this.props.cartToSend
     orderInfo.receiptDescription = this.props.receiptDescription
     fetch(`${fetchUrl}/orders/charge`, {

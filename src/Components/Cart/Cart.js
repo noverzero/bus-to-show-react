@@ -7,7 +7,7 @@ import logo from '../../Images/Logos/bts-logo-gray.png'
 
 const Cart = (props) => {
 
-  let cTSendId = props.cartToSend && props.cartToSend.eventId 
+  let cTSendId = props.cartToSend && props.cartToSend.eventId
 
   const showInfo = props.shows.find(show => parseInt(show.id) === parseInt(cTSendId))
 
@@ -115,8 +115,8 @@ const Cart = (props) => {
                 <div className="list-group-item" >
                   <div className="row">
                     <div className="col-md-12">
-                      <form 
-                        className="needs-validation" 
+                      <form
+                        className="needs-validation"
                         onSubmit={e=>e.preventDefault()}
                         noValidate>
                         <div className="form-row">
@@ -240,6 +240,7 @@ const Cart = (props) => {
                               validated={props.validated}
                               purchase={props.purchase}
                               afterDiscountObj={props.afterDiscountObj}
+                              ticketTimer={props.ticketTimer}
                               totalCost={totalCost}
                               showsInCart={props.showsInCart}
                               invalidOnSubmit={props.invalidOnSubmit}>

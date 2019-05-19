@@ -1377,6 +1377,7 @@ class App extends Component {
                             startTimer={this.state.startTimer}
                             tabClicked={this.tabClicked}
                             ticketsAvailable={this.state.ticketsAvailable}
+                            ticketTimer={this.ticketTimer}
                             ticketQuantity={this.state.ticketQuantity}
                             timeLeftInCart={this.state.timeLeftInCart}
                             totalCost={this.state.totalCost}
