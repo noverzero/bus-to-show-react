@@ -859,6 +859,7 @@ class App extends Component {
   }
 
   addTicketsInCart = (pickupPartyId, ticketQty) => {
+    console.log('addTicketsInCart::  pickupPartyId', pickupPartyId, 'ticketQty', ticketQty)
     if (pickupPartyId && ticketQty){
       fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
         method: 'PATCH',
@@ -873,6 +874,7 @@ class App extends Component {
   }
 
   clearTicketsInCart = (pickupPartyId, ticketQty) => {
+    console.log('clearTicketsInCart::  pickupPartyId', pickupPartyId, 'ticketQty', ticketQty)
     let newState = {...this.state}
     if (pickupPartyId && ticketQty){
       fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
@@ -913,8 +915,6 @@ class App extends Component {
   }
 
   purchase = async (err) => {
-    const pickupPartyId = {...this.state.pickupPartyId}
-    const ticketQty = {...this.state.ticketQuantity}
     if (err) {
       this.ticketTimer(false)
       // this.ticketTimer(true, 600000, true)
@@ -923,14 +923,16 @@ class App extends Component {
     }
     const cartObj = this.state.cartToSend
     cartObj.userId = this.state.facebook.userDetails.id
-    fetch(`${fetchUrl}/orders`, {
+    const response = await fetch(`${fetchUrl}/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
       headers: {
         'Content-Type': 'application/json'
       }
     })
-    this.clearTicketsInCart(pickupPartyId, ticketQty)
+    const json = await response.json()
+
+    await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
     this.ticketTimer(false)
     this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [] })
   }
