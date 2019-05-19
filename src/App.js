@@ -298,7 +298,10 @@ class App extends Component {
   selectTicketQuantity = event => {
     this.ticketTimer(false)
     const newState = { ...this.state }
-    const oldQty = parseInt(newState.ticketQuantity)
+    let oldQty = 0
+    if (parseInt(newState.ticketQuantity) > 0){
+      oldQty = parseInt(newState.ticketQuantity)
+    }
     const pickupPartyId = parseInt(newState.pickupPartyId)
 
     oldQty > 0 && this.clearTicketsInCart(pickupPartyId, oldQty)
@@ -307,7 +310,7 @@ class App extends Component {
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const subTotal = (Number(pickupLocation.basePrice) * Number(event.target.value))
     const total = ((Number(subTotal) * .1) + Number(subTotal)).toFixed(2)
-    newState.ticketQuantity = parseInt(event.target.value)
+    newState.ticketQuantity = 0 || parseInt(event.target.value)
     newState.totalCost = total
     this.setState({
       displayAddBtn: newState.displayAddBtn,
@@ -856,28 +859,32 @@ class App extends Component {
   }
 
   addTicketsInCart = (pickupPartyId, ticketQty) => {
-    fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        inCart: ticketQty,
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
+    if (pickupPartyId && ticketQty){
+      fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          inCart: ticketQty,
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
   }
 
   clearTicketsInCart = (pickupPartyId, ticketQty) => {
     let newState = {...this.state}
-    fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        inCart: parseInt(ticketQty) * -1,
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
+    if (pickupPartyId && ticketQty){
+      fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          inCart: parseInt(ticketQty) * -1,
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
     newState.ticketQuantity = 0
     this.setState({ticketQuantity: newState.ticketQuantity})
     this.ticketTimer(false)
