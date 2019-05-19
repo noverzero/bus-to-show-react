@@ -3,8 +3,8 @@ import '../../App.css';
 import UserCheckin from './userCheckin'
 import AdminEdit from './Edit/AdminEdit'
 
-const fetchUrl = `http://localhost:3000`
-// const fetchUrl = `https://bts-test-backend.herokuapp.com`
+// const fetchUrl = `http://localhost:3000`
+ const fetchUrl = `https://bts-test-backend.herokuapp.com`
 // const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class AdminView extends React.Component {
@@ -34,7 +34,7 @@ class AdminView extends React.Component {
       pickupParties: pickupParties,
     })
   }
-  
+
   getPickupParties = async () => {
     const response = await fetch(`${fetchUrl}/pickup_parties`, {
       method: 'GET',
