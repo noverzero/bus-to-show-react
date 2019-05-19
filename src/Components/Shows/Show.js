@@ -13,6 +13,7 @@ const Show = (props) => {
   }
 
   const onEmptyCartDetailClick = event => {
+    props.confirmedRemove()
     props.showsExpandClick(event)
     props.tabClicked(event)
   }

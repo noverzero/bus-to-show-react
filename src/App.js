@@ -1400,6 +1400,7 @@ class App extends Component {
                       <MediaQuery minWidth={800}>
                         <ShowList
                           addBorder={this.addBorder}
+                          confirmedRemove={this.confirmedRemove}
                           displayShow={this.state.displayShow}
                           filterString={this.state.filterString}
                           handleWarning={this.handleWarning}
