@@ -21,8 +21,8 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-const fetchUrl = `http://localhost:3000`
-// const fetchUrl = `https://bts-test-backend.herokuapp.com`
+//const fetchUrl = `http://localhost:3000`
+ const fetchUrl = `https://bts-test-backend.herokuapp.com`
 // const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class App extends Component {
@@ -911,9 +911,9 @@ class App extends Component {
     const pickupPartyId = parseInt(this.state.pickupPartyId)
     const ticketQty = parseInt(this.state.ticketQuantity)
     let chicken = 'clearCartOnClose app.js 907'
-    // ev.preventDefault();
+    //ev.preventDefault();
     this.clearTicketsInCart(pickupPartyId, ticketQty, chicken)
-    // return ev.returnValue = 'Leaving the page will clear your cart, continue?';
+    return ev.returnValue = 'Leaving the page will clear your cart, continue?';
   }
 
   viewCart = () => {

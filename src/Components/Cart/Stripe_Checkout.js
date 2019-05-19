@@ -1,8 +1,8 @@
 import React from 'react';
 import StripeCheckout from 'react-stripe-checkout'
 
-const fetchUrl = `http://localhost:3000`
-// const fetchUrl = `https://bts-test-backend.herokuapp.com`
+//const fetchUrl = `http://localhost:3000`
+ const fetchUrl = `https://bts-test-backend.herokuapp.com`
 // const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 export default class Checkout extends React.Component {
@@ -35,7 +35,7 @@ export default class Checkout extends React.Component {
   render() {
     const email = this.props.cartToSend.email
     const selectResponse = e => {
-      this.props.validated ? 
+      this.props.validated ?
       this.props.makePurchase(e) :
       this.props.invalidOnSubmit(e)
     }
@@ -53,7 +53,7 @@ export default class Checkout extends React.Component {
           metadata={this.props.cartToSend}
           disabled={this.props.validated ? false : true}
         >
-          <button    
+          <button
             onClick={e=>selectResponse(e)}
             className={`btn mr-1 ${this.props.validated ? 'btn-outline-success' : 'btn-secondary'}`}
           >
