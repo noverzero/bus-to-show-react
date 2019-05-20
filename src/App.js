@@ -22,8 +22,8 @@ ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
 //const fetchUrl = `http://localhost:3000`
- const fetchUrl = `https://bts-test-backend.herokuapp.com`
-// const fetchUrl = `https://innocuous-junior.herokuapp.com`
+// const fetchUrl = `https://bts-test-backend.herokuapp.com`
+ const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -322,8 +322,8 @@ class App extends Component {
       totalCost: newState.totalCost
     })
     this.addTicketsInCart(pickupPartyId, newState.ticketQuantity)
-    //this.ticketTimer(true, 120000, false)
-    this.ticketTimer(true, 30000, false)
+    this.ticketTimer(true, 120000, false)
+    //this.ticketTimer(true, 30000, false)
     window.addEventListener("beforeunload", this.clearCartOnClose)
   }
 
@@ -833,8 +833,8 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-    //this.ticketTimer(true, 600000, true)
-    this.ticketTimer(true, 30000, true)
+    this.ticketTimer(true, 600000, true)
+    //this.ticketTimer(true, 30000, true)
   }
 
 // functions to handle setting and clearing of timer and incart qtys
@@ -868,7 +868,7 @@ class App extends Component {
   addTicketsInCart = async (pickupPartyId, ticketQty) => {
     console.log('addTicketsInCart::  pickupPartyId', pickupPartyId, 'ticketQty', ticketQty)
     if (pickupPartyId && ticketQty){
-      console.log('pickup_parties increment inCart PATCH fired: +', ticketQty)
+      //console.log('pickup_parties increment inCart PATCH fired: +', ticketQty)
       const response = await fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -879,7 +879,7 @@ class App extends Component {
         }
       })
       const json = await response.json()
-      console.log('addTicketsInCart server response ', json)
+      //console.log('addTicketsInCart server response ', json)
     }
   }
 
@@ -887,7 +887,7 @@ class App extends Component {
     console.log('clearTicketsInCart::  pickupPartyId', pickupPartyId, 'ticketQty', ticketQty)
     let newState = {...this.state}
     if (pickupPartyId && ticketQty){
-      console.log('pickup_parties decrement inCart PATCH fired: -', ticketQty, 'chicken:: ', chicken)
+      //console.log('pickup_parties decrement inCart PATCH fired: -', ticketQty, 'chicken:: ', chicken)
       const response = await fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -898,7 +898,7 @@ class App extends Component {
         }
       })
       const json = await response.json()
-      console.log('clearTicketsInCart server response ', json)
+      //console.log('clearTicketsInCart server response ', json)
 
     }
     newState.ticketQuantity = 0
@@ -934,8 +934,8 @@ class App extends Component {
     if (err) {
       console.log('purchase error', err)
       this.ticketTimer(false)
-      //this.ticketTimer(true, 600000, true)
-      this.ticketTimer(true, 20000, true)
+      this.ticketTimer(true, 600000, true)
+      //this.ticketTimer(true, 20000, true)
       return this.setState({purchaseFailed: true})
     }
     const cartObj = this.state.cartToSend
