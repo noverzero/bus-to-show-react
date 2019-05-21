@@ -26,7 +26,6 @@ const ReservationsList = (props) => {
   return (
     <div className='Reservations'>
       {filterRezzies.length > 0 ?
-
         filterRezzies.map(reservation => {
           const { willCallFirstName, willCallLastName, orderedByFirstName, orderedByLastName } = reservation
           const lastName = willCallLastName

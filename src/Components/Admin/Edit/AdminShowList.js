@@ -1,8 +1,15 @@
+import React from 'react'
+import '../../../App.css';
 
-import React from 'react';
+const AdminShowList = (props) => {
 
-const EditShowList = (props) => {
   let { filterString, shows, makeSelection, resetStuff } = props
+  
+  shows = shows.sort((show1, show2) => {
+    const a = new Date(show1.date)
+    const b = new Date(show2.date)
+    return a - b
+  })
 
   filterString = filterString.toLowerCase()
   let filterShows = shows.filter(show => show.headliner.toLowerCase().includes(filterString))
@@ -39,4 +46,4 @@ const EditShowList = (props) => {
   )
 }
 
-export default EditShowList  //component function name should match component file name (best practice)
+export default AdminShowList;

@@ -8,9 +8,9 @@ const fetchUrl = `http://localhost:3000`
 //  const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class AdminView extends React.Component {
-  //child of App.js
 
   state = {
+    displayAdminPanel: false,
     displayUserCheckin: false,
     displayList: 'ShowList',
     eventId: null,
@@ -27,8 +27,6 @@ class AdminView extends React.Component {
 
   componentDidMount = async() => {
     const pickupParties = await this.getPickupParties()
-
-
     await this.setState({
       pickupLocations: this.props.pickupLocations,
       pickupParties: pickupParties,
@@ -60,7 +58,8 @@ class AdminView extends React.Component {
     newState.displayList = 'ShowList'
     await this.setState(newState)}
     else if (property === 'displayAdminPanel'){
-      newState.displayAdminPanel = true
+      newState.displayAdminPanel = !newState.displayAdminPanel
+      newState.displayList = 'ShowList'
       await this.setState(newState)
     }
     else {
@@ -77,7 +76,6 @@ class AdminView extends React.Component {
     await this.setState(newState)
     this.toggleProperty(next)
     if (next === 'PickupsList') {
-      //targetId === eventId
       this.findShow(targetId)
       this.findParties(targetId)
     }
@@ -86,10 +84,14 @@ class AdminView extends React.Component {
       this.findPickup(targetId)
       this.refreshReservations()
     }
+    else if (next === 'AdminEditPanel') {
+      this.getReservations()
+      this.findPickup(targetId)
+    }
   }
 
-  getReservations = async () => {
-    await fetch(`${fetchUrl}/pickup_parties/findId`, {
+  getPickupParty = async () => {
+    const response = await fetch(`${fetchUrl}/pickup_parties/findId`, {
       method: 'PATCH',
       body: JSON.stringify({
         pickupLocationId: this.state.pickupLocationId,
@@ -98,9 +100,14 @@ class AdminView extends React.Component {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(async (response) =>  {
-      const thisPickupParty = await response.json()
-      const findReservations = await fetch(`${fetchUrl}/reservations/findOrders`, {
+    })
+    const fetchedParty = await response.json()
+    return fetchedParty
+  }
+
+  getReservations = async () => {
+    const thisPickupParty = await this.getPickupParty()
+    const findReservations = await fetch(`${fetchUrl}/reservations/findOrders`, {
         method: 'PATCH',
         body: JSON.stringify({
           pickupPartiesId: thisPickupParty.id,
@@ -112,8 +119,8 @@ class AdminView extends React.Component {
       const reservations = await findReservations.json()
       this.setState({
         reservations,
+        thisPickupParty,
         thisCapacity: thisPickupParty.capacity})
-    })
   }
 
   refreshReservations = (stop) => {
@@ -182,11 +189,12 @@ class AdminView extends React.Component {
   }
 
 
-  findPickup = (targetId) => {
-    let thisPickup = this.state.pickupParties.filter(pickup=>{
-      if (pickup.pickupLocationId === targetId) return pickup
-      else return null
-    })[0]
+  findPickup = async (targetId) => {
+    // let thisPickup = this.state.pickupParties.filter(pickup=>{
+    //   if (pickup.pickupLocationId === targetId) return pickup
+    //   else return null
+    // })[0]
+    let thisPickup = await this.getPickupParty()
     let thisLocation = this.state.pickupLocations.filter(location=>
       (location.id === targetId) && location
     )[0]
@@ -203,26 +211,26 @@ class AdminView extends React.Component {
           <div>
             {this.state.displayAdminPanel &&
               <AdminEdit
-                eventId={this.state.eventId}
-                filterString={this.state.filterString}
-                getReservations={this.getReservations}
-                displayList={this.state.displayList}
-                displayUserCheckin={this.state.displayUserCheckin}
-                pickupLocations={this.state.pickupLocations}
-                pickupLocationId={this.state.pickupLocationId}
-                pickupParties={this.state.pickupParties}
-                makeSelection={this.makeSelection}
-                reservations={this.state.reservations}
-                searchItems={this.searchItems}
-                shows={this.props.shows}
-                stopRefreshing={this.refreshReservations}
-                thisShow={this.state.thisShow}
-                thisPickup={this.state.thisPickup}
-                theseParties={this.state.theseParties}
-                theseLocations={this.state.theseLocations}
-                thisCapacity={this.state.thisCapacity}
-                toggleCheckedIn={this.toggleCheckedIn}
-                toggleProperty={this.toggleProperty}
+              displayAdminPanel={this.state.displayAdminPanel}
+              eventId={this.state.eventId}
+              filterString={this.state.filterString}
+              getPickupParty={this.getPickupParty}
+              displayList={this.state.displayList}
+              pickupLocations={this.state.pickupLocations}
+              pickupLocationId={this.state.pickupLocationId}
+              pickupParties={this.state.pickupParties}
+              makeSelection={this.makeSelection}
+              reservations={this.state.reservations}
+              searchItems={this.searchItems}
+              shows={this.props.shows}
+              thisCapacity={this.state.thisCapacity}
+              thisShow={this.state.thisShow}
+              thisPickup={this.state.thisPickup}
+              thisPickupParty={this.state.thisPickupParty}
+              theseParties={this.state.theseParties}
+              theseLocations={this.state.theseLocations}
+              thisLocation={this.state.thisLocation}
+              toggleProperty={this.toggleProperty}
               />
             }
             {this.state.displayUserCheckin &&

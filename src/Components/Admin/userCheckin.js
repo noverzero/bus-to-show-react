@@ -32,15 +32,18 @@ const UserCheckin = (props) => {
     }
     if(thisLocation) thisLocation = thisLocation.locationName
     if (displayList === 'ShowList') return (
-      <div>Select a Show<br/>
+      <div>Rider Check-in<br/>
+        Select a Show<br/>
       </div>)
 
     else if (displayList === 'PickupsList') return (
-      <div>{thisDate} - {thisShow}<br/>
+      <div>Rider Check-in<br/>
+      {thisDate} - {thisShow}<br/>
         Select a Pickup Location<br/>
       </div>)
     else if (displayList === 'ReservationsList' ) return (
-      <div>{thisDate} - {thisShow}<br />
+      <div>Rider Check-in<br/>
+      {thisDate} - {thisShow}<br />
         {city(thisLocation)} - {shortName(thisLocation)}<br/>
         Cap: {thisCapacity} / Avail: {thisCapacity - reservations.length} / Sold: {reservations.length}
       </div>)

@@ -1,21 +1,52 @@
 import React from 'react'
 import '../../../App.css';
-import EditShowList from './EditShowList'
-import PickupsList from '../PickupsList'
-import ReservationsList from '../ReservationsList'
+import AdminPickupsList from './AdminPickupsList'
+import AdminShowList from './AdminShowList'
+import AdminEditPanel from './AdminEditPanel'
 
 const AdminEdit = (props) => {
-  let { thisShow, thisPickup, searchItems, toggleProperty, filterString,
-      shows, makeSelection, displayList, pickupLocations, pickupParties, reservations,
-      toggleCheckedIn, thisCapacity, stopRefreshing } = props
+  let { displayAdminPanel, thisShow, thisLocation, searchItems, toggleProperty, filterString, shows, makeSelection, displayList, pickupLocations, pickupParties, theseParties, theseLocations, reservations, thisCapacity, eventId, getReservations, pickupLocationId, thisPickup, thisPickupParty } = props
 
   let thisDate
 
   const previousProperty = (
-      displayList === 'ShowList' ? 'displayUserCheckin' :
-      displayList === 'PickupsList' ? 'ShowList' :
-      displayList === 'ReservationsList' ? 'PickupsList' :
-      null)
+    displayList === 'ShowList' ? 'displayAdminPanel' :
+    displayList === 'PickupsList' ? 'ShowList' :
+    displayList === 'AdminEditPanel' ? 'PickupsList' :
+    null
+  )
+
+  const displaySearch = (
+    displayList === 'AdminEditPanel' ? 
+    "none" : 
+    ""
+  )
+
+  const headerLabel = (displayList) => {
+    if(thisShow) {
+      thisDate = thisShow.date
+      thisShow = thisShow.headliner
+    }
+    if(thisLocation) thisLocation = thisLocation.locationName
+    if (displayList === 'ShowList') return (
+      
+      <div>Admin Panel<br/>
+      Select a Show<br/>
+      </div>)
+
+    else if (displayList === 'PickupsList') return (
+      <div>Admin Panel<br/>
+      {thisDate} - {thisShow}<br/>
+        Select a Pickup Location<br/>
+      </div>)
+    else if (displayList === 'AdminEditPanel' ) return (
+      <div>Admin Panel<br/>
+      {thisDate} - {thisShow}<br />
+        {city(thisLocation)} - {shortName(thisLocation)}<br/>
+        Cap: {thisCapacity} / Avail: {thisCapacity - reservations.length} / Sold: {reservations.length}
+      </div>)
+    else return ''
+  }
 
   const shortName = (locationName) => {
     if (locationName) return locationName = locationName.split('- ')[1]
@@ -23,28 +54,6 @@ const AdminEdit = (props) => {
 
   const city = (locationName) => {
     if (locationName) return locationName = locationName.split('- ')[0]
-  }
-  const headerLabel = (displayList) => {
-    if(thisShow) {
-      thisDate = thisShow.date
-      thisShow = thisShow.headliner
-    }
-    if(thisPickup) thisPickup = thisPickup.locationName
-    if (displayList === 'ShowList') return (
-      <div>Select a Show<br/>
-      </div>)
-
-    else if (displayList === 'PickupsList') return (
-      <div>{thisDate} - {thisShow}<br/>
-        Select a Pickup Location<br/>
-
-      </div>)
-    else if (displayList === 'ReservationsList' ) return (
-      <div>{thisDate} - {thisShow}<br />
-        {city(thisPickup)} - {shortName(thisPickup)}<br/>
-        Cap: {thisCapacity + reservations.length} / Avail: {thisCapacity} / Sold: {reservations.length}
-      </div>)
-    else return ''
   }
 
   const resetStuff = () => {
@@ -68,23 +77,30 @@ const AdminEdit = (props) => {
 
     <div className='ShowList mt-2' style={{ maxHeight: '100%'}}>
     <div className='admin-list-header text-center ml-n1 mr-n1'>
-      {headerLabel(displayList)}
+    {headerLabel(displayList)}
     </div>
       <div className="list-group mr-n1 ml-n1">
         <div className="list-group-item show-header" style={{ maxHeight: calcHeightVal()}}>
           <div className="row show-list-flex">
             <div className="col-3 mb-3" >
-              <button type="button" className="btn btn-outline-light" onClick={e=>{resetStuff(); toggleProperty(previousProperty); stopRefreshing(true)}}>Back</button>
+              <button type="button" className="btn btn-outline-light" onClick={e=>{resetStuff(); toggleProperty(previousProperty)}}>Back</button>
             </div>
             <div className="col-9 mb-3" >
               <form className="form-inline float-right">
-                <input onChange={searchItems} className="form-control search-bar" type="search" placeholder="Search..." aria-label="Search" id="search"></input>
+                <input 
+                className={"form-control search-bar"} 
+                onChange={searchItems} 
+                type="search" 
+                placeholder="Search..." 
+                aria-label="Search" 
+                style={{display: displaySearch}}
+                id="search" ></input>
               </form>
             </div>
           </div>
           <ul className="list-group adminlist" id="adminList" style={{height: '100%'}}>
             <div className={displayList === 'ShowList' ? '' : 'hidden'}>
-              <EditShowList
+              <AdminShowList
                 filterString={filterString}
                 makeSelection={makeSelection}
                 resetStuff={resetStuff}
@@ -93,25 +109,40 @@ const AdminEdit = (props) => {
               />
             </div>
             <div className={displayList === 'PickupsList' ? '' : 'hidden'}>
-              <PickupsList
+              <AdminPickupsList
                 filterString={filterString}
                 makeSelection={makeSelection}
-                pickupParties={pickupParties}
-                pickupLocations={pickupLocations}
+                theseLocations={theseLocations}
                 resetStuff={resetStuff}
               />
             </div>
-            <div>
-            {displayList === 'ReservationsList' ?
-              <ReservationsList
-                filterString={filterString}
-                reservations={reservations}
-                toggleCheckedIn={toggleCheckedIn}
-              />
-            : '' }
-            </div>
           </ul>
         </div>
+            <div className={displayList === 'AdminEditPanel' ? '' : 'hidden'}>
+              <AdminEditPanel
+                eventId={eventId}
+                displayAdminPanel={displayAdminPanel}
+                filterString={filterString}
+                getReservations={getReservations}
+                displayList={displayList}
+                pickupLocations={pickupLocations}
+                pickupLocationId={pickupLocationId}
+                pickupParties={pickupParties}
+                makeSelection={makeSelection}
+                reservations={reservations}
+                searchItems={searchItems}
+                shows={shows}
+                thisPickup={thisPickup}
+                thisPickupParty={thisPickupParty}
+                theseParties={theseParties}
+                theseLocations={theseLocations}
+                thisCapacity={thisCapacity}
+                thisLocation={thisLocation}
+                thisShow={thisShow}
+                thisDate={thisDate}
+                toggleProperty={toggleProperty}
+              />
+            </div>
       </div>
     </div>
   )
