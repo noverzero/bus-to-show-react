@@ -31,7 +31,13 @@ const AdminShowList = (props) => {
                 <strong>{show.headliner}</strong>
                 <br style={{fontSize: '.8rem'}}/>
                 {show.date} - {show.venue.split(" ").splice(0,2).join(" ")}
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-8 text-right">
+                Total Capacity: <strong>{show.totalCapacity}</strong>
                 <br />
+                Total Reservations: <strong>{show.reservations}</strong>
                 </div>
                   <button
                     id={show.id}

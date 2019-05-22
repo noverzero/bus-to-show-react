@@ -6,7 +6,7 @@ import AdminEditPanel from './AdminEditPanel'
 
 const AdminEdit = (props) => {
   let { displayAdminPanel, thisShow, thisLocation, searchItems, toggleProperty, filterString, shows, makeSelection, displayList, pickupLocations, pickupParties, theseParties, theseLocations, reservations, thisCapacity, eventId, getReservations, pickupLocationId, thisPickup, thisPickupParty } = props
-
+  
   let thisDate
 
   const previousProperty = (

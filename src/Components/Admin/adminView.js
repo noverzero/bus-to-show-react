@@ -2,6 +2,7 @@ import React from 'react'
 import '../../App.css';
 import UserCheckin from './userCheckin'
 import AdminEdit from './Edit/AdminEdit'
+import { async } from 'q';
 
 const fetchUrl = `http://localhost:3000`
 // const fetchUrl = `https://bts-test-backend.herokuapp.com`
@@ -51,13 +52,14 @@ class AdminView extends React.Component {
   }
 
   toggleProperty = async (property) => {
-    let newState = {...this.state}
+    const newState = {...this.state}
     newState.filterString = ''
     if (property === 'displayUserCheckin') {
     newState.displayUserCheckin = !newState.displayUserCheckin
     newState.displayList = 'ShowList'
     await this.setState(newState)}
     else if (property === 'displayAdminPanel'){
+      newState.showsWithResAndCap = await this.getReservationCountsForAllShows()
       newState.displayAdminPanel = !newState.displayAdminPanel
       newState.displayList = 'ShowList'
       await this.setState(newState)
@@ -70,7 +72,7 @@ class AdminView extends React.Component {
 
   makeSelection = async (target, targetId, next) => {
     this.setState({filterString: ''})
-    let newState = {...this.state}
+    const newState = {...this.state}
     newState[target] = targetId
     newState.filterString = ''
     await this.setState(newState)
@@ -104,23 +106,41 @@ class AdminView extends React.Component {
     const fetchedParty = await response.json()
     return fetchedParty
   }
+  
+  fetchReservationsForOneEvent = async(pickupPartyId)=>{
+    const response = await fetch(`${fetchUrl}/reservations/findOrders`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        pickupPartiesId: pickupPartyId,
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const result = await response.json()
+    console.log('reservations', result)
+    return result
+  }
 
   getReservations = async () => {
-    const thisPickupParty = await this.getPickupParty()
-    const findReservations = await fetch(`${fetchUrl}/reservations/findOrders`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          pickupPartiesId: thisPickupParty.id,
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      const reservations = await findReservations.json()
+    const thisPickupParty = await this.getPickupParty()  
+    const reservations = await this.fetchReservationsForOneEvent(thisPickupParty.id)
       this.setState({
         reservations,
         thisPickupParty,
         thisCapacity: thisPickupParty.capacity})
+  }
+
+  getAllReservations = async()=>{
+    const response = await fetch(`${fetchUrl}/reservations/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const result = await response.json()
+    console.log('all reservations', result)
+    return result
   }
 
   refreshReservations = (stop) => {
@@ -188,7 +208,6 @@ class AdminView extends React.Component {
     })
   }
 
-
   findPickup = async (targetId) => {
     // let thisPickup = this.state.pickupParties.filter(pickup=>{
     //   if (pickup.pickupLocationId === targetId) return pickup
@@ -199,6 +218,41 @@ class AdminView extends React.Component {
       (location.id === targetId) && location
     )[0]
     this.setState({thisPickup, thisLocation})
+  }
+
+  getReservationCountsForAllShows = async () => {
+    let showsArr = this.props.shows.map(show=>{
+      const pickupParties = this.state.pickupParties.filter(pickupParty=>{
+        return pickupParty.eventId === show.id
+      })
+      return {id: show.id, date: show.date, headliner: show.headliner, venue: show.venue, pickupParties}
+    })
+    // console.log('showsArr', showsArr);
+    const allReservationsPromise = await this.getAllReservations()
+    let allReservations = await allReservationsPromise
+    allReservations = allReservations.map(reservation=>reservation.pickupPartiesId)
+    showsArr = showsArr.map(show=>{
+      let reservations = show.pickupParties.map(party=>{
+        const reservationsForOne = allReservations.filter(reservation=>{
+          return reservation === party.id
+        })
+        return reservationsForOne.length
+      })
+      reservations = reservations.length > 0 ? 
+        reservations.reduce((sum, current)=>{
+          return sum + current
+        }) 
+      : 
+        0
+      let totalCapacity = show.pickupParties.map(party=>party.capacity)
+      totalCapacity = totalCapacity.length > 0 ?
+        totalCapacity.reduce((sum, cur)=>{return sum + cur})
+      :
+        0
+      return {...show, reservations, totalCapacity}
+    })
+    console.log('showsArr', showsArr);
+    return showsArr
   }
 
   render (){
@@ -222,7 +276,7 @@ class AdminView extends React.Component {
               makeSelection={this.makeSelection}
               reservations={this.state.reservations}
               searchItems={this.searchItems}
-              shows={this.props.shows}
+              shows={this.state.showsWithResAndCap}
               thisCapacity={this.state.thisCapacity}
               thisShow={this.state.thisShow}
               thisPickup={this.state.thisPickup}

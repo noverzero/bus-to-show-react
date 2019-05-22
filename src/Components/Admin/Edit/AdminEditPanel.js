@@ -11,7 +11,6 @@ const AdminEditPanel = (props) => {
   const city = (locationName) => {
     if (locationName) return locationName = locationName.split('- ')[0]
   }
-console.log(thisShow)
       return (
         <div className="adminEditPanel">
         {thisPickupParty &&
