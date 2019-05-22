@@ -6,11 +6,11 @@ const ReservationsList = (props) => {
   let { filterString, reservations, toggleCheckedIn } = props
 
   reservations = reservations.sort((a, b) => {
-    a = a.willCallLastName.toLowerCase()
-    b = b.willCallLastName.toLowerCase()
-    if(a < b) {return -1}
-    if(a > b) {return 1}
-    if(a === b) return (a.id - b.id)
+    let aLastName = a.willCallLastName.toLowerCase()
+    let bLastName = b.willCallLastName.toLowerCase()
+    if(aLastName < bLastName) {return -1}
+    if(aLastName > bLastName) {return 1}
+    if(aLastName === bLastName) return (a.id - b.id)
     return 0
   })
 

@@ -5,9 +5,9 @@ import AdminShowList from './AdminShowList'
 import AdminEditPanel from './AdminEditPanel'
 
 const AdminEdit = (props) => {
-  let { displayAdminPanel, thisShow, thisLocation, searchItems, toggleProperty, filterString, shows, makeSelection, displayList, pickupLocations, pickupParties, theseParties, theseLocations, reservations, thisCapacity, eventId, getReservations, pickupLocationId, thisPickup, thisPickupParty } = props
+  let { displayAdminPanel, thisShow, thisLocation, searchItems, toggleProperty, filterString, shows, makeSelection, displayList, pickupLocations, pickupParties, theseParties, theseLocations, reservations, thisCapacity, eventId, getReservations, pickupLocationId, thisPickupParty } = props
   
-  let thisDate
+  let thisDate, thisHeadliner, thisLocationName
 
   const previousProperty = (
     displayList === 'ShowList' ? 'displayAdminPanel' :
@@ -23,11 +23,11 @@ const AdminEdit = (props) => {
   )
 
   const headerLabel = (displayList) => {
-    if(thisShow) {
+    if (thisShow) {
       thisDate = thisShow.date
-      thisShow = thisShow.headliner
+      thisHeadliner = thisShow.headliner
     }
-    if(thisLocation) thisLocation = thisLocation.locationName
+    if (thisLocation) thisLocationName = thisLocation.locationName
     if (displayList === 'ShowList') return (
       
       <div>Admin Panel<br/>
@@ -36,13 +36,13 @@ const AdminEdit = (props) => {
 
     else if (displayList === 'PickupsList') return (
       <div>Admin Panel<br/>
-      {thisDate} - {thisShow}<br/>
+      {thisDate} - {thisHeadliner}<br/>
         Select a Pickup Location<br/>
       </div>)
     else if (displayList === 'AdminEditPanel' ) return (
       <div>Admin Panel<br/>
-      {thisDate} - {thisShow}<br />
-        {city(thisLocation)} - {shortName(thisLocation)}<br/>
+      {thisDate} - {thisHeadliner}<br />
+        {city(thisLocationName)} - {shortName(thisLocationName)}<br/>
         Cap: {thisCapacity} / Avail: {thisCapacity - reservations.length} / Sold: {reservations.length}
       </div>)
     else return ''
@@ -132,12 +132,11 @@ const AdminEdit = (props) => {
                 reservations={reservations}
                 searchItems={searchItems}
                 shows={shows}
-                thisPickup={thisPickup}
                 thisPickupParty={thisPickupParty}
                 theseParties={theseParties}
                 theseLocations={theseLocations}
                 thisCapacity={thisCapacity}
-                thisLocation={thisLocation}
+                thisLocation={thisLocationName}
                 thisShow={thisShow}
                 thisDate={thisDate}
                 toggleProperty={toggleProperty}

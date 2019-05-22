@@ -11,6 +11,11 @@ const AdminEditPanel = (props) => {
   const city = (locationName) => {
     if (locationName) return locationName = locationName.split('- ')[0]
   }
+
+  const testButton = (e) => {
+    e.preventDefault()
+    console.log('thisShow', thisShow, 'thisDate', thisDate, 'thisLocation',thisLocation,'thisPickupParty',thisPickupParty,'thisPickup',thisPickup,'reservations',reservations );
+  }
       return (
         <div className="adminEditPanel">
         {thisPickupParty &&
@@ -20,10 +25,17 @@ const AdminEditPanel = (props) => {
             <div className="row">
               <div className="col-12">
                   <div className="row px-2">
-                    <div>{thisDate} - {thisShow}<br />
+                    <div>{thisDate} - {thisShow.headliner}<br />
                       {city(thisLocation)} - {shortName(thisLocation)}<br/>
                       Capacity: {thisCapacity}
                     </div>
+                    <button 
+                      className="btn bg-primary text-white" 
+                      name="test" 
+                      onClick={e=>testButton(e)}>
+                      Test
+                    </button>
+
                     {/* <label htmlFor="available">Available: {thisPickup.capacity}</label>
                     <input type="" name="available" className="form-control" id={thisPickup.id} aria-describedby="available" placeholder={thisPickup.capacity}
                     onChange={(e)=>console.log(e, 'hey I changed quantity available')} />

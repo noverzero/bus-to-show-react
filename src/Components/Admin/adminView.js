@@ -21,7 +21,7 @@ class AdminView extends React.Component {
     pickupParties: null,
     reservations: [],
     thisShow: null,
-    thisPickup: null,
+    thisPickupParty: null,
     theseParties: [],
     theseLocations: []
   }
@@ -118,17 +118,7 @@ class AdminView extends React.Component {
       }
     })
     const result = await response.json()
-    console.log('reservations', result)
     return result
-  }
-
-  getReservations = async () => {
-    const thisPickupParty = await this.getPickupParty()  
-    const reservations = await this.fetchReservationsForOneEvent(thisPickupParty.id)
-      this.setState({
-        reservations,
-        thisPickupParty,
-        thisCapacity: thisPickupParty.capacity})
   }
 
   getAllReservations = async()=>{
@@ -139,8 +129,16 @@ class AdminView extends React.Component {
       }
     })
     const result = await response.json()
-    console.log('all reservations', result)
     return result
+  }
+  
+  getReservations = async () => {
+    const thisPickupParty = await this.getPickupParty()  
+    const reservations = await this.fetchReservationsForOneEvent(thisPickupParty.id)
+    this.setState({
+      reservations,
+      thisPickupParty,
+      thisCapacity: thisPickupParty.capacity})
   }
 
   refreshReservations = (stop) => {
@@ -179,6 +177,7 @@ class AdminView extends React.Component {
       if (show.id === targetId) return show
       else return null
     })[0]
+    console.log('thisShow', thisShow);
     this.setState({thisShow})
   }
 
@@ -202,22 +201,18 @@ class AdminView extends React.Component {
         }
       })
     })
-
+    console.log(newState.theseParties)
     this.setState({
       theseLocations: newState.theseLocations
     })
   }
 
   findPickup = async (targetId) => {
-    // let thisPickup = this.state.pickupParties.filter(pickup=>{
-    //   if (pickup.pickupLocationId === targetId) return pickup
-    //   else return null
-    // })[0]
-    let thisPickup = await this.getPickupParty()
+    let thisPickupParty = await this.getPickupParty()
     let thisLocation = this.state.pickupLocations.filter(location=>
       (location.id === targetId) && location
     )[0]
-    this.setState({thisPickup, thisLocation})
+    this.setState({thisPickupParty, thisLocation})
   }
 
   getReservationCountsForAllShows = async () => {
@@ -227,7 +222,6 @@ class AdminView extends React.Component {
       })
       return {id: show.id, date: show.date, headliner: show.headliner, venue: show.venue, pickupParties}
     })
-    // console.log('showsArr', showsArr);
     const allReservationsPromise = await this.getAllReservations()
     let allReservations = await allReservationsPromise
     allReservations = allReservations.map(reservation=>reservation.pickupPartiesId)
@@ -279,7 +273,6 @@ class AdminView extends React.Component {
               shows={this.state.showsWithResAndCap}
               thisCapacity={this.state.thisCapacity}
               thisShow={this.state.thisShow}
-              thisPickup={this.state.thisPickup}
               thisPickupParty={this.state.thisPickupParty}
               theseParties={this.state.theseParties}
               theseLocations={this.state.theseLocations}
@@ -303,7 +296,7 @@ class AdminView extends React.Component {
                 shows={this.props.shows}
                 stopRefreshing={this.refreshReservations}
                 thisShow={this.state.thisShow}
-                thisPickup={this.state.thisPickup}
+                thisPickup={this.state.thisPickupParty}
                 theseParties={this.state.theseParties}
                 theseLocations={this.state.theseLocations}
                 thisCapacity={this.state.thisCapacity}
