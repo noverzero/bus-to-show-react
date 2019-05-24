@@ -2,12 +2,7 @@ import React from 'react'
 import '../../../App.css';
 
 const AdminEditPanel = (props) => {
-  let { editPickupParty, thisShow, thisDate, thisLocation, theseParties, theseLocations, reservations, thisPickupParty, getReservations, pickupLocationId, findPickup } = props
-  
-  const newCapacity = React.createRef()
-  const newPrice = React.createRef()
-  const newLoadTime = React.createRef()
-  const newDepartureTime = React.createRef()
+  let { displayList, editPickupParty, thisShow, thisDate, thisLocation, theseParties, theseLocations, reservations, thisPickupParty, getReservations, pickupLocationId, findPickup, newCapacity, newPrice, newLoadTime, newDepartureTime } = props
 
   const shortName = (locationName) => {
     if (locationName) return locationName = locationName.split('- ')[1]

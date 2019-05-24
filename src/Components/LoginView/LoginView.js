@@ -6,9 +6,7 @@ import ReservationsView from '../ReservationsView/ReservationsView'
 
 const LoginView = (props) => {
 
-  const { userDashboard, toggleLoggedIn, userDetails, profileClick, responseFacebook,
-        facebook, displayReservations, toggleReservationView, addBorder, displayShow,
-        filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
+  const { userDashboard, toggleLoggedIn, userDetails, profileClick, responseFacebook, facebook, displayReservations, toggleReservationView, addBorder, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
 
   const { isStaff, isAdmin, isDriver } = facebook.userDetails
 
