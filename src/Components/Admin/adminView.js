@@ -4,8 +4,8 @@ import UserCheckin from './userCheckin'
 import AdminEdit from './Edit/AdminEdit'
 import { async } from 'q';
 
-const fetchUrl = `http://localhost:3000`
-// const fetchUrl = `https://bts-test-backend.herokuapp.com`
+// const fetchUrl = `http://localhost:3000`
+const fetchUrl = `https://bts-test-backend.herokuapp.com`
 //  const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class AdminView extends React.Component {
@@ -177,7 +177,6 @@ class AdminView extends React.Component {
       if (show.id === targetId) return show
       else return null
     })[0]
-    console.log('thisShow', thisShow);
     this.setState({thisShow})
   }
 
@@ -201,7 +200,6 @@ class AdminView extends React.Component {
         }
       })
     })
-    console.log(newState.theseParties)
     this.setState({
       theseLocations: newState.theseLocations
     })
@@ -224,16 +222,17 @@ class AdminView extends React.Component {
     })
     const allReservationsPromise = await this.getAllReservations()
     let allReservations = await allReservationsPromise
-    allReservations = allReservations.map(reservation=>reservation.pickupPartiesId)
+    let activeReservations = allReservations.filter(rezzy=>rezzy.status < 3)
+    let activeReservationIds = activeReservations.map(rezzy=>rezzy.pickupPartiesId)
     showsArr = showsArr.map(show=>{
-      let reservations = show.pickupParties.map(party=>{
-        const reservationsForOne = allReservations.filter(reservation=>{
-          return reservation === party.id
+      let reservationsCount = show.pickupParties.map(party=>{
+        const reservationsForOne = activeReservationIds.filter(rezzy=>{
+          return rezzy === party.id
         })
         return reservationsForOne.length
       })
-      reservations = reservations.length > 0 ? 
-        reservations.reduce((sum, current)=>{
+      reservationsCount = reservationsCount.length > 0 ? 
+        reservationsCount.reduce((sum, current)=>{
           return sum + current
         }) 
       : 
@@ -243,9 +242,8 @@ class AdminView extends React.Component {
         totalCapacity.reduce((sum, cur)=>{return sum + cur})
       :
         0
-      return {...show, reservations, totalCapacity}
+      return {...show, reservations: reservationsCount, totalCapacity}
     })
-    console.log('showsArr', showsArr);
     return showsArr
   }
 
@@ -259,7 +257,6 @@ class AdminView extends React.Component {
       const currentPickupParty = newState.thisPickupParty
       currentPickupParty[field] = value
       const newBody = {[field]: value}
-      console.log('currentPickupParty',newBody)
       const response = await fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}`, {
         method: 'PATCH',
         body: JSON.stringify(newBody),
@@ -269,7 +266,11 @@ class AdminView extends React.Component {
         })
       const partyResponse = await response.json()
       newState.thisPickupParty = partyResponse
-      this.setState({newState})
+      newState.thisCapacity = partyResponse.capacity
+      this.setState({
+        thisPickupParty: newState.thisPickupParty,
+        thisCapacity: newState.thisCapacity
+      })
       // return partyResponse
     }
   }

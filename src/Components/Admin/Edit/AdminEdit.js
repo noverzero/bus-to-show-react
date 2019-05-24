@@ -24,7 +24,7 @@ const AdminEdit = (props) => {
   )
 
   const headerLabel = (displayList) => {
-    // reservations = reservations.filter(reservation=>reservation.status === )
+    let activeReservations = reservations.filter(rezzy=>rezzy.status < 3)
     if (thisShow) {
       thisDate = thisShow.date
       thisHeadliner = thisShow.headliner
@@ -43,7 +43,7 @@ const AdminEdit = (props) => {
       <div>Admin Panel<br/>
       {thisDate} - {thisHeadliner}<br />
         {city(thisLocationName)} - {shortName(thisLocationName)}<br/>
-        Cap: {thisPickupParty.capacity} / Avail: {thisPickupParty.capacity - reservations.length} / Sold: {reservations.length}
+        Cap: {thisCapacity} / Avail: {thisCapacity - activeReservations.length} / Active: {activeReservations.length}
       </div>)
     else return ''
   }

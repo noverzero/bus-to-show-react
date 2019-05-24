@@ -21,8 +21,8 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-const fetchUrl = `http://localhost:3000`
-// const fetchUrl = `https://bts-test-backend.herokuapp.com`
+// const fetchUrl = `http://localhost:3000`
+const fetchUrl = `https://bts-test-backend.herokuapp.com`
 //  const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class App extends Component {
@@ -79,32 +79,13 @@ class App extends Component {
     displayReservations: false,
     displayUserReservationSummary: false,
     displayTimes: false,
-    // facebook: {
-    //   isLoggedIn: false,
-    //   userID: '',
-    //   name: '',
-    //   email:'',
-    //   picture:'',
-    //   userDetails: {},
-    // },
     facebook: {
-      isLoggedIn: true,
-      userID: "10156117602853997",
-      name: "Jake Mosher",
-      email: "jakeypoo@boner.com",
-      picture: "",
-      userDetails: {
-        email: "jakeypoo@boner.com",
-        firstName: "Jake",
-        lastName: "Mosher",
-        id: 105,
-        isAdmin: true,
-        isDeactivated: false,
-        isDriver: false,
-        isStaff: true,
-        isWaiverSigned: false,
-        preferredLocation: ""
-      },
+      isLoggedIn: false,
+      userID: '',
+      name: '',
+      email:'',
+      picture:'',
+      userDetails: {},
     },
     filterString: '',
     firstBusLoad: null,
@@ -310,7 +291,8 @@ class App extends Component {
       }
     })
     const reservations = await currentReservations.json()
-    const availableTickets = parseInt(matchedParty.capacity) - parseInt(reservations.length) - parseInt(matchedParty.inCart)
+    const activeReservations = reservations.filter(rezzie=>rezzie.status < 3 )
+    const availableTickets = parseInt(matchedParty.capacity) - parseInt(activeReservations.length) - parseInt(matchedParty.inCart)
       return availableTickets
   }
 
@@ -953,6 +935,7 @@ class App extends Component {
     const json = await response.json()
     await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
     this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [] })
+    window.removeEventListener("beforeunload", this.clearCartOnClose)
   }
 
   updatePurchaseField = event => {
