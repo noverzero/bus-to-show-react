@@ -319,8 +319,8 @@ class App extends Component {
       totalCost: newState.totalCost
     })
     this.addTicketsInCart(pickupPartyId, newState.ticketQuantity)
-    // this.ticketTimer(true, 120000, false)
-    this.ticketTimer(true, 30000, false)
+    this.ticketTimer(true, 120000, false)
+    // this.ticketTimer(true, 30000, false)
     window.addEventListener("beforeunload", this.clearCartOnClose)
   }
 
@@ -829,8 +829,8 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-    // this.ticketTimer(true, 600000, true)
-    this.ticketTimer(true, 30000, true)
+    this.ticketTimer(true, 600000, true)
+    // this.ticketTimer(true, 30000, true)
   }
 
 // functions to handle setting and clearing of timer and incart qtys
@@ -919,8 +919,8 @@ class App extends Component {
     if (err) {
       console.log('purchase error', err)
       await this.ticketTimer(false)
-      // this.ticketTimer(true, 600000, true)
-      await this.ticketTimer(true, 30000, true)
+      this.ticketTimer(true, 600000, true)
+      // await this.ticketTimer(true, 30000, true)
       return this.setState({purchaseFailed: true})
     }
     const cartObj = this.state.cartToSend
