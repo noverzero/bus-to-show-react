@@ -64,7 +64,6 @@ const UserCheckin = (props) => {
     let totalHeight = Math.ceil(header.offsetHeight + margin)
     const newHeight = window.innerHeight - totalHeight
     return `${newHeight}px`
-
   }
 
   return (

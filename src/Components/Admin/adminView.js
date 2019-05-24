@@ -249,9 +249,33 @@ class AdminView extends React.Component {
     return showsArr
   }
 
+  editPickupParty = async (pickupPartyId, field, value) => {
+    if (!pickupPartyId || !field || !value) {
+      return null
+    }
+    else {
+      value = field === 'partyPrice' ? ~~value : value
+      const newState = {...this.state}
+      const currentPickupParty = newState.thisPickupParty
+      currentPickupParty[field] = value
+      const newBody = {[field]: value}
+      console.log('currentPickupParty',newBody)
+      const response = await fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(newBody),
+        headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+      const partyResponse = await response.json()
+      newState.thisPickupParty = partyResponse
+      this.setState({newState})
+      // return partyResponse
+    }
+  }
+
   render (){
     let { isStaff, isAdmin, isDriver } = this.props.userDetails
-
     return(
       <div className="container AdminView" style={{ Height: '100%' }}>
         {this.state.displayAdminPanel || this.state.displayUserCheckin
@@ -261,6 +285,7 @@ class AdminView extends React.Component {
               <AdminEdit
               displayAdminPanel={this.state.displayAdminPanel}
               eventId={this.state.eventId}
+              editPickupParty={this.editPickupParty}
               filterString={this.state.filterString}
               getPickupParty={this.getPickupParty}
               displayList={this.state.displayList}

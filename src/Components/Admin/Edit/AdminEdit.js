@@ -5,7 +5,7 @@ import AdminShowList from './AdminShowList'
 import AdminEditPanel from './AdminEditPanel'
 
 const AdminEdit = (props) => {
-  let { displayAdminPanel, thisShow, thisLocation, searchItems, toggleProperty, filterString, shows, makeSelection, displayList, pickupLocations, pickupParties, theseParties, theseLocations, reservations, thisCapacity, eventId, getReservations, pickupLocationId, thisPickupParty } = props
+  let { displayAdminPanel, displayList, editPickupParty, eventId, filterString, getReservations, makeSelection, pickupLocationId, pickupLocations, pickupParties, reservations, searchItems, shows,toggleProperty, theseParties, theseLocations, thisCapacity, thisLocation, thisPickupParty, thisShow } = props
   
   let thisDate, thisHeadliner, thisLocationName
 
@@ -13,6 +13,7 @@ const AdminEdit = (props) => {
     displayList === 'ShowList' ? 'displayAdminPanel' :
     displayList === 'PickupsList' ? 'ShowList' :
     displayList === 'AdminEditPanel' ? 'PickupsList' :
+    displayList === 'EditReservationsList' ? 'AdminEditPanel' :
     null
   )
 
@@ -23,27 +24,26 @@ const AdminEdit = (props) => {
   )
 
   const headerLabel = (displayList) => {
+    // reservations = reservations.filter(reservation=>reservation.status === )
     if (thisShow) {
       thisDate = thisShow.date
       thisHeadliner = thisShow.headliner
     }
     if (thisLocation) thisLocationName = thisLocation.locationName
     if (displayList === 'ShowList') return (
-      
       <div>Admin Panel<br/>
       Select a Show<br/>
       </div>)
-
     else if (displayList === 'PickupsList') return (
       <div>Admin Panel<br/>
       {thisDate} - {thisHeadliner}<br/>
         Select a Pickup Location<br/>
       </div>)
-    else if (displayList === 'AdminEditPanel' ) return (
+    else if (displayList === 'AdminEditPanel' || displayList === 'EditReservationsList'  ) return (
       <div>Admin Panel<br/>
       {thisDate} - {thisHeadliner}<br />
         {city(thisLocationName)} - {shortName(thisLocationName)}<br/>
-        Cap: {thisCapacity} / Avail: {thisCapacity - reservations.length} / Sold: {reservations.length}
+        Cap: {thisPickupParty.capacity} / Avail: {thisPickupParty.capacity - reservations.length} / Sold: {reservations.length}
       </div>)
     else return ''
   }
@@ -72,7 +72,6 @@ const AdminEdit = (props) => {
     const newHeight = window.innerHeight - totalHeight
     return `${newHeight}px`
   }
-
   return (
 
     <div className='ShowList mt-2' style={{ maxHeight: '100%'}}>
@@ -120,15 +119,16 @@ const AdminEdit = (props) => {
         </div>
             <div className={displayList === 'AdminEditPanel' ? '' : 'hidden'}>
               <AdminEditPanel
-                eventId={eventId}
                 displayAdminPanel={displayAdminPanel}
+                displayList={displayList}
+                editPickupParty={editPickupParty}
+                eventId={eventId}
                 filterString={filterString}
                 getReservations={getReservations}
-                displayList={displayList}
+                makeSelection={makeSelection}
                 pickupLocations={pickupLocations}
                 pickupLocationId={pickupLocationId}
                 pickupParties={pickupParties}
-                makeSelection={makeSelection}
                 reservations={reservations}
                 searchItems={searchItems}
                 shows={shows}
