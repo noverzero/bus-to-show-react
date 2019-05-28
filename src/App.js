@@ -208,10 +208,13 @@ class App extends Component {
   }
 
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
-  selectPickupLocationId = async event => {
+  selectPickupLocationId = async (event, timer) => {
+    console.log('selectPickupLocationId event.target.value' , event.target.value)
     const newState = { ...this.state }
     const oldPickup = parseInt(newState.pickupPartyId)
-    this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
+    if(!timer){
+      this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
+    }
 
     newState.pickupPartyId = parseInt(event.target.value)
     if (event.target.value === "Select a Departure Option..."){
@@ -230,7 +233,9 @@ class App extends Component {
     }
 
     if (parseInt(newState.ticketQuantity)) {
+      console.log('newState.ticketQuantity before', newState.ticketQuantity)
       this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
+      console.log('newState.ticketQuantity after', newState.ticketQuantity)
       newState.ticketQuantity = null
       newState.displayQuantity = false
       newState.displayAddBtn = false
@@ -241,6 +246,7 @@ class App extends Component {
       })
     }
     else if (parseInt(event.target.value) !== newState.pickupPartyId) {
+      console.log('when does (parseInt(event.target.value) !== newState.pickupPartyId)?')
       newState.ticketQuantity = null
       newState.displayQuantity = false
       newState.displayAddBtn = false
@@ -854,8 +860,8 @@ class App extends Component {
           }, time)
         :
           setTimeout(() => {
-            this.confirmedRemove();
-            this.selectPickupLocationId(event)
+            //this.confirmedRemove();
+            this.selectPickupLocationId(event, true)
           }, time)
 
       newState.ticketTimer = newTicketTimer
