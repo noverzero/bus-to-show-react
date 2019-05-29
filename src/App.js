@@ -21,9 +21,15 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
+<<<<<<< HEAD
 // const fetchUrl = `http://localhost:3000`
-// const fetchUrl = `https://bts-test-backend.herokuapp.com`
-const fetchUrl = `https://innocuous-junior.herokuapp.com`
+//const fetchUrl = `https://bts-test-backend.herokuapp.com`
+  const fetchUrl = `https://innocuous-junior.herokuapp.com`
+=======
+// const fetchUrl = `http://localhost:3000` // dev
+const fetchUrl = `https://bts-test-backend.herokuapp.com` // testing
+//  const fetchUrl = `https://innocuous-junior.herokuapp.com` // production
+>>>>>>> 5d1292be35d9414ff4cf4fe1cae7f89dee7fe487
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -87,10 +93,19 @@ class App extends Component {
       picture:'',
       userDetails: {},
     },
+    // facebook: {
+    //   isLoggedIn: true,
+    //   userID: '',
+    //   name: 'Dustin Huth',
+    //   email:'dustin@thebasicsfund.org',
+    //   picture:'',
+    //   userDetails: {isAdmin: true},
+    // },
     filterString: '',
     firstBusLoad: null,
     googleResponse: null,
     inCart: [],
+    invalidFields: {},
     pickupLocationId: null,
     pickupPartyId: null,
     purchaseFailed: false,
@@ -199,11 +214,34 @@ class App extends Component {
   }
 
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
-  selectPickupLocationId = async event => {
+  selectPickupLocationId = async (event, timer) => {
+    console.log('selectPickupLocationId event.target.value' , event.target.value)
     const newState = { ...this.state }
-    if (parseInt(newState.ticketQuantity)) {
-      let oldPickup = parseInt(newState.pickupPartyId)
+    const oldPickup = parseInt(newState.pickupPartyId)
+    if(!timer){
       this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
+    }
+
+    newState.pickupPartyId = parseInt(event.target.value)
+    if (event.target.value === "Select a Departure Option..."){
+      newState.displayQuantity = false
+      newState.ticketsAvailable = null
+      newState.ticketQuantity = null
+      newState.displayAddBtn = false
+
+      this.setState({
+        displayQuantity: newState.displayQuantity,
+        ticketsAvailable: newState.ticketsAvailable,
+        ticketQuantity: newState.ticketQuantity,
+        displayAddBtn: newState.displayAddBtn,
+      })
+      return
+    }
+
+    if (parseInt(newState.ticketQuantity)) {
+      console.log('newState.ticketQuantity before', newState.ticketQuantity)
+      this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
+      console.log('newState.ticketQuantity after', newState.ticketQuantity)
       newState.ticketQuantity = null
       newState.displayQuantity = false
       newState.displayAddBtn = false
@@ -214,6 +252,7 @@ class App extends Component {
       })
     }
     else if (parseInt(event.target.value) !== newState.pickupPartyId) {
+      console.log('when does (parseInt(event.target.value) !== newState.pickupPartyId)?')
       newState.ticketQuantity = null
       newState.displayQuantity = false
       newState.displayAddBtn = false
@@ -224,22 +263,10 @@ class App extends Component {
       })
     }
 
-    if (parseInt(event.target.value)) {
-      newState.pickupPartyId = event.target.value
-      newState.displayQuantity = true
-    }
-    else if (parseInt(event.target.value)) {
-      newState.pickupPartyId = event.target.value
-      newState.displayQuantity = true
-    }
-    else {
-      newState.displayQuantity = false
-      newState.displayAddBtn = false
-    }
+    newState.displayQuantity = true
 
     const statePickupPartyId = parseInt(newState.pickupPartyId)
     const stateEventId = parseInt(newState.displayShow.id)
-
     const parties = newState.assignedParties
     let matchedParty = await parties.find(party => (parseInt(party.id) === statePickupPartyId) && (parseInt(party.eventId) === stateEventId))
     newState.pickupLocationId = matchedParty.pickupLocationId
@@ -284,28 +311,27 @@ class App extends Component {
       }
     })
     const reservations = await currentReservations.json()
-    const availableTickets = parseInt(matchedParty.capacity) - parseInt(reservations.length) - parseInt(matchedParty.inCart)
+    const activeReservations = reservations.filter(rezzie=>rezzie.status < 3 )
+    const availableTickets = parseInt(matchedParty.capacity) - parseInt(activeReservations.length) - parseInt(matchedParty.inCart)
       return availableTickets
   }
 
   selectTicketQuantity = event => {
-
+    this.ticketTimer(false)
     const newState = { ...this.state }
-    const oldQty = parseInt(newState.ticketQuantity)
+    let oldQty = 0
+    if (parseInt(newState.ticketQuantity) > 0){
+      oldQty = parseInt(newState.ticketQuantity)
+    }
     const pickupPartyId = parseInt(newState.pickupPartyId)
 
-    if (oldQty > 0) this.clearTicketsInCart(pickupPartyId, oldQty)
-    if (event.target.value) {
-      newState.displayAddBtn = true
-    }
-    else {
-      newState.displayAddBtn = false
-    }
-    newState.ticketQuantity = parseInt(event.target.value)
+    oldQty > 0 && this.clearTicketsInCart(pickupPartyId, oldQty)
+    event.target.value && (newState.displayAddBtn = true)
 
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const subTotal = (Number(pickupLocation.basePrice) * Number(event.target.value))
     const total = ((Number(subTotal) * .1) + Number(subTotal)).toFixed(2)
+    newState.ticketQuantity = 0 || parseInt(event.target.value)
     newState.totalCost = total
     this.setState({
       displayAddBtn: newState.displayAddBtn,
@@ -313,6 +339,9 @@ class App extends Component {
       totalCost: newState.totalCost
     })
     this.addTicketsInCart(pickupPartyId, newState.ticketQuantity)
+    this.ticketTimer(true, 120000, false) // production
+    // this.ticketTimer(true, 30000, false) // testing
+    window.addEventListener("beforeunload", this.clearCartOnClose)
   }
 
   updateDiscountCode = event => {
@@ -346,7 +375,6 @@ class App extends Component {
   }
 
   findDiscountCode = async () => {
-
     const ticketQuantity = this.state.ticketQuantity
     const eventId = this.state.cartToSend.eventId
     const response = await fetch(`${fetchUrl}/discount_codes/${this.state.discountCode}`)
@@ -364,10 +392,8 @@ class App extends Component {
     const today = Date.parse(new Date().toLocaleString('en-US', { timeZone: 'America/Denver' }))
 
     if (expiration < today) {
-
       return 'this code is expired'
     } else {
-
       let priceWithoutFeesPerTicket = this.state.totalCost * 10 / 11 / ticketQuantity
       let effectiveRate = (100 - result.percentage) / 100
       const afterDiscountObj = {}
@@ -576,41 +602,40 @@ class App extends Component {
     })
   }
 
-
   responseFacebook = async (response) => {
-      this.setState({
-        ...this.state,
-          facebook: {
-            ...this.state.facebook,
-            userID: response.id,
-            name: response.name,
-            email:response.email,
-            picture:response.picture.data.url
-          }
-      })
-      this.toggleLoggedIn(true)
-      this.onLoad()
-      const usersInfo = await fetch(`https://innocuous-junior.herokuapp.com/users`, {
-        method: 'POST',
-        body: JSON.stringify({
-            firstName: response.name.split(" ")[0],
-            lastName: response.name.split(" ")[1],
-            email: response.email,
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-      })
-      const userObj = await usersInfo.json()
-      const newState = { ...this.State }
-      newState.userDetails = userObj
-      this.setState({
-        ...this.state,
+    this.setState({
+      ...this.state,
         facebook: {
           ...this.state.facebook,
-          userDetails: newState.userDetails
+          userID: response.id,
+          name: response.name,
+          email:response.email,
+          picture:response.picture.data.url
         }
-      })
+    })
+    this.toggleLoggedIn(true)
+    this.onLoad()
+    const usersInfo = await fetch(`${fetchUrl}/users`, {
+      method: 'POST',
+      body: JSON.stringify({
+          firstName: response.name.split(" ")[0],
+          lastName: response.name.split(" ")[1],
+          email: response.email,
+      }),
+      headers: {
+          'Content-Type': 'application/json'
+      }
+    })
+    const userObj = await usersInfo.json()
+    const newState = { ...this.State }
+    newState.userDetails = userObj
+    this.setState({
+      ...this.state,
+      facebook: {
+        ...this.state.facebook,
+        userDetails: newState.userDetails
+      }
+    })
   }
 
   responseGoogle = response => {
@@ -636,7 +661,6 @@ class App extends Component {
 
   // Tab Functions
   tabClicked = event => {
-
     const newState = { ...this.state }
     if (event.target.id === 'cart-tab' && newState.inCart.length > 0) {
       newState.displayCart = true
@@ -660,7 +684,6 @@ class App extends Component {
   }
 
   backToCalendar = event => {
-
     const newState = { ...this.state }
     if (parseInt(newState.ticketQuantity)) {
       let oldPickup = parseInt(newState.pickupPartyId)
@@ -722,8 +745,7 @@ class App extends Component {
         if (location.id === party.pickupLocationId) {
           party.LocationName = location.locationName
         }
-      })
-      )
+      }))
       //set initial state of show details view
       newState.displayQuantity = false
       newState.displayDetailCartView = true
@@ -773,20 +795,20 @@ class App extends Component {
   addToCart = async () => {
     this.ticketTimer(false)
     const newState = { ...this.state }
-
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const basePrice = Number(pickupLocation.basePrice)
     const ticketQuantity = parseInt(this.state.ticketQuantity)
     const totalSavings = parseInt(this.state.afterDiscountObj.totalSavings)
     const processingFee = Number((basePrice * ticketQuantity) * (0.1))
     const cost = ((basePrice * ticketQuantity) - totalSavings + processingFee)
-    newState.totalCost = cost.toFixed(2)
-
     const sPickupId = parseInt(this.state.pickupLocationId)
     const sEventId = parseInt(this.state.displayShow.id)
     const pickupParty = this.state.assignedParties.find(party => party.pickupLocationId === sPickupId && party.eventId === sEventId)
     const firstBusLoad = pickupParty.firstBusLoadTime
     const lastDepartureTime = moment(pickupParty.lastBusDepartureTime, 'hhmm').format('h:mm')
+
+    newState.purchaseSuccessful = false
+    newState.totalCost = cost.toFixed(2)
     newState.cartToSend.eventId = null
     newState.cartToSend.pickupLocationId = null
     newState.cartToSend.firstName = ''
@@ -808,6 +830,7 @@ class App extends Component {
     }
 
     this.setState({
+      purchaseSuccessful: newState.purchaseSuccessful,
       cartToSend: newState.cartToSend,
       validatedElements: newState.validatedElements
     })
@@ -826,81 +849,76 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-    this.ticketTimer(true, 600000, true)
-    window.addEventListener("beforeunload", this.clearCartOnClose);
+    this.ticketTimer(true, 600000, true) // production
+    // this.ticketTimer(true, 30000, true) // testing
   }
 
 // functions to handle setting and clearing of timer and incart qtys
-
-  ticketTimer = (condition, time, cart, pickupLocationId) => {
+  ticketTimer = (timerOn, time, addedToCart) => {
     let newState = {...this.state}
-    let event = {
-      target: {
-        value: pickupLocationId,
-      }
-    }
+    const pickupPartyId = parseInt(newState.pickupPartyId)
+    let event = { target: { value: pickupPartyId } }
 
-    if (condition && !cart) {
-      const newTicketTimer = setTimeout(() => {
-        this.confirmedRemove();
-        this.setState({pickupLocationId})
-        this.selectPickupLocationId(event)
-      }, time)
+    if (timerOn) {
+      const newTicketTimer = addedToCart ?
+          setTimeout(() => {
+            this.confirmedRemove()
+          }, time)
+        :
+          setTimeout(() => {
+            //this.confirmedRemove();
+            this.selectPickupLocationId(event, true)
+          }, time)
+
       newState.ticketTimer = newTicketTimer
       this.setState({ ticketTimer: newState.ticketTimer })
     }
-    else if (condition && cart) {
-      const newTicketTimer = setTimeout(() => {
-        this.confirmedRemove()
-      }, time)
-      newState.ticketTimer = newTicketTimer
-      this.setState({ ticketTimer: newState.ticketTimer })
-    }
-    else if (!condition) {
+    else {
       clearTimeout(this.state.ticketTimer)
       newState.ticketTimer = null
       this.setState({ ticketTimer: newState.ticketTimer })
     }
   }
 
-
-  addTicketsInCart = (pickupPartyId, ticketQty) => {
-    this.ticketTimer(false)
-    fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        inCart: ticketQty,
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    this.ticketTimer(true, 120000)
+  addTicketsInCart = async (pickupPartyId, ticketQty) => {
+    if (pickupPartyId && ticketQty){
+      await fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          inCart: ticketQty,
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
   }
 
-  clearTicketsInCart = (pickupPartyId, ticketQty) => {
+  clearTicketsInCart = async (pickupPartyId, ticketQty) => {
     let newState = {...this.state}
-    fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        inCart: parseInt(ticketQty) * -1,
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
+    if (pickupPartyId && ticketQty){
+      await fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          inCart: parseInt(ticketQty) * -1,
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
     newState.ticketQuantity = 0
-    this.setState({ticketQuantity: newState.ticketQuantity})
     this.ticketTimer(false)
+    this.setState({ticketQuantity: newState.ticketQuantity})
     return
   }
 
   clearCartOnClose = (ev) => {
     const pickupPartyId = parseInt(this.state.pickupPartyId)
     const ticketQty = parseInt(this.state.ticketQuantity)
-    // ev.preventDefault();
+    ev.preventDefault();
     this.clearTicketsInCart(pickupPartyId, ticketQty)
-    // return ev.returnValue = 'Leaving the page will clear your cart, continue?';
+    return ev.returnValue = 'Leaving the page will clear your cart, continue?';
   }
 
   viewCart = () => {
@@ -917,22 +935,27 @@ class App extends Component {
   }
 
   purchase = async (err) => {
+    this.ticketTimer(false)
     if (err) {
-      this.ticketTimer(false)
-      this.ticketTimer(true, 600000, true)
+      console.log('purchase error', err)
+      await this.ticketTimer(false)
+      this.ticketTimer(true, 600000, true) // production
+      // await this.ticketTimer(true, 30000, true) //testing
       return this.setState({purchaseFailed: true})
     }
     const cartObj = this.state.cartToSend
     cartObj.userId = this.state.facebook.userDetails.id
-    fetch(`${fetchUrl}/orders`, {
+    const response = await fetch(`${fetchUrl}/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
       headers: {
         'Content-Type': 'application/json'
       }
     })
-    this.ticketTimer(false)
+    const json = await response.json()
+    await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
     this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [] })
+    window.removeEventListener("beforeunload", this.clearCartOnClose)
   }
 
   updatePurchaseField = event => {
@@ -940,48 +963,60 @@ class App extends Component {
     const updateField = event.target.id
     const value = event.target.value
     const newValidElems = newState.validatedElements
+    const invalidFields = newState.invalidFields
     let discountCode = ''
 
-    // regex to validate phone number, allowable formats are:
-    // xxx-xxx-xxxx / xxx.xxx.xxxx / xxx xxx xxxx
-
     const phoneNumber = (inputtxt) => {
-      var phoneno = /^\(?([0-9]{3})\)?[-. ]([0-9]{3})[-. ]([0-9]{4})$/
+      var phoneno = /^\(?[(]([0-9]{3})\)?[) ]([0-9]{3})[-]([0-9]{4})$/
       if(inputtxt.match(phoneno)) return true
       else if (inputtxt.length > 12 || inputtxt.length < 12 ) return false
       else return false
     }
 
-    // Checks fields via npm package validator
     switch (updateField){
       case 'email':
         if (Validator.isEmail(value) && !Validator.isEmpty(value)) {
           newValidElems.email = value
+          invalidFields.invalidEmail = false
+        } else {
+          newValidElems.email = null
         }
         break;
       case 'firstName':
         if (Validator.isAlpha(value) && !Validator.isEmpty(value)) {
           newValidElems.firstName = value
-        }
-        break;
+          invalidFields.invalidFirstName = false
+        } else {
+          newValidElems.firstName = null
+        }break;
       case 'lastName':
         if (Validator.isAlpha(value) && !Validator.isEmpty(value)) {
           newValidElems.lastName = value
+          invalidFields.invalidLastName = false
+        } else {
+          newValidElems.lastName = null
         }
         break;
       case 'willCallFirstName':
         if (Validator.isAlpha(value)) {
           newValidElems.wcFirstName = value
+        } else {
+          newValidElems.wcFirstName = null
         }
         break;
       case 'willCallLastName':
         if (Validator.isAlpha(value)) {
           newValidElems.wcLastName = value
+        } else {
+          newValidElems.wcLastName = null
         }
         break;
       case 'orderedByPhone':
         if (phoneNumber(value) && !Validator.isEmpty(value)) {
           newValidElems.orderedByPhone = value
+          invalidFields.invalidPhone = false
+        } else {
+          newValidElems.orderedByPhone = null
         }
         break;
       case 'discountCode':
@@ -991,47 +1026,55 @@ class App extends Component {
         return 'Please input valid items';
     }
 
-    this.setState({ validatedElements: newState.validatedElements })
-
-    // Populates cartToSend
-    if (this.state.validatedElements.firstName
-      && this.state.validatedElements.lastName
-      && this.state.validatedElements.email
-      && this.state.validatedElements.orderedByPhone) {
-
-      const newCart = newState.cartToSend
+    // // Populates cartToSend
+    if (newValidElems.firstName
+    && newValidElems.lastName
+    && newValidElems.email
+    && newValidElems.orderedByPhone) {
       newState.validated = true
-
-      newCart.firstName = this.state.validatedElements.firstName
-      newCart.lastName = this.state.validatedElements.lastName
-      newCart.email = this.state.validatedElements.email
-      newCart.orderedByPhone = this.state.validatedElements.orderedByPhone
-      newCart.eventId = this.state.inCart[0].id
-      newCart.ticketQuantity = parseInt(this.state.ticketQuantity)
-      newCart.pickupLocationId = parseInt(this.state.pickupLocationId)
-      newCart.totalCost = Number(this.state.totalCost)
-      newCart.discountCode = discountCode
-      newCart.userId = newState.facebook.userDetails.userId
-
-      this.state.validatedElements.wCFName ?
-        newCart.willCallFirstName = this.state.validatedElements.wcFirstName
-      :
-        newCart.willCallFirstName = this.state.validatedElements.firstName
-
-
-      this.state.validatedElements.wCLName ?
-        newCart.willCallLastName = this.state.validatedElements.wcLastName
-      :
-        newCart.willCallLastName = this.state.validatedElements.lastName
-
+      newState.cartToSend = {
+        firstName: newValidElems.firstName,
+        lastName: newValidElems.lastName,
+        email: newValidElems.email,
+        orderedByPhone: newValidElems.orderedByPhone,
+        eventId: this.state.inCart[0].id,
+        ticketQuantity: parseInt(this.state.ticketQuantity),
+        pickupLocationId: parseInt(this.state.pickupLocationId),
+        totalCost: Number(this.state.totalCost),
+        discountCode,
+        userId: newState.facebook.userDetails.userId,
+        willCallFirstName: (newValidElems.wcFirstName || newValidElems.firstName),
+        willCallLastName: (newValidElems.wcLastName || newValidElems.lastName)
+      }
       this.setState({
+        invalidFields,
+        validatedElements: newValidElems,
         cartToSend: newState.cartToSend,
         validated: newState.validated
       })
     }
-    else {
-      // console.log('Please continue to complete the form!')
-    }
+    else if (!newValidElems.firstName ||
+            !newValidElems.lastName ||
+            !newValidElems.email ||
+            !newValidElems.orderedByPhone) {
+        newState.validated = false
+        this.setState({
+          validated : newState.validated,
+          validatedElements: newValidElems
+        })
+      }
+  }
+
+  invalidOnSubmit = (e) => {
+    let validElems = {...this.state.validatedElements}
+    let invalidFields = {...this.state.invalidFields}
+
+    invalidFields.invalidFirstName = validElems.firstName ? false : true
+    invalidFields.invalidLastName = validElems.lastName ? false : true
+    invalidFields.invalidEmail = validElems.email ? false : true
+    invalidFields.invalidPhone = validElems.orderedByPhone ? false : true
+
+    this.setState({ invalidFields })
   }
 
   removeFromCart = () => {
@@ -1063,9 +1106,10 @@ class App extends Component {
     newState.displayAddBtn = false
     newState.startTimer = false
     newState.pickupLocationId = null
+    newState.validated = false
 
     this.setState({
-
+      validated: newState.validated,
       inCart: newState.inCart,
       displaySuccess: newState.displaySuccess,
       displayConfirmRemove: newState.displayConfirmRemove,
@@ -1083,23 +1127,6 @@ class App extends Component {
     newState.displayConfirmRemove = false
     newState.displayWarning = false
     this.setState({ displayConfirmRemove: newState.displayConfirmRemove, displayWarning: newState.displayWarning })
-  }
-
-  quantityChange = event => {
-    const newState = { ...this.state }
-    const oldQty = parseInt(newState.ticketQuantity)
-    newState.ticketQuantity = event.target.value
-
-    const pickupLocation = this.state.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
-    const basePrice = Number(pickupLocation.basePrice)
-    const ticketQuantity = parseInt(newState.ticketQuantity)
-    const processingFee = Number((basePrice * ticketQuantity) * (0.1))
-    const cost = ((basePrice * ticketQuantity) + processingFee)
-    const pickupPartyId = parseInt(newState.pickupPartyId)
-    newState.totalCost = cost.toFixed(2)
-    this.setState({ ticketQuantity: newState.ticketQuantity, totalCost: newState.totalCost })
-    this.clearTicketsInCart(pickupPartyId, oldQty)
-    this.addTicketsInCart(pickupPartyId, ticketQuantity)
   }
 
   sortByArtist = () => {
@@ -1122,23 +1149,13 @@ class App extends Component {
       let a = new Date(show1.date)
       let b = new Date(show2.date)
       return a - b
-
     })
     this.setState({ shows: newState, artistIcon: false, dateIcon: true })
   }
 
   makePurchase = event => {
-    const newState = { ...this.state }
     event.preventDefault()
-
-    const wCF = document.querySelector('#willCallFirstName')
-    const wCL = document.querySelector('#willCallLastName')
-
-    if (newState.checked && (!wCF.value || !wCL.value)) {
-      newState.cartToSend.willCallFirstName = newState.cartToSend.firstName
-      newState.cartToSend.willCallLastName = newState.cartToSend.lastName
-      this.setState({ cartToSend: newState.cartToSend })
-    }
+    const newState = { ...this.state }
 
     newState.displayQuantity = false
     newState.displayAddBtn = false
@@ -1169,18 +1186,16 @@ class App extends Component {
     this.setState({ displayAboutus: true })
   }
 
-
   getEventbriteData = async (continuationString, val, previousFuelDataArr) => {
     // const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&page=${val}&expand=ticket_classes${continuationString}`)
     const response = await fetch(`https://www.eventbriteapi.com/v3/users/me/owned_events/?${continuationString}token=ZMYGPTW7S63LDOZCWVUM&order_by=start_desc&expand=ticket_classes`)
-
 
     const fuelData = await response.json()
     const continuation = await fuelData.pagination.continuation
     const fuelDataArr = await fuelData.events
     const newFuelDataArr = await previousFuelDataArr.concat(fuelDataArr).flat()
     continuationString = await `continuation=${continuation}&`
-    //let continuationString = ''
+
     if(fuelData.pagination.has_more_items && val <5 ){
       return await this.getEventbriteData(continuationString, val+=1, newFuelDataArr)
     } else {
@@ -1195,8 +1210,7 @@ class App extends Component {
   }
 
   getHeadliners = async () => {
-    const eventsArr = await this.getEventbriteData('', 1, [])
-
+    await this.getEventbriteData('', 1, [])
     .then((eventsArr)=> {
     let newEventsArr = []
     for(let ii = 0; ii < eventsArr.length; ii++){
@@ -1319,14 +1333,14 @@ class App extends Component {
                         {this.state.displayCart || this.state.displayShow || this.state.displayExternalShowDetails ?
                           <div>
                           <DetailCartView
+                            addToCart={this.addToCart}
                             afterDiscountObj={this.state.afterDiscountObj}
                             assignedParties={this.state.assignedParties}
                             backToCalendar={this.backToCalendar}
-                            closeAlert={this.closeAlert}
-                            addToCart={this.addToCart}
-                            checked={this.state.checked}
-                            confirmedRemove={this.confirmedRemove}
                             cartToSend={this.state.cartToSend}
+                            checked={this.state.checked}
+                            closeAlert={this.closeAlert}
+                            confirmedRemove={this.confirmedRemove}
                             displayAddBtn={this.state.displayAddBtn}
                             displayBorder={this.state.displayBorder}
                             displayCart={this.state.displayCart}
@@ -1342,7 +1356,8 @@ class App extends Component {
                             firstBusLoad={this.state.firstBusLoad}
                             getPickupParty={this.getPickupParty}
                             handleCheck={this.handleCheck}
-                            handleSubmit={this.handleSubmit}
+                            invalidFields={this.state.invalidFields}
+                            invalidOnSubmit={this.invalidOnSubmit}
                             inCart={this.state.inCart}
                             lastDepartureTime={this.state.lastDepartureTime}
                             makePurchase={this.makePurchase}
@@ -1355,7 +1370,6 @@ class App extends Component {
                             purchaseFailed={this.state.purchaseFailed}
                             purchasePending={this.state.purchasePending}
                             purchaseSuccessful={this.state.purchaseSuccessful}
-                            quantityChange={this.quantityChange}
                             removeFromCart={this.removeFromCart}
                             returnToShows={this.returnToShows}
                             selectPickupLocationId={this.selectPickupLocationId}
@@ -1366,6 +1380,7 @@ class App extends Component {
                             startTimer={this.state.startTimer}
                             tabClicked={this.tabClicked}
                             ticketsAvailable={this.state.ticketsAvailable}
+                            ticketTimer={this.ticketTimer}
                             ticketQuantity={this.state.ticketQuantity}
                             timeLeftInCart={this.state.timeLeftInCart}
                             totalCost={this.state.totalCost}
@@ -1388,6 +1403,7 @@ class App extends Component {
                         :
                         <ShowList
                           addBorder={this.addBorder}
+                          confirmedRemove={this.confirmedRemove}
                           displayShow={this.state.displayShow}
                           filterString={this.state.filterString}
                           handleWarning={this.handleWarning}
@@ -1407,6 +1423,7 @@ class App extends Component {
                       <MediaQuery minWidth={800}>
                         <ShowList
                           addBorder={this.addBorder}
+                          confirmedRemove={this.confirmedRemove}
                           displayShow={this.state.displayShow}
                           filterString={this.state.filterString}
                           handleWarning={this.handleWarning}

@@ -1,9 +1,10 @@
 import React from 'react'
-import '../../App.css';
+import '../../../App.css';
 
 
-const PickupsList = (props) => {
+const AdminPickupsList = (props) => {
   let { makeSelection, theseLocations, resetStuff, filterString } = props
+
   const shortName = (locationName) => {
     return locationName = locationName.split('- ')[1]
   }
@@ -17,12 +18,11 @@ const PickupsList = (props) => {
   }
 
   filterString = filterString.toLowerCase()
-  let filterPickups = theseLocations.filter(pickup => pickup.locationName.toLowerCase().includes(filterString) || pickup.streetAddress.toLowerCase().includes(filterString))
+  let filterPickups = theseLocations.filter(location => location.locationName.toLowerCase().includes(filterString) || location.streetAddress.toLowerCase().includes(filterString))
 
   return (
     <div className='Pickups'>
       {filterPickups.length > 0 ?
-
         filterPickups.map(location =>
         <li className="list-group-item admin-list-item"
             key={location.id}
@@ -36,7 +36,7 @@ const PickupsList = (props) => {
             </div>
               <button
                 id={location.id}
-                onClick={e => { resetStuff(); makeSelection('pickupLocationId', location.id, 'ReservationsList') }}
+                onClick={e => { resetStuff(); makeSelection('pickupLocationId', location.id, 'AdminEditPanel') }}
                 type="button"
                 className='btn admin-detail-btn my-2 col-md-2'>
                 Select
@@ -48,4 +48,4 @@ const PickupsList = (props) => {
   )
 }
 
-export default PickupsList;
+export default AdminPickupsList;

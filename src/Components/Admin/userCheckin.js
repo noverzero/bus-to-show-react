@@ -26,23 +26,27 @@ const UserCheckin = (props) => {
   }
 
   const headerLabel = (displayList) => {
+    let activeReservations = reservations.filter(rezzy=>rezzy.status < 3)
     if(thisShow) {
       thisDate = thisShow.date
       thisShow = thisShow.headliner
     }
     if(thisLocation) thisLocation = thisLocation.locationName
     if (displayList === 'ShowList') return (
-      <div>Select a Show<br/>
+      <div>Rider Check-in<br/>
+        Select a Show<br/>
       </div>)
 
     else if (displayList === 'PickupsList') return (
-      <div>{thisDate} - {thisShow}<br/>
+      <div>Rider Check-in<br/>
+      {thisDate} - {thisShow}<br/>
         Select a Pickup Location<br/>
       </div>)
     else if (displayList === 'ReservationsList' ) return (
-      <div>{thisDate} - {thisShow}<br />
+      <div>Rider Check-in<br/>
+      {thisDate} - {thisShow}<br />
         {city(thisLocation)} - {shortName(thisLocation)}<br/>
-        Cap: {thisCapacity} / Avail: {thisCapacity - reservations.length} / Sold: {reservations.length}
+        Cap: {thisCapacity} / Avail: {thisCapacity - activeReservations.length} / Sold: {activeReservations.length}
       </div>)
     else return ''
   }
@@ -61,7 +65,6 @@ const UserCheckin = (props) => {
     let totalHeight = Math.ceil(header.offsetHeight + margin)
     const newHeight = window.innerHeight - totalHeight
     return `${newHeight}px`
-
   }
 
   return (

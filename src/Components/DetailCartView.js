@@ -58,8 +58,9 @@ const DetailCartView = (props) => {
                   firstBusLoad={props.firstBusLoad}
                   getPickupParty={props.getPickupParty}
                   handleCheck={props.handleCheck}
-                  handleSubmit={props.handleSubmit}
                   inCart={props.inCart}
+                  invalidFields={props.invalidFields}
+                  invalidOnSubmit={props.invalidOnSubmit}
                   lastDepartureTime={props.lastDepartureTime}
                   makePurchase={props.makePurchase}
                   pickupLocationId={props.pickupLocationId}
@@ -70,11 +71,11 @@ const DetailCartView = (props) => {
                   purchaseClick={props.purchaseClick}
                   purchasePending={props.purchasePending}
                   purchaseSuccessful={props.purchaseSuccessful}
-                  quantityChange={props.quantityChange}
                   removeFromCart={props.removeFromCart}
                   returnToShows={props.returnToShows}
                   shows={props.shows}
                   showsInCart={props.inCart}
+                  ticketTimer={props.ticketTimer}
                   ticketQuantity={props.ticketQuantity}
                   totalCost={props.totalCost}
                   updateDiscountCode={props.updateDiscountCode}

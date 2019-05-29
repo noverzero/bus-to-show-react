@@ -1,15 +1,22 @@
+import React from 'react'
+import '../../../App.css';
 
-import React from 'react';
+const AdminShowList = (props) => {
 
-const EditShowList = (props) => {
   let { filterString, shows, makeSelection, resetStuff } = props
+  
+  shows = shows.sort((show1, show2) => {
+    const a = new Date(show1.date)
+    const b = new Date(show2.date)
+    return a - b
+  })
 
   filterString = filterString.toLowerCase()
   let filterShows = shows.filter(show => show.headliner.toLowerCase().includes(filterString))
 
   if (filterShows.length === 0) {
     filterShows = shows.filter(show => show.venue.toLowerCase().includes(filterString))
-  }
+  }  
 
   return (
     <div className='Shows'>
@@ -24,7 +31,13 @@ const EditShowList = (props) => {
                 <strong>{show.headliner}</strong>
                 <br style={{fontSize: '.8rem'}}/>
                 {show.date} - {show.venue.split(" ").splice(0,2).join(" ")}
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-8 text-right">
+                Total Capacity: <strong>{show.totalCapacity}</strong>
                 <br />
+                Total Active Reservations: <strong style={{color:"red"}}>{show.reservations}</strong>
                 </div>
                   <button
                     id={show.id}
@@ -39,4 +52,4 @@ const EditShowList = (props) => {
   )
 }
 
-export default EditShowList  //component function name should match component file name (best practice)
+export default AdminShowList;

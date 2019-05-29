@@ -7,17 +7,25 @@ import logo from '../../Images/Logos/bts-logo-gray.png'
 
 const Cart = (props) => {
 
-  let cTSendId;
-
-  if (props.cartToSend) {
-    cTSendId = props.cartToSend.eventId
-  }
+  let cTSendId = props.cartToSend && props.cartToSend.eventId
 
   const showInfo = props.shows.find(show => parseInt(show.id) === parseInt(cTSendId))
 
   let savings = Number(props.afterDiscountObj.totalSavings)
   let cost = Number(props.totalCost - savings)
   let totalCost = cost.toFixed(2)
+
+  const maskPhoneInput = (e) => {
+    var part = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
+    e.target.value = !part[2] ? part[1] : '(' + part[1] + ') ' + part[2] + (part[3] ? '-' + part[3] : '')
+  }
+
+  const phoneInput = (e) => {
+      maskPhoneInput(e)
+      props.updatePurchaseField(e)
+  }
+
+  const { invalidFirstName, invalidLastName, invalidEmail, invalidPhone } = props.invalidFields
 
   return (
     <div className='Cart'>
@@ -94,7 +102,6 @@ const Cart = (props) => {
                     pickupLocationId={props.pickupLocationId}
                     pickupLocations={props.pickupLocations}
                     pickupParties={props.pickupParties}
-                    quantityChange={props.quantityChange}
                     removeFromCart={props.removeFromCart}
                     shows={props.shows}
                     showsInCart={props.showsInCart}
@@ -108,7 +115,10 @@ const Cart = (props) => {
                 <div className="list-group-item" >
                   <div className="row">
                     <div className="col-md-12">
-                      <form className="needs-validation" onSubmit={props.handleSubmit}>
+                      <form
+                        className="needs-validation"
+                        onSubmit={e=>e.preventDefault()}
+                        noValidate>
                         <div className="form-row">
                           <div className="col-md-4 mb-3">
                             <label htmlFor="firstName">First Name</label>
@@ -118,6 +128,7 @@ const Cart = (props) => {
                               className={`form-control ${props.validatedElements.firstName ? 'is-valid' : ''}`}
                               id="firstName"
                               placeholder="First Name"
+                              style={{border: invalidFirstName ? '2px solid red' : ''}}
                               required />
                           </div>
                           <div className="col-md-4 mb-3">
@@ -128,6 +139,7 @@ const Cart = (props) => {
                               className={`form-control ${props.validatedElements.lastName ? 'is-valid' : ''}`}
                               id="lastName"
                               placeholder="Last Name"
+                              style={{border: invalidLastName ? '2px solid red' : ''}}
                               required />
                           </div>
                         </div>
@@ -140,25 +152,21 @@ const Cart = (props) => {
                               className={`form-control ${props.validatedElements.email ? 'is-valid' : ''}`}
                               id="email"
                               placeholder="Email address"
+                              style={{border: invalidEmail ? '2px solid red' : ''}}
                               required />
-                            <div className="invalid-feedback">
-                              Please provide a valid email.
-                            </div>
                           </div>
                         </div>
                         <div className="form-row">
                           <div className="col-md-8 mb-3">
                             <label htmlFor="orderedByPhone">Phone</label>
                             <input
-                              onChange={props.updatePurchaseField}
+                              onChange={phoneInput}
                               type="phone"
                               className={`form-control ${props.validatedElements.orderedByPhone ? 'is-valid' : ''}`}
                               id="orderedByPhone"
-                              placeholder="Format: XXX-XXX-XXXX"
+                              placeholder="(XXX) XXX-XXXX"
+                              style={{border: invalidPhone ? '2px solid red' : ''}}
                               required />
-                            <div className="invalid-feedback">
-                              Please provide a valid phone number.
-                            </div>
                           </div>
                         </div>
 
@@ -232,8 +240,10 @@ const Cart = (props) => {
                               validated={props.validated}
                               purchase={props.purchase}
                               afterDiscountObj={props.afterDiscountObj}
+                              ticketTimer={props.ticketTimer}
                               totalCost={totalCost}
-                              showsInCart={props.showsInCart}>
+                              showsInCart={props.showsInCart}
+                              invalidOnSubmit={props.invalidOnSubmit}>
                             </Checkout>
                           </div>
                           <div className="cartTotal">

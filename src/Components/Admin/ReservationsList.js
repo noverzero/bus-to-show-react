@@ -6,9 +6,11 @@ const ReservationsList = (props) => {
   let { filterString, reservations, toggleCheckedIn } = props
 
   reservations = reservations.sort((a, b) => {
-    if(a.willCallLastName < b.willCallLastName) {return -1}
-    if(a.willCallLastName > b.willCallLastName) {return 1}
-    if(a.willCallLastName === b.willCallLastName) return (a.id - b.id)
+    let aLastName = a.willCallLastName.toLowerCase()
+    let bLastName = b.willCallLastName.toLowerCase()
+    if(aLastName < bLastName) {return -1}
+    if(aLastName > bLastName) {return 1}
+    if(aLastName === bLastName) return (a.id - b.id)
     return 0
   })
 
@@ -24,7 +26,6 @@ const ReservationsList = (props) => {
   return (
     <div className='Reservations'>
       {filterRezzies.length > 0 ?
-
         filterRezzies.map(reservation => {
           const { willCallFirstName, willCallLastName, orderedByFirstName, orderedByLastName } = reservation
           const lastName = willCallLastName
