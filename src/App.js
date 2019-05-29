@@ -22,8 +22,8 @@ ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
 // const fetchUrl = `http://localhost:3000`
-const fetchUrl = `https://bts-test-backend.herokuapp.com`
-//  const fetchUrl = `https://innocuous-junior.herokuapp.com`
+//const fetchUrl = `https://bts-test-backend.herokuapp.com`
+  const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
