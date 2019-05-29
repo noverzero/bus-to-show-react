@@ -21,9 +21,9 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-//const fetchUrl = `http://localhost:3000`
- const fetchUrl = `https://bts-test-backend.herokuapp.com`
-//  const fetchUrl = `https://innocuous-junior.herokuapp.com`
+// const fetchUrl = `http://localhost:3000`
+//const fetchUrl = `https://bts-test-backend.herokuapp.com`
+  const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -79,33 +79,22 @@ class App extends Component {
     displayReservations: false,
     displayUserReservationSummary: false,
     displayTimes: false,
-    // facebook: {
-    //   isLoggedIn: false,
-    //   userID: '',
-    //   name: '',
-    //   email:'',
-    //   picture:'',
-    //   userDetails: {},
-    // },
     facebook: {
-      isLoggedIn: true,
-      userID: "10156117602853997",
-      name: "Jake Mosher",
-      email: "jakeypoo@boner.com",
-      picture: "",
-      userDetails: {
-        email: "jakeypoo@boner.com",
-        firstName: "Jake",
-        lastName: "Mosher",
-        id: 105,
-        isAdmin: true,
-        isDeactivated: false,
-        isDriver: false,
-        isStaff: true,
-        isWaiverSigned: false,
-        preferredLocation: ""
-      },
+      isLoggedIn: false,
+      userID: '',
+      name: '',
+      email:'',
+      picture:'',
+      userDetails: {},
     },
+    // facebook: {
+    //   isLoggedIn: true,
+    //   userID: '',
+    //   name: 'Dustin Huth',
+    //   email:'dustin@thebasicsfund.org',
+    //   picture:'',
+    //   userDetails: {isAdmin: true},
+    // },
     filterString: '',
     firstBusLoad: null,
     googleResponse: null,
@@ -219,10 +208,13 @@ class App extends Component {
   }
 
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
-  selectPickupLocationId = async event => {
+  selectPickupLocationId = async (event, timer) => {
+    console.log('selectPickupLocationId event.target.value' , event.target.value)
     const newState = { ...this.state }
     const oldPickup = parseInt(newState.pickupPartyId)
-    this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
+    if(!timer){
+      this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
+    }
 
     newState.pickupPartyId = parseInt(event.target.value)
     if (event.target.value === "Select a Departure Option..."){
@@ -241,7 +233,9 @@ class App extends Component {
     }
 
     if (parseInt(newState.ticketQuantity)) {
+      console.log('newState.ticketQuantity before', newState.ticketQuantity)
       this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
+      console.log('newState.ticketQuantity after', newState.ticketQuantity)
       newState.ticketQuantity = null
       newState.displayQuantity = false
       newState.displayAddBtn = false
@@ -252,6 +246,7 @@ class App extends Component {
       })
     }
     else if (parseInt(event.target.value) !== newState.pickupPartyId) {
+      console.log('when does (parseInt(event.target.value) !== newState.pickupPartyId)?')
       newState.ticketQuantity = null
       newState.displayQuantity = false
       newState.displayAddBtn = false
@@ -310,7 +305,8 @@ class App extends Component {
       }
     })
     const reservations = await currentReservations.json()
-    const availableTickets = parseInt(matchedParty.capacity) - parseInt(reservations.length) - parseInt(matchedParty.inCart)
+    const activeReservations = reservations.filter(rezzie=>rezzie.status < 3 )
+    const availableTickets = parseInt(matchedParty.capacity) - parseInt(activeReservations.length) - parseInt(matchedParty.inCart)
       return availableTickets
   }
 
@@ -337,8 +333,8 @@ class App extends Component {
       totalCost: newState.totalCost
     })
     this.addTicketsInCart(pickupPartyId, newState.ticketQuantity)
-    // this.ticketTimer(true, 120000, false)
-    this.ticketTimer(true, 30000, false)
+    this.ticketTimer(true, 120000, false)
+    // this.ticketTimer(true, 30000, false)
     window.addEventListener("beforeunload", this.clearCartOnClose)
   }
 
@@ -847,8 +843,8 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-    // this.ticketTimer(true, 600000, true)
-    this.ticketTimer(true, 30000, true)
+    this.ticketTimer(true, 600000, true)
+    // this.ticketTimer(true, 30000, true)
   }
 
 // functions to handle setting and clearing of timer and incart qtys
@@ -864,8 +860,8 @@ class App extends Component {
           }, time)
         :
           setTimeout(() => {
-            this.confirmedRemove();
-            this.selectPickupLocationId(event)
+            //this.confirmedRemove();
+            this.selectPickupLocationId(event, true)
           }, time)
 
       newState.ticketTimer = newTicketTimer
@@ -937,8 +933,8 @@ class App extends Component {
     if (err) {
       console.log('purchase error', err)
       await this.ticketTimer(false)
-      // this.ticketTimer(true, 600000, true)
-      await this.ticketTimer(true, 30000, true)
+      this.ticketTimer(true, 600000, true)
+      // await this.ticketTimer(true, 30000, true)
       return this.setState({purchaseFailed: true})
     }
     const cartObj = this.state.cartToSend
@@ -953,6 +949,7 @@ class App extends Component {
     const json = await response.json()
     await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
     this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [] })
+    window.removeEventListener("beforeunload", this.clearCartOnClose)
   }
 
   updatePurchaseField = event => {

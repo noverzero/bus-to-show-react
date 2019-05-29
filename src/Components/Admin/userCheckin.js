@@ -26,6 +26,7 @@ const UserCheckin = (props) => {
   }
 
   const headerLabel = (displayList) => {
+    let activeReservations = reservations.filter(rezzy=>rezzy.status < 3)
     if(thisShow) {
       thisDate = thisShow.date
       thisShow = thisShow.headliner
@@ -45,7 +46,7 @@ const UserCheckin = (props) => {
       <div>Rider Check-in<br/>
       {thisDate} - {thisShow}<br />
         {city(thisLocation)} - {shortName(thisLocation)}<br/>
-        Cap: {thisCapacity} / Avail: {thisCapacity - reservations.length} / Sold: {reservations.length}
+        Cap: {thisCapacity} / Avail: {thisCapacity - activeReservations.length} / Sold: {activeReservations.length}
       </div>)
     else return ''
   }

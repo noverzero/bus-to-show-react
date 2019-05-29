@@ -16,7 +16,7 @@ const AdminShowList = (props) => {
 
   if (filterShows.length === 0) {
     filterShows = shows.filter(show => show.venue.toLowerCase().includes(filterString))
-  }
+  }  
 
   return (
     <div className='Shows'>
@@ -37,7 +37,7 @@ const AdminShowList = (props) => {
                 <div className="col-md-8 text-right">
                 Total Capacity: <strong>{show.totalCapacity}</strong>
                 <br />
-                Total Reservations: <strong>{show.reservations}</strong>
+                Total Active Reservations: <strong style={{color:"red"}}>{show.reservations}</strong>
                 </div>
                   <button
                     id={show.id}

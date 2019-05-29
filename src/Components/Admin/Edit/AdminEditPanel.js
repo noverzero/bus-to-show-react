@@ -2,12 +2,7 @@ import React from 'react'
 import '../../../App.css';
 
 const AdminEditPanel = (props) => {
-  let { editPickupParty, thisShow, thisDate, thisLocation, theseParties, theseLocations, reservations, thisPickupParty, getReservations, pickupLocationId, findPickup } = props
-  
-  const newCapacity = React.createRef()
-  const newPrice = React.createRef()
-  const newLoadTime = React.createRef()
-  const newDepartureTime = React.createRef()
+  let { displayList, editPickupParty, thisShow, thisDate, thisLocation, theseParties, theseLocations, reservations, thisPickupParty, getReservations, pickupLocationId, findPickup, newCapacity, newPrice, newLoadTime, newDepartureTime } = props
 
   const shortName = (locationName) => {
     if (locationName) return locationName = locationName.split('- ')[1]
@@ -19,7 +14,8 @@ const AdminEditPanel = (props) => {
 
   const updatePickupPartyValue = (e, pickupPartyId, ref) => {
     const field = ref.current.id
-    const newValue = field === 'price' || field === 'capacity' ? ~~ref.current.value : ref.current.value
+    const newValue = (field === 'price'  ? ~~ref.current.value : ref.current.value)
+    console.log('ref.current.value' , ~~ref.current.value)
     ref.current.value = null
     const updatedParty = editPickupParty(pickupPartyId, field, newValue)
     // return updatedParty === null ? '' : ''
@@ -63,7 +59,7 @@ const AdminEditPanel = (props) => {
             <div className="col-6">
             Capacity:
             </div>
-            <div className="col-6 px-0">                          
+            <div className="col-6 px-0">
               <input
                 style={{width:"4em"}}
                 className="mx-2"
@@ -85,7 +81,7 @@ const AdminEditPanel = (props) => {
             <div className="col-6">
             Price:
             </div>
-            <div className="col-6 px-0">                          
+            <div className="col-6 px-0">
               $<input
                 style={{width:"4em"}}
                 className="mr-2"
@@ -108,7 +104,7 @@ const AdminEditPanel = (props) => {
             <div className="col-6 pt-2">
             Load Time:
             </div>
-            <div className="col-6 px-0">                          
+            <div className="col-6 px-0">
               <input
                 style={{width:"4em"}}
                 className="mx-2"
@@ -130,7 +126,7 @@ const AdminEditPanel = (props) => {
             <div className="col-6">
             Departure Time:
             </div>
-            <div className="col-6 px-0">                          
+            <div className="col-6 px-0">
               <input
                 style={{width:"4em"}}
                 className="mx-2"
@@ -151,7 +147,7 @@ const AdminEditPanel = (props) => {
 
       </li>
       }
-    </div>    
+    </div>
   )
 }
 

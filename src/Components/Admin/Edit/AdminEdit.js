@@ -6,7 +6,12 @@ import AdminEditPanel from './AdminEditPanel'
 
 const AdminEdit = (props) => {
   let { displayAdminPanel, displayList, editPickupParty, eventId, filterString, getReservations, makeSelection, pickupLocationId, pickupLocations, pickupParties, reservations, searchItems, shows,toggleProperty, theseParties, theseLocations, thisCapacity, thisLocation, thisPickupParty, thisShow } = props
-  
+
+  const newCapacity = React.createRef()
+  const newPrice = React.createRef()
+  const newLoadTime = React.createRef()
+  const newDepartureTime = React.createRef()
+
   let thisDate, thisHeadliner, thisLocationName
 
   const previousProperty = (
@@ -24,7 +29,7 @@ const AdminEdit = (props) => {
   )
 
   const headerLabel = (displayList) => {
-    // reservations = reservations.filter(reservation=>reservation.status === )
+    let activeReservations = reservations.filter(rezzy=>rezzy.status < 3)
     if (thisShow) {
       thisDate = thisShow.date
       thisHeadliner = thisShow.headliner
@@ -43,7 +48,7 @@ const AdminEdit = (props) => {
       <div>Admin Panel<br/>
       {thisDate} - {thisHeadliner}<br />
         {city(thisLocationName)} - {shortName(thisLocationName)}<br/>
-        Cap: {thisPickupParty.capacity} / Avail: {thisPickupParty.capacity - reservations.length} / Sold: {reservations.length}
+        Cap: {thisCapacity} / Avail: {thisCapacity - activeReservations.length} / Active: {activeReservations.length}
       </div>)
     else return ''
   }
@@ -61,6 +66,12 @@ const AdminEdit = (props) => {
     const adminList = document.getElementById('adminList')
     searchBar.value = ''
     adminList.scrollTop = 0
+
+    if(newCapacity.current) newCapacity.current.value = null
+    if(newPrice.current) newPrice.current.value = null
+    if(newDepartureTime.current) newDepartureTime.current.value = null
+    if(newLoadTime.current) newLoadTime.current.value = null
+    
   }
 
   const calcHeightVal = () => {
@@ -126,6 +137,10 @@ const AdminEdit = (props) => {
                 filterString={filterString}
                 getReservations={getReservations}
                 makeSelection={makeSelection}
+                newCapacity={newCapacity}
+                newPrice={newPrice} 
+                newLoadTime={newLoadTime}
+                newDepartureTime={newDepartureTime}
                 pickupLocations={pickupLocations}
                 pickupLocationId={pickupLocationId}
                 pickupParties={pickupParties}
