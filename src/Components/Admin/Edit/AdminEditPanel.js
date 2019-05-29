@@ -14,8 +14,9 @@ const AdminEditPanel = (props) => {
 
   const updatePickupPartyValue = (e, pickupPartyId, ref) => {
     const field = ref.current.id
-    const newValue = (field === 'price'  ? ~~ref.current.value : ref.current.value)
-    console.log('ref.current.value' , ~~ref.current.value)
+    const newValue = ref.current.value
+    console.log('value' , newValue, typeof newValue)
+    console.log(pickupPartyId, field, newValue)
     ref.current.value = null
     const updatedParty = editPickupParty(pickupPartyId, field, newValue)
     // return updatedParty === null ? '' : ''
@@ -100,7 +101,9 @@ const AdminEditPanel = (props) => {
             </div>
           </div>
           <div className="row pb-2">
-          Load and Departure times in 24-hour format <br />
+          Load and Departure times in 24-hour format 
+          </div>
+          <div className="row pb-2">
             <div className="col-6 pt-2">
             Load Time:
             </div>
