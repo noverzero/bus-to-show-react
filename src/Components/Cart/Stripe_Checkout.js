@@ -1,8 +1,8 @@
 import React from 'react';
 import StripeCheckout from 'react-stripe-checkout'
 
-const fetchUrl = `http://localhost:3000`
-// const fetchUrl = `https://bts-test-backend.herokuapp.com`
+//const fetchUrl = `http://localhost:3000`
+ const fetchUrl = `https://bts-test-backend.herokuapp.com`
 //  const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 export default class Checkout extends React.Component {

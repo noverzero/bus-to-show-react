@@ -4,9 +4,9 @@ import UserCheckin from './userCheckin'
 import AdminEdit from './Edit/AdminEdit'
 import { async } from 'q';
 
-const fetchUrl = `http://localhost:3000`
-// const fetchUrl = `https://bts-test-backend.herokuapp.com`
-//  const fetchUrl = `https://innocuous-junior.herokuapp.com`
+//const fetchUrl = `http://localhost:3000`
+ const fetchUrl = `https://bts-test-backend.herokuapp.com`
+// const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class AdminView extends React.Component {
 
@@ -106,7 +106,7 @@ class AdminView extends React.Component {
     const fetchedParty = await response.json()
     return fetchedParty
   }
-  
+
   fetchReservationsForOneEvent = async(pickupPartyId)=>{
     const response = await fetch(`${fetchUrl}/reservations/findOrders`, {
       method: 'PATCH',
@@ -131,9 +131,9 @@ class AdminView extends React.Component {
     const result = await response.json()
     return result
   }
-  
+
   getReservations = async () => {
-    const thisPickupParty = await this.getPickupParty()  
+    const thisPickupParty = await this.getPickupParty()
     const reservations = await this.fetchReservationsForOneEvent(thisPickupParty.id)
     this.setState({
       reservations,
@@ -232,11 +232,11 @@ class AdminView extends React.Component {
         })
         return reservationsForOne.length
       })
-      reservations = reservations.length > 0 ? 
+      reservations = reservations.length > 0 ?
         reservations.reduce((sum, current)=>{
           return sum + current
-        }) 
-      : 
+        })
+      :
         0
       let totalCapacity = show.pickupParties.map(party=>party.capacity)
       totalCapacity = totalCapacity.length > 0 ?
