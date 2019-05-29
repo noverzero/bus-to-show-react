@@ -14,7 +14,8 @@ const AdminEditPanel = (props) => {
 
   const updatePickupPartyValue = (e, pickupPartyId, ref) => {
     const field = ref.current.id
-    const newValue = field === 'price' || field === 'capacity' ? ~~ref.current.value : ref.current.value
+    const newValue = (field === 'price'  ? ~~ref.current.value : ref.current.value)
+    console.log('ref.current.value' , ~~ref.current.value)
     ref.current.value = null
     const updatedParty = editPickupParty(pickupPartyId, field, newValue)
     // return updatedParty === null ? '' : ''
@@ -58,7 +59,7 @@ const AdminEditPanel = (props) => {
             <div className="col-6">
             Capacity:
             </div>
-            <div className="col-6 px-0">                          
+            <div className="col-6 px-0">
               <input
                 style={{width:"4em"}}
                 className="mx-2"
@@ -80,7 +81,7 @@ const AdminEditPanel = (props) => {
             <div className="col-6">
             Price:
             </div>
-            <div className="col-6 px-0">                          
+            <div className="col-6 px-0">
               $<input
                 style={{width:"4em"}}
                 className="mr-2"
@@ -103,7 +104,7 @@ const AdminEditPanel = (props) => {
             <div className="col-6 pt-2">
             Load Time:
             </div>
-            <div className="col-6 px-0">                          
+            <div className="col-6 px-0">
               <input
                 style={{width:"4em"}}
                 className="mx-2"
@@ -125,7 +126,7 @@ const AdminEditPanel = (props) => {
             <div className="col-6">
             Departure Time:
             </div>
-            <div className="col-6 px-0">                          
+            <div className="col-6 px-0">
               <input
                 style={{width:"4em"}}
                 className="mx-2"
@@ -146,7 +147,7 @@ const AdminEditPanel = (props) => {
 
       </li>
       }
-    </div>    
+    </div>
   )
 }
 

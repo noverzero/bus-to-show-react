@@ -106,7 +106,7 @@ class AdminView extends React.Component {
     const fetchedParty = await response.json()
     return fetchedParty
   }
-  
+
   fetchReservationsForOneEvent = async(pickupPartyId)=>{
     const response = await fetch(`${fetchUrl}/reservations/findOrders`, {
       method: 'PATCH',
@@ -131,9 +131,9 @@ class AdminView extends React.Component {
     const result = await response.json()
     return result
   }
-  
+
   getReservations = async () => {
-    const thisPickupParty = await this.getPickupParty()  
+    const thisPickupParty = await this.getPickupParty()
     const reservations = await this.fetchReservationsForOneEvent(thisPickupParty.id)
     this.setState({
       reservations,
@@ -231,11 +231,11 @@ class AdminView extends React.Component {
         })
         return reservationsForOne.length
       })
-      reservationsCount = reservationsCount.length > 0 ? 
+      reservationsCount = reservationsCount.length > 0 ?
         reservationsCount.reduce((sum, current)=>{
           return sum + current
-        }) 
-      : 
+        })
+      :
         0
       let totalCapacity = show.pickupParties.map(party=>party.capacity)
       totalCapacity = totalCapacity.length > 0 ?
