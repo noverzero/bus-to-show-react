@@ -99,7 +99,7 @@ const AdminEditPanel = (props) => {
             </div>
           </div>
           <div className="row pb-2">
-          Load and Departure times in 24-hour format
+          Load and Departure times in 24-hour format <br />
             <div className="col-6 pt-2">
             Load Time:
             </div>

@@ -21,8 +21,8 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-// const fetchUrl = `http://localhost:3000` // dev
-const fetchUrl = `https://bts-test-backend.herokuapp.com` // testing
+const fetchUrl = `http://localhost:3000` // dev
+// const fetchUrl = `https://bts-test-backend.herokuapp.com` // testing
 //  const fetchUrl = `https://innocuous-junior.herokuapp.com` // production
 
 class App extends Component {
@@ -79,13 +79,32 @@ class App extends Component {
     displayReservations: false,
     displayUserReservationSummary: false,
     displayTimes: false,
+    // facebook: {
+    //   isLoggedIn: false,
+    //   userID: '',
+    //   name: '',
+    //   email:'',
+    //   picture:'',
+    //   userDetails: {},
+    // },
     facebook: {
-      isLoggedIn: false,
-      userID: '',
-      name: '',
-      email:'',
-      picture:'',
-      userDetails: {},
+      isLoggedIn: true,
+      userID: "10156117602853997",
+      name: "Jake Mosher",
+      email: "jakeypoo@boner.com",
+      picture: "",
+      userDetails: {
+        email: "jakeypoo@boner.com",
+        firstName: "Jake",
+        lastName: "Mosher",
+        id: 105,
+        isAdmin: true,
+        isDeactivated: false,
+        isDriver: false,
+        isStaff: true,
+        isWaiverSigned: false,
+        preferredLocation: ""
+      },
     },
     filterString: '',
     firstBusLoad: null,
@@ -319,8 +338,8 @@ class App extends Component {
       totalCost: newState.totalCost
     })
     this.addTicketsInCart(pickupPartyId, newState.ticketQuantity)
-    this.ticketTimer(true, 120000, false) // production
-    // this.ticketTimer(true, 30000, false) // testing
+    // this.ticketTimer(true, 120000, false) // production
+    this.ticketTimer(true, 30000, false) // testing
     window.addEventListener("beforeunload", this.clearCartOnClose)
   }
 
@@ -829,8 +848,8 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-    this.ticketTimer(true, 600000, true) // production
-    // this.ticketTimer(true, 30000, true) // testing
+    // this.ticketTimer(true, 600000, true) // production
+    this.ticketTimer(true, 30000, true) // testing
   }
 
 // functions to handle setting and clearing of timer and incart qtys

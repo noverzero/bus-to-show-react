@@ -4,8 +4,8 @@ import UserCheckin from './userCheckin'
 import AdminEdit from './Edit/AdminEdit'
 import { async } from 'q';
 
-// const fetchUrl = `http://localhost:3000` // dev
-const fetchUrl = `https://bts-test-backend.herokuapp.com` // testing
+const fetchUrl = `http://localhost:3000` // dev
+// const fetchUrl = `https://bts-test-backend.herokuapp.com` // testing
 //  const fetchUrl = `https://innocuous-junior.herokuapp.com` // production
 
 class AdminView extends React.Component {
