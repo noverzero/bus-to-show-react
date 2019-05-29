@@ -21,15 +21,9 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-<<<<<<< HEAD
 // const fetchUrl = `http://localhost:3000`
 //const fetchUrl = `https://bts-test-backend.herokuapp.com`
   const fetchUrl = `https://innocuous-junior.herokuapp.com`
-=======
-// const fetchUrl = `http://localhost:3000` // dev
-const fetchUrl = `https://bts-test-backend.herokuapp.com` // testing
-//  const fetchUrl = `https://innocuous-junior.herokuapp.com` // production
->>>>>>> 5d1292be35d9414ff4cf4fe1cae7f89dee7fe487
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
