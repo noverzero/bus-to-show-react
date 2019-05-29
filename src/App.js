@@ -21,9 +21,9 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-// const fetchUrl = `http://localhost:3000`
-//const fetchUrl = `https://bts-test-backend.herokuapp.com`
-  const fetchUrl = `https://innocuous-junior.herokuapp.com`
+const fetchUrl = `http://localhost:3000`
+//const fetchUrl = `https://bts-test-backend.herokuapp.com` 
+  // const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -333,8 +333,8 @@ class App extends Component {
       totalCost: newState.totalCost
     })
     this.addTicketsInCart(pickupPartyId, newState.ticketQuantity)
-    this.ticketTimer(true, 120000, false) // production
-    // this.ticketTimer(true, 30000, false) // testing
+    // this.ticketTimer(true, 120000, false) // production
+    this.ticketTimer(true, 30000, false) // testing
     window.addEventListener("beforeunload", this.clearCartOnClose)
   }
 
@@ -843,8 +843,8 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-    this.ticketTimer(true, 600000, true) // production
-    // this.ticketTimer(true, 30000, true) // testing
+    // this.ticketTimer(true, 600000, true) // production
+    this.ticketTimer(true, 30000, true) // testing
   }
 
 // functions to handle setting and clearing of timer and incart qtys
