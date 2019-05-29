@@ -231,13 +231,8 @@ class AdminView extends React.Component {
         })
         return reservationsForOne.length
       })
-<<<<<<< HEAD
-      reservations = reservations.length > 0 ?
-        reservations.reduce((sum, current)=>{
-=======
       reservationsCount = reservationsCount.length > 0 ?
         reservationsCount.reduce((sum, current)=>{
->>>>>>> fd410d746af57ba0d381d2079ea0a394b21cb150
           return sum + current
         })
       :
