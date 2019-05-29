@@ -21,9 +21,15 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
+<<<<<<< HEAD
 // const fetchUrl = `http://localhost:3000`
 //const fetchUrl = `https://bts-test-backend.herokuapp.com`
   const fetchUrl = `https://innocuous-junior.herokuapp.com`
+=======
+// const fetchUrl = `http://localhost:3000` // dev
+const fetchUrl = `https://bts-test-backend.herokuapp.com` // testing
+//  const fetchUrl = `https://innocuous-junior.herokuapp.com` // production
+>>>>>>> 5d1292be35d9414ff4cf4fe1cae7f89dee7fe487
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -333,8 +339,8 @@ class App extends Component {
       totalCost: newState.totalCost
     })
     this.addTicketsInCart(pickupPartyId, newState.ticketQuantity)
-    this.ticketTimer(true, 120000, false)
-    // this.ticketTimer(true, 30000, false)
+    this.ticketTimer(true, 120000, false) // production
+    // this.ticketTimer(true, 30000, false) // testing
     window.addEventListener("beforeunload", this.clearCartOnClose)
   }
 
@@ -843,8 +849,8 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-    this.ticketTimer(true, 600000, true)
-    // this.ticketTimer(true, 30000, true)
+    this.ticketTimer(true, 600000, true) // production
+    // this.ticketTimer(true, 30000, true) // testing
   }
 
 // functions to handle setting and clearing of timer and incart qtys
@@ -933,8 +939,8 @@ class App extends Component {
     if (err) {
       console.log('purchase error', err)
       await this.ticketTimer(false)
-      this.ticketTimer(true, 600000, true)
-      // await this.ticketTimer(true, 30000, true)
+      this.ticketTimer(true, 600000, true) // production
+      // await this.ticketTimer(true, 30000, true) //testing
       return this.setState({purchaseFailed: true})
     }
     const cartObj = this.state.cartToSend
