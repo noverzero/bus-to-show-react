@@ -252,11 +252,12 @@ class AdminView extends React.Component {
       return null
     }
     else {
-      value = field === 'partyPrice' ? ~~value : value
+      value = (field === 'partyPrice' || field === 'capacity' ? ~~value : value)
       const newState = {...this.state}
       const currentPickupParty = newState.thisPickupParty
       currentPickupParty[field] = value
       const newBody = {[field]: value}
+      console.log('body in patch and typeof', newBody, typeof newBody[field]);
       const response = await fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}`, {
         method: 'PATCH',
         body: JSON.stringify(newBody),
