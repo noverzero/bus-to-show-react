@@ -2,7 +2,7 @@ import React from 'react'
 import '../../../App.css';
 
 const AdminEditPanel = (props) => {
-  let { displayList, editPickupParty, thisShow, thisDate, thisLocation, theseParties, theseLocations, reservations, thisPickupParty, getReservations, pickupLocationId, findPickup, newCapacity, newPrice, newLoadTime, newDepartureTime } = props
+  let { displayList, editPickupParty, thisShow, thisDate, thisLocation, theseParties, theseLocations, reservations, resetStuff, makeSelection, thisPickupParty, getReservations, pickupLocationId, findPickup, newCapacity, newPrice, newLoadTime, newDepartureTime } = props
 
   const shortName = (locationName) => {
     if (locationName) return locationName = locationName.split('- ')[1]
@@ -146,10 +146,13 @@ const AdminEditPanel = (props) => {
               </button>
             </div>
           </div>
-
+        <div className="row">
+          <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>{resetStuff(); makeSelection('pickupLocationId', thisLocation.id, 'ReservationsList'); console.log('reservations', reservations);}}>Cancel a Reservation</button>
+        </div>
       </li>
       }
     </div>
+  
   )
 }
 

@@ -3,9 +3,10 @@ import '../../../App.css';
 import AdminPickupsList from './AdminPickupsList'
 import AdminShowList from './AdminShowList'
 import AdminEditPanel from './AdminEditPanel'
+import AdminReservationsList from './AdminReservationsList'
 
 const AdminEdit = (props) => {
-  let { displayAdminPanel, displayList, editPickupParty, eventId, filterString, getReservations, makeSelection, pickupLocationId, pickupLocations, pickupParties, reservations, searchItems, shows,toggleProperty, theseParties, theseLocations, thisCapacity, thisLocation, thisPickupParty, thisShow } = props
+  let { displayAdminPanel, displayList, editPickupParty, eventId, filterString, getReservations, makeSelection, pickupLocationId, pickupLocations, pickupParties, reservations, searchItems, shows, toggleProperty, theseParties, theseLocations, thisCapacity, thisLocation, thisPickupParty, thisShow } = props
 
   const newCapacity = React.createRef()
   const newPrice = React.createRef()
@@ -18,7 +19,7 @@ const AdminEdit = (props) => {
     displayList === 'ShowList' ? 'displayAdminPanel' :
     displayList === 'PickupsList' ? 'ShowList' :
     displayList === 'AdminEditPanel' ? 'PickupsList' :
-    displayList === 'EditReservationsList' ? 'AdminEditPanel' :
+    displayList === 'ReservationsList' ? 'AdminEditPanel' :
     null
   )
 
@@ -50,6 +51,11 @@ const AdminEdit = (props) => {
         {city(thisLocationName)} - {shortName(thisLocationName)}<br/>
         Cap: {thisCapacity} / Avail: {thisCapacity - activeReservations.length} / Active: {activeReservations.length}
       </div>)
+    else if (displayList === 'ReservationsList') return (
+      <div>Cancel a Reservation<br/>
+      **Please verify email address before canceling a reservation**
+      </div>
+    )  
     else return ''
   }
 
@@ -126,6 +132,12 @@ const AdminEdit = (props) => {
                 resetStuff={resetStuff}
               />
             </div>
+            <div className={displayList === 'ReservationsList' ? '' : 'hidden'}>
+              <AdminReservationsList
+                filterString={filterString}
+                reservations={reservations}
+              />
+            </div>
           </ul>
         </div>
             <div className={displayList === 'AdminEditPanel' ? '' : 'hidden'}>
@@ -145,6 +157,7 @@ const AdminEdit = (props) => {
                 pickupLocationId={pickupLocationId}
                 pickupParties={pickupParties}
                 reservations={reservations}
+                resetStuff={resetStuff}
                 searchItems={searchItems}
                 shows={shows}
                 thisPickupParty={thisPickupParty}

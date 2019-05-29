@@ -2,7 +2,6 @@ import React from 'react'
 import '../../App.css';
 import UserCheckin from './userCheckin'
 import AdminEdit from './Edit/AdminEdit'
-import { async } from 'q';
 
 const fetchUrl = `http://localhost:3000`
 //const fetchUrl = `https://bts-test-backend.herokuapp.com`
@@ -12,6 +11,7 @@ class AdminView extends React.Component {
 
   state = {
     displayAdminPanel: false,
+    displayAdminReservationsList: false,
     displayUserCheckin: false,
     displayList: 'ShowList',
     eventId: null,
@@ -84,7 +84,7 @@ class AdminView extends React.Component {
     else if (next === 'ReservationsList') {
       this.getReservations()
       this.findPickup(targetId)
-      this.refreshReservations()
+      !this.state.displayAdminPanel && this.refreshReservations()
     }
     else if (next === 'AdminEditPanel') {
       this.getReservations()
@@ -133,6 +133,7 @@ class AdminView extends React.Component {
   }
 
   getReservations = async () => {
+    console.log('getting')
     const thisPickupParty = await this.getPickupParty()
     const reservations = await this.fetchReservationsForOneEvent(thisPickupParty.id)
     this.setState({
@@ -142,6 +143,7 @@ class AdminView extends React.Component {
   }
 
   refreshReservations = (stop) => {
+    console.log('refreshing')
     if (!stop) {
       let x = 0;
       const reservationsInterval = setInterval(()=>{
@@ -290,6 +292,7 @@ class AdminView extends React.Component {
               editPickupParty={this.editPickupParty}
               filterString={this.state.filterString}
               getPickupParty={this.getPickupParty}
+              getReservations={this.getReservations}
               displayList={this.state.displayList}
               pickupLocations={this.state.pickupLocations}
               pickupLocationId={this.state.pickupLocationId}
@@ -297,6 +300,7 @@ class AdminView extends React.Component {
               makeSelection={this.makeSelection}
               reservations={this.state.reservations}
               searchItems={this.searchItems}
+              displayAdminReservationsList={this.state.displayAdminReservationsList}
               shows={this.state.showsWithResAndCap}
               thisCapacity={this.state.thisCapacity}
               thisShow={this.state.thisShow}

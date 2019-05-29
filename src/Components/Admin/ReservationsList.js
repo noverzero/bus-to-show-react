@@ -28,11 +28,9 @@ const ReservationsList = (props) => {
       {filterRezzies.length > 0 ?
         filterRezzies.map(reservation => {
           const { willCallFirstName, willCallLastName, orderedByFirstName, orderedByLastName } = reservation
-          const lastName = willCallLastName
-          const firstName = willCallFirstName
           let toggleStatus = ~~reservation.status
 
-          if (toggleStatus === 3) return null  //reservation status 3 === refunded (don't display)
+          if (toggleStatus === 3 || toggleStatus === 4) return null  //reservation status 3 === refunded (don't display)
           if (toggleStatus === 1 || toggleStatus === 2)
           
           return <li className="list-group-item admin-list-item"
@@ -41,7 +39,7 @@ const ReservationsList = (props) => {
             style={{  borderRadius: '1px', padding: '.1rem .5rem' }}>
           <div className="row" id={reservation.id}>
             <div className="col-sm-8 list-item-font" id={reservation.id}>
-              <strong style={{fontSize: '18px'}}>{lastName}, {firstName}</strong>
+              <strong style={{fontSize: '18px'}}>{willCallLastName}, {willCallFirstName}</strong>
               <br />
               Alt: {orderedByLastName}, {orderedByFirstName}
             </div>
