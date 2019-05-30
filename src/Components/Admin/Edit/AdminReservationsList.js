@@ -3,7 +3,7 @@ import '../../../App.css';
 
 const AdminReservationsList = (props) => {
 
-  let { filterString, reservations, cancelReservation, cancelPrompt, cancelPromptId } = props
+  let { filterString, reservations, updateReservation, cancelPrompt, cancelPromptId } = props
 
   reservations = reservations.sort((a, b) => {
     let aLastName = a.willCallLastName.toLowerCase()
@@ -24,7 +24,7 @@ const AdminReservationsList = (props) => {
         filterRezzies.map(reservation => {
           const { willCallFirstName, willCallLastName, orderedByFirstName, orderedByLastName, orderedByEmail, status } = reservation
           const statusColor = status > 2 ? 'grey' : ''
-          
+          console.log('updated status', reservation.status);
           return <li className="list-group-item admin-list-item"
             key={reservation.id}
             id={reservation.id}
@@ -40,7 +40,7 @@ const AdminReservationsList = (props) => {
               {cancelPromptId === reservation.id ?
                 <div className="alert alert-danger" role="alert" style={{color: 'red'}}>
                 <strong>Cancel this reservation?</strong><br/>
-                  <button onClick={e=>cancelReservation(reservation)} type="button" className="btn btn-success ml-1 px-2" style={{width:"4em"}}>Yes</button>
+                  <button onClick={e=>updateReservation(reservation, 4)} type="button" className="btn btn-success ml-1 px-2" style={{width:"4em"}}>Yes</button>
                   <button onClick={e=>cancelPrompt(reservation.id, false)} type="button" className="btn btn-danger ml-1 px-2" style={{width:"4em"}}>No</button>
                 </div>
               : status === 1 ? 
@@ -51,8 +51,14 @@ const AdminReservationsList = (props) => {
                   </button>
                 : status === 2 ? 
                   <span style={{color: 'grey'}}>Reservation Checked In</span>
-                  :
-                  <span style={{color: 'grey'}}>Reservation Cancelled</span>}
+                  : status === 4 ?
+                    <div>
+                      <span style={{color: 'grey'}}>Reservation Cancelled</span>
+                      <button onClick={e=>updateReservation(reservation, 3)} type="button" className="btn admin-detail-btn px-2">Refunded</button>
+                    </div>
+                    :
+                    <span style={{color: 'grey'}}>Reservation Refunded</span>
+                  }
             </div>
           </div>
         </li>

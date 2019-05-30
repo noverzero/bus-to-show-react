@@ -2,7 +2,7 @@ import React from 'react'
 import '../../../App.css';
 
 const AdminEditPanel = (props) => {
-  let { displayList, editPickupParty, thisShow, thisDate, thisLocation, theseParties, theseLocations, reservations, resetStuff, makeSelection, thisPickupParty, getReservations, pickupLocationId, findPickup, newCapacity, newPrice, newLoadTime, newDepartureTime } = props
+  let { editPickupParty, thisShow, thisDate, thisLocation, resetStuff, makeSelection, thisPickupParty, pickupLocationId, newCapacity, newPrice, newLoadTime, newDepartureTime } = props
 
   const shortName = (locationName) => {
     if (locationName) return locationName = locationName.split('- ')[1]
@@ -15,7 +15,6 @@ const AdminEditPanel = (props) => {
   const updatePickupPartyValue = (e, pickupPartyId, ref) => {
     const field = ref.current.id
     const newValue = ref.current.value
-    console.log('pickupPartyId, field, newValue', pickupPartyId, field, newValue)
     ref.current.value = null
     editPickupParty(pickupPartyId, field, newValue)
   }

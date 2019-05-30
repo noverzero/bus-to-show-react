@@ -94,7 +94,7 @@ class AdminView extends React.Component {
   }
 
   getPickupParty = async () => {
-    console.log('getting pickup party', this.state.pickupLocationId, this.state.eventId)
+    console.log('getPickupParty')
     const response = await fetch(`${fetchUrl}/pickup_parties/findId`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -106,11 +106,11 @@ class AdminView extends React.Component {
       }
     })
     const fetchedParty = await response.json()
-    console.log('fetchedParty', fetchedParty)
     return fetchedParty
   }
 
   fetchReservationsForOneEvent = async(pickupPartyId)=>{
+    console.log('fetchReservationsForOneEvent')
     const response = await fetch(`${fetchUrl}/reservations/findOrders`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -121,7 +121,6 @@ class AdminView extends React.Component {
       }
     })
     const result = await response.json()
-    console.log('fetched reservations', result)
     return result
   }
 
@@ -137,19 +136,17 @@ class AdminView extends React.Component {
   }
 
   getReservations = async () => {
-    console.log('getting reservations')
+    console.log('getting reservations');
     const thisPickupParty = await this.getPickupParty()
-    console.log('thisPickupParty', thisPickupParty)
     const reservations = await this.fetchReservationsForOneEvent(thisPickupParty.id)
-    console.log('reservations', reservations)
     this.setState({
       reservations,
       thisPickupParty,
       thisCapacity: thisPickupParty.capacity})
+    console.log('reservations set');
   }
 
   refreshReservations = (stop) => {
-    console.log('refreshing')
     if (!stop) {
       let x = 0;
       const reservationsInterval = setInterval(()=>{
@@ -222,6 +219,7 @@ class AdminView extends React.Component {
   }
 
   getReservationCountsForAllShows = async () => {
+    console.log('getting all reservations');
     let showsArr = this.props.shows.map(show=>{
       const pickupParties = this.state.pickupParties.filter(pickupParty=>{
         return pickupParty.eventId === show.id
@@ -284,12 +282,12 @@ class AdminView extends React.Component {
     }
   }
 
-  cancelReservation = (reservation) => {
-    console.log('canceling')
+  updateReservation = async (reservation, status) => {
+    status = ~~status
     this.cancelPrompt(reservation.id, false)
-    fetch(`${fetchUrl}/reservations/${reservation.id}`, {
+    await fetch(`${fetchUrl}/reservations/${reservation.id}`, {
       method: 'PATCH',
-      body: JSON.stringify({status: 4}),
+      body: JSON.stringify({status}),
       headers: {
           'Content-Type': 'application/json'
         }
@@ -298,6 +296,7 @@ class AdminView extends React.Component {
   }
 
   cancelPrompt = async(reservationId, prompt) => {
+    console.log('cancelPrompt', prompt)
     prompt && await this.setState({cancelPromptId: reservationId})
     !prompt && await this.setState({cancelPromptId: null})
   }
@@ -311,10 +310,11 @@ class AdminView extends React.Component {
           <div>
             {this.state.displayAdminPanel &&
               <AdminEdit
-              cancelReservation={this.cancelReservation}
+              updateReservation={this.updateReservation}
               cancelPrompt={this.cancelPrompt}
               cancelPromptId={this.state.cancelPromptId}
               displayAdminPanel={this.state.displayAdminPanel}
+              displayAdminReservationsList={this.state.displayAdminReservationsList}
               eventId={this.state.eventId}
               editPickupParty={this.editPickupParty}
               filterString={this.state.filterString}
@@ -327,7 +327,6 @@ class AdminView extends React.Component {
               makeSelection={this.makeSelection}
               reservations={this.state.reservations}
               searchItems={this.searchItems}
-              displayAdminReservationsList={this.state.displayAdminReservationsList}
               shows={this.state.showsWithResAndCap}
               thisCapacity={this.state.thisCapacity}
               thisShow={this.state.thisShow}

@@ -55,9 +55,8 @@ const ReservationsList = (props) => {
             </div>
           </div>
         </li>
-        }
-        )
-        : 'Reservations not found'}
+        })
+      : 'Reservations not found'}
     </div>
   )
 }
