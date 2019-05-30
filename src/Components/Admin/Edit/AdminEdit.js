@@ -6,7 +6,7 @@ import AdminEditPanel from './AdminEditPanel'
 import AdminReservationsList from './AdminReservationsList'
 
 const AdminEdit = (props) => {
-  let { displayAdminPanel, displayList, editPickupParty, eventId, filterString, getReservations, makeSelection, pickupLocationId, pickupLocations, pickupParties, reservations, searchItems, shows, toggleProperty, theseParties, theseLocations, thisCapacity, thisLocation, thisPickupParty, thisShow } = props
+  let { cancelPrompt, cancelPromptId, cancelReservation, displayAdminPanel, displayList, editPickupParty, eventId, filterString, getReservations, makeSelection, pickupLocationId, pickupLocations, pickupParties, reservations, searchItems, shows, toggleProperty, theseParties, theseLocations, thisCapacity, thisLocation, thisPickupParty, thisShow } = props
 
   const newCapacity = React.createRef()
   const newPrice = React.createRef()
@@ -136,6 +136,9 @@ const AdminEdit = (props) => {
               <AdminReservationsList
                 filterString={filterString}
                 reservations={reservations}
+                cancelReservation={cancelReservation}
+                cancelPrompt={cancelPrompt}
+                cancelPromptId={cancelPromptId}
               />
             </div>
           </ul>

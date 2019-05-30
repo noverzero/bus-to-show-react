@@ -17,8 +17,7 @@ const AdminEditPanel = (props) => {
     const newValue = ref.current.value
     console.log('pickupPartyId, field, newValue', pickupPartyId, field, newValue)
     ref.current.value = null
-    const updatedParty = editPickupParty(pickupPartyId, field, newValue)
-    // return updatedParty === null ? '' : ''
+    editPickupParty(pickupPartyId, field, newValue)
   }
 
   const handleChange =(event)=>{
@@ -147,7 +146,7 @@ const AdminEditPanel = (props) => {
             </div>
           </div>
         <div className="row">
-          <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>{resetStuff(); makeSelection('pickupLocationId', thisLocation.id, 'ReservationsList'); console.log('reservations', reservations);}}>Cancel a Reservation</button>
+          <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>{resetStuff(); makeSelection('pickupLocationId', pickupLocationId, 'ReservationsList')}}>Cancel a Reservation</button>
         </div>
       </li>
       }

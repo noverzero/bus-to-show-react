@@ -10,6 +10,7 @@ const fetchUrl = `http://localhost:3000`
 class AdminView extends React.Component {
 
   state = {
+    cancelPromptId: null,
     displayAdminPanel: false,
     displayAdminReservationsList: false,
     displayUserCheckin: false,
@@ -93,6 +94,7 @@ class AdminView extends React.Component {
   }
 
   getPickupParty = async () => {
+    console.log('getting pickup party', this.state.pickupLocationId, this.state.eventId)
     const response = await fetch(`${fetchUrl}/pickup_parties/findId`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -104,6 +106,7 @@ class AdminView extends React.Component {
       }
     })
     const fetchedParty = await response.json()
+    console.log('fetchedParty', fetchedParty)
     return fetchedParty
   }
 
@@ -118,6 +121,7 @@ class AdminView extends React.Component {
       }
     })
     const result = await response.json()
+    console.log('fetched reservations', result)
     return result
   }
 
@@ -133,9 +137,11 @@ class AdminView extends React.Component {
   }
 
   getReservations = async () => {
-    console.log('getting')
+    console.log('getting reservations')
     const thisPickupParty = await this.getPickupParty()
+    console.log('thisPickupParty', thisPickupParty)
     const reservations = await this.fetchReservationsForOneEvent(thisPickupParty.id)
+    console.log('reservations', reservations)
     this.setState({
       reservations,
       thisPickupParty,
@@ -278,6 +284,24 @@ class AdminView extends React.Component {
     }
   }
 
+  cancelReservation = (reservation) => {
+    console.log('canceling')
+    this.cancelPrompt(reservation.id, false)
+    fetch(`${fetchUrl}/reservations/${reservation.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({status: 4}),
+      headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    this.getReservations()
+  }
+
+  cancelPrompt = async(reservationId, prompt) => {
+    prompt && await this.setState({cancelPromptId: reservationId})
+    !prompt && await this.setState({cancelPromptId: null})
+  }
+
   render (){
     let { isStaff, isAdmin, isDriver } = this.props.userDetails
     return(
@@ -287,6 +311,9 @@ class AdminView extends React.Component {
           <div>
             {this.state.displayAdminPanel &&
               <AdminEdit
+              cancelReservation={this.cancelReservation}
+              cancelPrompt={this.cancelPrompt}
+              cancelPromptId={this.state.cancelPromptId}
               displayAdminPanel={this.state.displayAdminPanel}
               eventId={this.state.eventId}
               editPickupParty={this.editPickupParty}

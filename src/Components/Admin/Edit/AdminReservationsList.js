@@ -3,7 +3,7 @@ import '../../../App.css';
 
 const AdminReservationsList = (props) => {
 
-  let { filterString, reservations } = props
+  let { filterString, reservations, cancelReservation, cancelPrompt, cancelPromptId } = props
 
   reservations = reservations.sort((a, b) => {
     let aLastName = a.willCallLastName.toLowerCase()
@@ -37,15 +37,26 @@ const AdminReservationsList = (props) => {
               <br />
               <strong style={{fontSize: '18px'}}>{orderedByEmail}</strong>
               </div>
-            <button type="button" className="btn admin-detail-btn btn-block my-2" onClick={e=>{console.log('cancel this', reservation.id, reservation.status);}}>
-              <span style={{color: 'red'}}>Cancel this Reservation</span>
-            </button>
+              {cancelPromptId === reservation.id ?
+                <div className="alert alert-danger" role="alert" style={{color: 'red'}}>
+                <strong>Cancel this reservation?</strong><br/>
+                  <button onClick={e=>cancelReservation(reservation)} type="button" className="btn btn-success ml-1 px-2" style={{width:"4em"}}>Yes</button>
+                  <button onClick={e=>cancelPrompt(reservation.id, false)} type="button" className="btn btn-danger ml-1 px-2" style={{width:"4em"}}>No</button>
+                </div>
+              : status === 1 ? 
+                  <button type="button" 
+                    className="btn admin-detail-btn btn-block my-2" 
+                    onClick={e=>{cancelPrompt(reservation.id, true)}}>
+                    <span style={{color: 'red'}}>Cancel this Reservation</span>
+                  </button>
+                : status === 2 ? 
+                  <span style={{color: 'grey'}}>Reservation Checked In</span>
+                  :
+                  <span style={{color: 'grey'}}>Reservation Cancelled</span>}
             </div>
           </div>
-              
         </li>
-        }
-        )
+        })
         : 'Reservations not found'}
     </div>
   )
