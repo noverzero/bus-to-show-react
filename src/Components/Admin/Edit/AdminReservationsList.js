@@ -24,7 +24,6 @@ const AdminReservationsList = (props) => {
         filterRezzies.map(reservation => {
           const { willCallFirstName, willCallLastName, orderedByFirstName, orderedByLastName, orderedByEmail, status } = reservation
           const statusColor = status > 2 ? 'grey' : ''
-          console.log('updated status', reservation.status);
           return <li className="list-group-item admin-list-item"
             key={reservation.id}
             id={reservation.id}
