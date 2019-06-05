@@ -963,7 +963,7 @@ class App extends Component {
     })
     const json = await response.json()
     await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
-    this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [] })
+    this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [], ticketQty: null })
     window.removeEventListener("beforeunload", this.clearCartOnClose)
   }
 
