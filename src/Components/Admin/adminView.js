@@ -2,16 +2,17 @@ import React from 'react'
 import '../../App.css';
 import UserCheckin from './userCheckin'
 import AdminEdit from './Edit/AdminEdit'
-import { async } from 'q';
 
-// const fetchUrl = `http://localhost:3000`
+ //const fetchUrl = `http://localhost:3000`
 //const fetchUrl = `https://bts-test-backend.herokuapp.com`
-const fetchUrl = `https://innocuous-junior.herokuapp.com`
+ const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class AdminView extends React.Component {
 
   state = {
+    cancelPromptId: null,
     displayAdminPanel: false,
+    displayAdminReservationsList: false,
     displayUserCheckin: false,
     displayList: 'ShowList',
     eventId: null,
@@ -84,7 +85,7 @@ class AdminView extends React.Component {
     else if (next === 'ReservationsList') {
       this.getReservations()
       this.findPickup(targetId)
-      this.refreshReservations()
+      !this.state.displayAdminPanel && this.refreshReservations()
     }
     else if (next === 'AdminEditPanel') {
       this.getReservations()
@@ -93,6 +94,7 @@ class AdminView extends React.Component {
   }
 
   getPickupParty = async () => {
+    console.log('getPickupParty')
     const response = await fetch(`${fetchUrl}/pickup_parties/findId`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -108,6 +110,7 @@ class AdminView extends React.Component {
   }
 
   fetchReservationsForOneEvent = async(pickupPartyId)=>{
+    console.log('fetchReservationsForOneEvent')
     const response = await fetch(`${fetchUrl}/reservations/findOrders`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -133,12 +136,14 @@ class AdminView extends React.Component {
   }
 
   getReservations = async () => {
+    console.log('getting reservations');
     const thisPickupParty = await this.getPickupParty()
     const reservations = await this.fetchReservationsForOneEvent(thisPickupParty.id)
     this.setState({
       reservations,
       thisPickupParty,
       thisCapacity: thisPickupParty.capacity})
+    console.log('reservations set');
   }
 
   refreshReservations = (stop) => {
@@ -214,6 +219,7 @@ class AdminView extends React.Component {
   }
 
   getReservationCountsForAllShows = async () => {
+    console.log('getting all reservations');
     let showsArr = this.props.shows.map(show=>{
       const pickupParties = this.state.pickupParties.filter(pickupParty=>{
         return pickupParty.eventId === show.id
@@ -276,6 +282,25 @@ class AdminView extends React.Component {
     }
   }
 
+  updateReservation = async (reservation, status) => {
+    status = ~~status
+    this.cancelPrompt(reservation.id, false)
+    await fetch(`${fetchUrl}/reservations/${reservation.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({status}),
+      headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    this.getReservations()
+  }
+
+  cancelPrompt = async(reservationId, prompt) => {
+    console.log('cancelPrompt', prompt)
+    prompt && await this.setState({cancelPromptId: reservationId})
+    !prompt && await this.setState({cancelPromptId: null})
+  }
+
   render (){
     let { isStaff, isAdmin, isDriver } = this.props.userDetails
     return(
@@ -285,11 +310,16 @@ class AdminView extends React.Component {
           <div>
             {this.state.displayAdminPanel &&
               <AdminEdit
+              updateReservation={this.updateReservation}
+              cancelPrompt={this.cancelPrompt}
+              cancelPromptId={this.state.cancelPromptId}
               displayAdminPanel={this.state.displayAdminPanel}
+              displayAdminReservationsList={this.state.displayAdminReservationsList}
               eventId={this.state.eventId}
               editPickupParty={this.editPickupParty}
               filterString={this.state.filterString}
               getPickupParty={this.getPickupParty}
+              getReservations={this.getReservations}
               displayList={this.state.displayList}
               pickupLocations={this.state.pickupLocations}
               pickupLocationId={this.state.pickupLocationId}

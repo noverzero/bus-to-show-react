@@ -23,7 +23,7 @@ ReactGA.pageview('/app');
 
 // const fetchUrl = `http://localhost:3000`
 //const fetchUrl = `https://bts-test-backend.herokuapp.com`
-  const fetchUrl = `https://innocuous-junior.herokuapp.com`
+ const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -214,13 +214,16 @@ class App extends Component {
     const oldPickup = parseInt(newState.pickupPartyId)
     if(!timer){
       this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
+      newState.ticketQuantity = 0
+      this.ticketTimer(false)
+      this.setState({ticketQuantity: newState.ticketQuantity})
     }
 
     newState.pickupPartyId = parseInt(event.target.value)
     if (event.target.value === "Select a Departure Option..."){
       newState.displayQuantity = false
       newState.ticketsAvailable = null
-      newState.ticketQuantity = null
+      newState.ticketQuantity = 0
       newState.displayAddBtn = false
 
       this.setState({
@@ -235,8 +238,8 @@ class App extends Component {
     if (parseInt(newState.ticketQuantity)) {
       console.log('newState.ticketQuantity before', newState.ticketQuantity)
       this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
+      newState.ticketQuantity = 0
       console.log('newState.ticketQuantity after', newState.ticketQuantity)
-      newState.ticketQuantity = null
       newState.displayQuantity = false
       newState.displayAddBtn = false
       this.setState({
@@ -245,9 +248,9 @@ class App extends Component {
         displayAddBtn: newState.displayAddBtn
       })
     }
-    else if (parseInt(event.target.value) !== newState.pickupPartyId) {
+    else if (parseInt(event.target.value) !== oldPickup) {
       console.log('when does (parseInt(event.target.value) !== newState.pickupPartyId)?')
-      newState.ticketQuantity = null
+      newState.ticketQuantity = 0
       newState.displayQuantity = false
       newState.displayAddBtn = false
       this.setState({
@@ -310,13 +313,15 @@ class App extends Component {
       return availableTickets
   }
 
-  selectTicketQuantity = event => {
+  selectTicketQuantity = (event) => {
+    console.log('event.target.value', ~~event.target.value)
     this.ticketTimer(false)
     const newState = { ...this.state }
     let oldQty = 0
     if (parseInt(newState.ticketQuantity) > 0){
+      console.log('newState.ticketQuantity', newState.ticketQuantity)
       oldQty = parseInt(newState.ticketQuantity)
-    }
+    } else { console.log('newState.ticketQuantity else', newState.ticketQuantity)}
     const pickupPartyId = parseInt(newState.pickupPartyId)
 
     oldQty > 0 && this.clearTicketsInCart(pickupPartyId, oldQty)
@@ -325,7 +330,7 @@ class App extends Component {
     const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
     const subTotal = (Number(pickupLocation.basePrice) * Number(event.target.value))
     const total = ((Number(subTotal) * .1) + Number(subTotal)).toFixed(2)
-    newState.ticketQuantity = 0 || parseInt(event.target.value)
+    newState.ticketQuantity = ~~event.target.value
     newState.totalCost = total
     this.setState({
       displayAddBtn: newState.displayAddBtn,
@@ -333,8 +338,8 @@ class App extends Component {
       totalCost: newState.totalCost
     })
     this.addTicketsInCart(pickupPartyId, newState.ticketQuantity)
-    this.ticketTimer(true, 120000, false) // production
-    // this.ticketTimer(true, 30000, false) // testing
+     this.ticketTimer(true, 120000, false) // production
+    //this.ticketTimer(true, 30000, false) // testing
     window.addEventListener("beforeunload", this.clearCartOnClose)
   }
 
@@ -685,6 +690,7 @@ class App extends Component {
       newState.ticketQuantity = null
       newState.displayQuantity = false
       newState.displayAddBtn = false
+      this.ticketTimer(false)
       this.setState({
         ticketQuantity: newState.ticketQuantity,
         displayQuantity: newState.displayQuantity,
@@ -843,8 +849,8 @@ class App extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-    this.ticketTimer(true, 600000, true) // production
-    // this.ticketTimer(true, 30000, true) // testing
+     this.ticketTimer(true, 360000, true) // production
+    //this.ticketTimer(true, 30000, true) // testing
   }
 
 // functions to handle setting and clearing of timer and incart qtys
@@ -852,15 +858,17 @@ class App extends Component {
     let newState = {...this.state}
     const pickupPartyId = parseInt(newState.pickupPartyId)
     let event = { target: { value: pickupPartyId } }
-
     if (timerOn) {
+      console.log('ticketTimer a', timerOn, time, addedToCart )
       const newTicketTimer = addedToCart ?
           setTimeout(() => {
+            console.log('ticketTimer b', timerOn, time, addedToCart )
             this.confirmedRemove()
           }, time)
         :
           setTimeout(() => {
             //this.confirmedRemove();
+            console.log('ticketTimer c', timerOn, time, addedToCart )
             this.selectPickupLocationId(event, true)
           }, time)
 
@@ -868,6 +876,7 @@ class App extends Component {
       this.setState({ ticketTimer: newState.ticketTimer })
     }
     else {
+      console.log('ticketTimer d', timerOn, time, addedToCart )
       clearTimeout(this.state.ticketTimer)
       newState.ticketTimer = null
       this.setState({ ticketTimer: newState.ticketTimer })
@@ -876,10 +885,13 @@ class App extends Component {
 
   addTicketsInCart = async (pickupPartyId, ticketQty) => {
     if (pickupPartyId && ticketQty){
+      let timeStamp = new Date()
+      console.log('timeStamp', timeStamp)
       await fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
         method: 'PATCH',
         body: JSON.stringify({
           inCart: ticketQty,
+          updated_at: timeStamp
         }),
         headers: {
           'Content-Type': 'application/json'
@@ -889,21 +901,24 @@ class App extends Component {
   }
 
   clearTicketsInCart = async (pickupPartyId, ticketQty) => {
-    let newState = {...this.state}
+    //let newState = {...this.state}
     if (pickupPartyId && ticketQty){
+      console.log('clearing ticketQty', ticketQty)
+      let timeStamp = new Date()
       await fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
         method: 'PATCH',
         body: JSON.stringify({
           inCart: parseInt(ticketQty) * -1,
+          updated_at: timeStamp
         }),
         headers: {
           'Content-Type': 'application/json'
         }
       })
     }
-    newState.ticketQuantity = 0
-    this.ticketTimer(false)
-    this.setState({ticketQuantity: newState.ticketQuantity})
+    // newState.ticketQuantity = 0
+    // this.ticketTimer(false)
+    // this.setState({ticketQuantity: newState.ticketQuantity})
     return
   }
 
@@ -933,8 +948,8 @@ class App extends Component {
     if (err) {
       console.log('purchase error', err)
       await this.ticketTimer(false)
-      this.ticketTimer(true, 600000, true) // production
-      // await this.ticketTimer(true, 30000, true) //testing
+       await this.ticketTimer(true, 360000, true) // production
+       //await this.ticketTimer(true, 30000, true) //testing
       return this.setState({purchaseFailed: true})
     }
     const cartObj = this.state.cartToSend
@@ -948,7 +963,7 @@ class App extends Component {
     })
     const json = await response.json()
     await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
-    this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [] })
+    this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [], ticketQuantity: null })
     window.removeEventListener("beforeunload", this.clearCartOnClose)
   }
 
@@ -1091,6 +1106,7 @@ class App extends Component {
     const pickupPartyId = parseInt(newState.pickupPartyId)
     const ticketQty = parseInt(newState.ticketQuantity)
     this.clearTicketsInCart(pickupPartyId, ticketQty)
+    this.ticketTimer(false)
 
     newState.inCart = []
     newState.displaySuccess = false
@@ -1099,6 +1115,7 @@ class App extends Component {
     newState.displayQuantity = false
     newState.displayAddBtn = false
     newState.startTimer = false
+    newState.ticketQuantity = 0
     newState.pickupLocationId = null
     newState.validated = false
 
@@ -1110,7 +1127,8 @@ class App extends Component {
       displayWarning: newState.displayWarning,
       displayQuantity: newState.displayQuantity,
       displayAddBtn: newState.displayAddBtn,
-      startTimer: newState.startTimer
+      startTimer: newState.startTimer,
+      ticketQuantity: newState.ticketQuantity
     })
     window.removeEventListener("beforeunload", this.clearCartOnClose)
 
