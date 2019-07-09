@@ -12,8 +12,9 @@ const Cart = (props) => {
   const showInfo = props.shows.find(show => parseInt(show.id) === parseInt(cTSendId))
 
   let savings = Number(props.afterDiscountObj.totalSavings)
-  let cost = Number(props.totalCost - savings)
-  let totalCost = cost.toFixed(2)
+  let costAfterSavings = Number(props.totalCost - savings)
+  let finalTotalCost = costAfterSavings.toFixed(2)
+  console.log('finalTotalCost ', finalTotalCost, 'costAfterSavings ', costAfterSavings, 'props.totalCost ', props.totalCost )
 
   const maskPhoneInput = (e) => {
     var part = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
@@ -107,7 +108,7 @@ const Cart = (props) => {
                     showsInCart={props.showsInCart}
                     ticketPrice={props.ticketPrice}
                     ticketQuantity={props.ticketQuantity}
-                    totalCost={Number(props.totalCost).toFixed(2)} />
+                    totalCost={props.totalCost} />
                 </div>
               </div>
               <div className="alert alert-warning">Cart will reset after 6 minutes</div>
@@ -241,14 +242,14 @@ const Cart = (props) => {
                               purchase={props.purchase}
                               afterDiscountObj={props.afterDiscountObj}
                               ticketTimer={props.ticketTimer}
-                              totalCost={totalCost}
+                              totalCost={props.totalCost}
                               showsInCart={props.showsInCart}
                               invalidOnSubmit={props.invalidOnSubmit}>
                             </Checkout>
                           </div>
                           <div className="cartTotal">
                             <h3>Cart Total:
-                                <span className="badge badge-success">{`$${totalCost}`}</span>
+                                <span className="badge badge-success">{`$${props.totalCost}`}</span>
                             </h3>
                           </div>
                         </div>

@@ -21,9 +21,9 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-// const fetchUrl = `http://localhost:3000`
+ const fetchUrl = `http://localhost:3000`
 //const fetchUrl = `https://bts-test-backend.herokuapp.com`
- const fetchUrl = `https://innocuous-junior.herokuapp.com`
+ //const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -100,6 +100,7 @@ class App extends Component {
     googleResponse: null,
     inCart: [],
     invalidFields: {},
+    partyPrice: 0,
     pickupLocationId: null,
     pickupPartyId: null,
     purchaseFailed: false,
@@ -274,6 +275,7 @@ class App extends Component {
 
     let numArray = []
 
+    let matchedPartyPrice = matchedParty.partyPrice
     if (matchedParty) {
       const availableTickets = await this.refreshAvailableTickets(matchedParty.id)
       if (availableTickets < 1) newState.ticketsAvailable = []
@@ -287,6 +289,7 @@ class App extends Component {
     }
     this.setState({
       ticketsAvailable: newState.ticketsAvailable,
+      partyPrice: matchedPartyPrice,
       pickupLocationId: newState.pickupLocationId,
       pickupPartyId: newState.pickupPartyId,
       firstBusLoad: newState.firstBusLoad,
@@ -327,8 +330,7 @@ class App extends Component {
     oldQty > 0 && this.clearTicketsInCart(pickupPartyId, oldQty)
     event.target.value && (newState.displayAddBtn = true)
 
-    const pickupLocation = newState.pickupLocations.filter(location => parseInt(location.id) === parseInt(this.state.pickupLocationId))[0]
-    const subTotal = (Number(pickupLocation.basePrice) * Number(event.target.value))
+    const subTotal = (Number(newState.partyPrice) * Number(event.target.value))
     const total = ((Number(subTotal) * .1) + Number(subTotal)).toFixed(2)
     newState.ticketQuantity = ~~event.target.value
     newState.totalCost = total
@@ -800,7 +802,8 @@ class App extends Component {
     const ticketQuantity = parseInt(this.state.ticketQuantity)
     const totalSavings = parseInt(this.state.afterDiscountObj.totalSavings)
     const processingFee = Number((basePrice * ticketQuantity) * (0.1))
-    const cost = ((basePrice * ticketQuantity) - totalSavings + processingFee)
+    //const cost = ((this.state.totalCost * ticketQuantity) - totalSavings + processingFee)
+    const cost = this.state.totalCost
     const sPickupId = parseInt(this.state.pickupLocationId)
     const sEventId = parseInt(this.state.displayShow.id)
     const pickupParty = this.state.assignedParties.find(party => party.pickupLocationId === sPickupId && party.eventId === sEventId)
@@ -808,7 +811,7 @@ class App extends Component {
     const lastDepartureTime = moment(pickupParty.lastBusDepartureTime, 'hhmm').format('h:mm')
 
     newState.purchaseSuccessful = false
-    newState.totalCost = cost.toFixed(2)
+    //newState.totalCost =
     newState.cartToSend.eventId = null
     newState.cartToSend.pickupLocationId = null
     newState.cartToSend.firstName = ''
