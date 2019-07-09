@@ -135,7 +135,7 @@ const ShowDetailView = (props) => {
                     {props.displayAddBtn && props.displayQuantity ?
                       <div>
                         <h3><span className="badge badge-success">
-                          Total: ${((props.assignedParties.map(location => location.partyPrice.toFixed())[0]) * (props.ticketQuantity) * 1.1).toFixed(2)}
+                          Total: ${props.totalCost}
                           {props.pickupLocation}
                         </span></h3>
                       </div> : ''}
