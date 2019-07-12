@@ -11,6 +11,11 @@ margin: 0px;
 padding: 0px;
 }
 
+.headliner-img {
+    max-width:100%;
+    height:auto;
+}
+
 /* Admin Styling */
 
 .admin-list-header {
@@ -465,7 +470,12 @@ font-size: 20px;
 }
 
 .memberParagraph {
-font-size: 15px
+font-size: 15px;
+}
+
+.conactText {
+  font-size: 8px;
+  color: #ff420f;
 }
 
 .aboutUsPage {
@@ -506,7 +516,7 @@ align-items: center;
 height: 100%;
 width: 100%;
 margin-left: 1.5vw;
-opacity: .75;
+opacity: .90;
 }
 
 .bts-logo-sDV {
