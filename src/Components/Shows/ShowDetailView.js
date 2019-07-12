@@ -80,7 +80,7 @@ const ShowDetailView = (props) => {
                                 <option
                                   key={location.id}
                                   id={location.id}
-                                  value={location.id}>{moment(location.lastBusDepartureTime, 'LT').format('h:mm A')} || {location.LocationName} - ${location.partyPrice.toFixed(2)} each
+                                  value={location.id}>{`${location.firstBusLoadTime ? `${moment(location.firstBusLoadTime, 'LT').format('h:mm A')} -` : ``}`} {moment(location.lastBusDepartureTime, 'LT').format('h:mm A')} || {location.LocationName} - ${location.partyPrice.toFixed(2)} each
                             </option>
                               )
                             })
