@@ -16,6 +16,20 @@ padding: 0px;
     height:auto;
 }
 
+
+.dropdown-select {
+  width: 100%;
+  overflow: visible;
+  white-space: pre;
+  text-overflow: normal;
+  word-wrap: break-word;
+  -webkit-appearance: none;
+}
+
+.dropdown-option {
+  border: solid 1px #DDDDDD;
+}
+
 /* Admin Styling */
 
 .admin-list-header {
