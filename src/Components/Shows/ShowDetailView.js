@@ -39,12 +39,13 @@ const ShowDetailView = (props) => {
                       <div>
                         <div className='row'>
                           <div className="col-md-12">
-                            {<p>
-                              We came from the future to save the future by reducing the impaired driving and fuel consumption that results from events.  All you have to do is ride.
-                              <br />
-                              <br />
-                              Bus to Show is a Colorado Nonprofit Corporation with the ability to accept 501(c)(3) tax-exempt donations through its fiscal sponsor partnership with The Nowak Society.
-                            </p>
+                            {
+                              <p>
+                                Bus to Show was delivered to the present through intertemporal telepathic communication (ITC) from the future (13 years from now (the 5th year of the convergence)) as part of a strategy to implement systems in the past (present) designed to save the future (of existence) by reducing the impaired driving (preventing tragic disruptions in the trajectory of life energies embodied by future pivotal leaders) and fuel consumption  that results from events (acceleration of the consequences of climate change).  All you have to do be part of the solution, is ride the bus.
+                                <br />
+                                <br />
+                                Bus to Show is a Colorado Nonprofit Corporation with the ability to accept 501(c)(3) tax-exempt donations through its fiscal sponsor partnership with The Nowak Society.
+                              </p>
                             }
                           </div>
                         </div>
@@ -72,12 +73,14 @@ const ShowDetailView = (props) => {
                     <div className='mt-2'>Departure Options</div>
                     <form className="needs-validation">
                       <div className="form-group">
-                        <select id="departureOption" className={`custom-select mt-2 ${props.displayQuantity ? 'is-valid' : ''}`} onChange={props.selectPickupLocationId} required>
-                          <option id="select" value="Select a Departure Option..." >Select a Departure Option...</option>
+                      <MediaQuery minWidth={700}>
+                        <select id="departureOption" className={`custom-select dropdown-select dropdown-option mt-2 ${props.displayQuantity ? 'is-valid' : ''} `} onChange={props.selectPickupLocationId}  required>
+                          <option id="select" value="Select a Departure Option..." >Select a Departure Stoption...</option>
                           {props.assignedParties ?
                             props.assignedParties.map(location => {
                               return (
                                 <option
+                                  className="dropdown-option"
                                   key={location.id}
                                   id={location.id}
                                   value={location.id}>{`${location.firstBusLoadTime ? `${moment(location.firstBusLoadTime, 'LT').format('h:mm A')} -` : ``}`} {moment(location.lastBusDepartureTime, 'LT').format('h:mm A')} || {location.LocationName} - ${location.partyPrice.toFixed(2)} each
@@ -86,6 +89,29 @@ const ShowDetailView = (props) => {
                             })
                             : ''}
                         </select>
+                        </MediaQuery>
+                        <MediaQuery maxWidth={699}>
+                        <div>
+                          <div id="departureOption" className={`mt-2 ${props.displayQuantity ? 'is-valid' : ''} `} onChange={props.selectPickupLocationId}  required>
+                            {props.assignedParties ? props.assignedParties.map(location => {
+                                return (
+                                  <div className="radio btn-block-admin border-top border-bottom small pt-1"  key={location.id}>
+                                    <label>
+                                      <input
+                                      className=""
+                                      type="radio"
+                                      name="optradio"
+                                      key={location.id}
+                                      id={location.id}
+                                      value={location.id}/>{`${location.firstBusLoadTime ? `${moment(location.firstBusLoadTime, 'LT').format('h:mm A')} -` : ``}`} {moment(location.lastBusDepartureTime, 'LT').format('h:mm A')} || {location.LocationName} - ${location.partyPrice.toFixed(2)} each
+                                    </label>
+                                  </div>
+                                )
+                              })
+                              : ''}
+                          </div>
+                        </div>
+                        </MediaQuery>
                       </div>
                     </form>
                   </div>

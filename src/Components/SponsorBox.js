@@ -16,11 +16,12 @@ const SponsorBox = (props) => {
         <div className="row mt-3">
           <div className="col-md-12">
             <p>
-              The concept for Bus to Show was conceived by our founder several years in the future, and then planted in the mind of his younger self (2007) through inter-temporal-telepathy. Bus to Show is, at its core, designed to save the lives of a few future political and spiritual leaders, who would otherwise have been killed in their youth by impaired drivers on their way home from concerts. At the same time, Bus to Show works to reduce the amount of fuel consumption that results from events, which, in turn, will delay the destruction of the Earth long enough for the saved leaders to come of-age and implement their plans for reaching a sustained equilibrium between industry and environment.
+              Bus to Show was delivered to the present through intertemporal telepathic communication (ITC) from the future (13 years from now (the 5th year of the convergence)) as part of a strategy to implement systems in the past (present) designed to save the future (of existence) by reducing the impaired driving (preventing tragic disruptions in the trajectory of life energies embodied by future pivotal leaders) and fuel consumption  that results from events (acceleration of the consequences of climate change).  All you have to do be part of the solution, is ride the bus.
               <br />
               <br />
               Bus to Show is a Colorado Nonprofit Corporation with the ability to accept 501(c)(3) tax-exempt donations through its fiscal sponsor partnership with The Nowak Society.
-          </p>
+            </p>
+
           </div>
         </div>
       </div>
