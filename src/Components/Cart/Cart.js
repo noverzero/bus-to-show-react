@@ -235,6 +235,7 @@ const Cart = (props) => {
                           <MediaQuery minWidth={800}>
                             <button onClick={props.removeFromCart} type="button" className="btn btn-outline-danger mr-1">Cancel</button>
                           </MediaQuery>
+                          {!props.purchasePending ?
                             <Checkout
                               cartToSend={props.cartToSend}
                               makePurchase={props.makePurchase}
@@ -247,6 +248,8 @@ const Cart = (props) => {
                               showsInCart={props.showsInCart}
                               invalidOnSubmit={props.invalidOnSubmit}>
                             </Checkout>
+                            : ''
+                          }
                           </div>
                           <div className="cartTotal">
                             <h3>Cart Total:
