@@ -41,6 +41,7 @@ const Cart = (props) => {
                     <div>
                       <h2>Thank you for your purchase to {showInfo.headliner} on {showInfo.date}!</h2>
                       <h4>You should receive a confirmation email shortly</h4>
+                      <h6>Please email reservations@bustoshow.org or call 844.BUS.2.SHO with any questions.</h6>
                       <MediaQuery maxWidth={799}>
                         <button
                           id='backToCalendar'
