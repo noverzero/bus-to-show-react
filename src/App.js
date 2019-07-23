@@ -1121,6 +1121,7 @@ class App extends Component {
     newState.ticketQuantity = 0
     newState.pickupLocationId = null
     newState.validated = false
+    newState.purchasePending = false
 
     this.setState({
       validated: newState.validated,
@@ -1131,7 +1132,9 @@ class App extends Component {
       displayQuantity: newState.displayQuantity,
       displayAddBtn: newState.displayAddBtn,
       startTimer: newState.startTimer,
-      ticketQuantity: newState.ticketQuantity
+      ticketQuantity: newState.ticketQuantity,
+      purchasePending: newState.purchasePending
+
     })
     window.removeEventListener("beforeunload", this.clearCartOnClose)
 

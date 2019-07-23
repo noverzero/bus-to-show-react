@@ -41,6 +41,7 @@ const Cart = (props) => {
                     <div>
                       <h2>Thank you for your purchase to {showInfo.headliner} on {showInfo.date}!</h2>
                       <h4>You should receive a confirmation email shortly</h4>
+                      <h6>Please email reservations@bustoshow.org or call 844.BUS.2.SHO with any questions.</h6>
                       <MediaQuery maxWidth={799}>
                         <button
                           id='backToCalendar'
@@ -234,6 +235,7 @@ const Cart = (props) => {
                           <MediaQuery minWidth={800}>
                             <button onClick={props.removeFromCart} type="button" className="btn btn-outline-danger mr-1">Cancel</button>
                           </MediaQuery>
+                          {!props.purchasePending ?
                             <Checkout
                               cartToSend={props.cartToSend}
                               makePurchase={props.makePurchase}
@@ -246,6 +248,8 @@ const Cart = (props) => {
                               showsInCart={props.showsInCart}
                               invalidOnSubmit={props.invalidOnSubmit}>
                             </Checkout>
+                            : ''
+                          }
                           </div>
                           <div className="cartTotal">
                             <h3>Cart Total:
