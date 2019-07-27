@@ -87,14 +87,17 @@ class App extends Component {
       picture:'',
       userDetails: {},
     },
-    // facebook: {
-    //   isLoggedIn: true,
-    //   userID: '',
-    //   name: 'Dustin Huth',
-    //   email:'dustin@thebasicsfund.org',
-    //   picture:'',
-    //   userDetails: {isAdmin: true},
-    // },
+    facebook: {
+      isLoggedIn: true,
+      userID: '',
+      name: 'Dustin Huth',
+      email:'dustin@thebasicsfund.org',
+      picture:'',
+      userDetails: {
+        isAdmin: true,
+        isStaff: true
+      },
+    },
     filterString: '',
     firstBusLoad: null,
     googleResponse: null,

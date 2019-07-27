@@ -6,12 +6,14 @@ import AdminEditPanel from './AdminEditPanel'
 import AdminReservationsList from './AdminReservationsList'
 
 const AdminEdit = (props) => {
-  let { cancelPrompt, cancelPromptId, updateReservation, displayAdminPanel, displayList, editPickupParty, eventId, filterString, getReservations, makeSelection, pickupLocationId, pickupLocations, pickupParties, reservations, searchItems, shows, toggleProperty, theseParties, theseLocations, thisCapacity, thisLocation, thisPickupParty, thisShow } = props
+  let { cancelPrompt, cancelPromptId, updateReservation, updateReservationName, displayAdminPanel, displayList, editPickupParty, eventId, filterString, getReservations, makeSelection, pickupLocationId, pickupLocations, pickupParties, reservations, searchItems, shows, toggleProperty, theseParties, theseLocations, thisCapacity, thisLocation, thisPickupParty, thisShow } = props
 
   const newCapacity = React.createRef()
   const newPrice = React.createRef()
   const newLoadTime = React.createRef()
   const newDepartureTime = React.createRef()
+
+
 
   let thisDate, thisHeadliner, thisLocationName
 
@@ -24,8 +26,8 @@ const AdminEdit = (props) => {
   )
 
   const displaySearch = (
-    displayList === 'AdminEditPanel' ? 
-    "none" : 
+    displayList === 'AdminEditPanel' ?
+    "none" :
     ""
   )
 
@@ -55,7 +57,7 @@ const AdminEdit = (props) => {
       <div>Cancel a Reservation<br/>
       **Please verify email address before canceling a reservation**
       </div>
-    )  
+    )
     else return ''
   }
 
@@ -77,7 +79,6 @@ const AdminEdit = (props) => {
     if(newPrice.current) newPrice.current.value = null
     if(newDepartureTime.current) newDepartureTime.current.value = null
     if(newLoadTime.current) newLoadTime.current.value = null
-    
   }
 
   const calcHeightVal = () => {
@@ -103,12 +104,12 @@ const AdminEdit = (props) => {
             </div>
             <div className="col-9 mb-3" >
               <form className="form-inline float-right">
-                <input 
-                className={"form-control search-bar"} 
-                onChange={searchItems} 
-                type="search" 
-                placeholder="Search..." 
-                aria-label="Search" 
+                <input
+                className={"form-control search-bar"}
+                onChange={searchItems}
+                type="search"
+                placeholder="Search..."
+                aria-label="Search"
                 style={{display: displaySearch}}
                 id="search" ></input>
               </form>
@@ -137,8 +138,14 @@ const AdminEdit = (props) => {
                 filterString={filterString}
                 reservations={reservations}
                 updateReservation={updateReservation}
+                updateReservationName={updateReservationName}
                 cancelPrompt={cancelPrompt}
                 cancelPromptId={cancelPromptId}
+                displayNameChange={props.displayNameChange}
+                openNameChangeForm={props.openNameChangeForm}
+                changeName={props.changeName}
+                displayVerifyNameChangePrompt={props.displayVerifyNameChangePrompt}
+                toggleVerifyNameChangePrompt={props.toggleVerifyNameChangePrompt}
               />
             </div>
           </ul>
@@ -153,7 +160,7 @@ const AdminEdit = (props) => {
                 getReservations={getReservations}
                 makeSelection={makeSelection}
                 newCapacity={newCapacity}
-                newPrice={newPrice} 
+                newPrice={newPrice}
                 newLoadTime={newLoadTime}
                 newDepartureTime={newDepartureTime}
                 pickupLocations={pickupLocations}

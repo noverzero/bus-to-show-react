@@ -15,8 +15,12 @@ class AdminView extends React.Component {
     displayAdminReservationsList: false,
     displayUserCheckin: false,
     displayList: 'ShowList',
+    displayNameChange: 0,
+    displayVerifyNameChangePrompt: 0,
     eventId: null,
     filterString: '',
+    newFirst: null,
+    newLast: null,
     pickupLocationId: null,
     pickupLocations: null,
     pickupParties: null,
@@ -34,6 +38,8 @@ class AdminView extends React.Component {
       pickupParties: pickupParties,
     })
   }
+
+
 
   getPickupParties = async () => {
     const response = await fetch(`${fetchUrl}/pickup_parties`, {
@@ -254,6 +260,7 @@ class AdminView extends React.Component {
   }
 
   editPickupParty = async (pickupPartyId, field, value) => {
+    console.log('editPickupParty value ' , value)
     if (!pickupPartyId || !field || !value) {
       return null
     }
@@ -280,6 +287,93 @@ class AdminView extends React.Component {
       })
       // return partyResponse
     }
+  }
+
+  openNameChangeForm = (e, reservationId) =>{
+    console.log('openNameChangeForm e.target', e.target)
+    const newState = {...this.state}
+    newState.displayNameChange = reservationId
+    newState.newFirst = ''
+    newState.newLast = ''
+    this.setState({
+      displayNameChange: newState.displayNameChange,
+      newFirst: newState.newFirst,
+      newLast: newState.newLast
+    })
+  }
+
+newName = (id, first, last) => {
+  this.reservationId = id
+  this.firstName = first
+  this.lastName = last
+ }
+
+
+ changeName = (event, reservationId)=>{
+    let newValue
+    let newState = {...this.state}
+    let newNewFirst = newState.newFirst
+    let newNewLast = newState.newLast
+
+
+    switch (event.target.id) {
+      case "willCallFirstName":
+        newValue = event.target.value.replace('', '')
+        event.target.value = newValue
+        console.log('willCallFirstName', newValue)
+        newNewFirst = newValue
+        this.setState({
+          newFirst: newNewFirst
+        })
+
+        break;
+      case "willCallLastName":
+        newValue = event.target.value.replace('', '')
+        event.target.value = newValue
+        console.log('willCallLastName', newValue)
+        newNewLast = newValue
+        this.setState({
+          newLast: newNewLast
+        })
+        break;
+      case "orderedByEmail":
+        newValue = event.target.value.replace(/[^A-Za-z:]/g, '')
+        event.target.value = newValue
+        break;
+      default:
+        break;
+    }
+    console.log('newValue in changeName::: ', newValue, 'newNewFirst', this.state.newFirst, 'newNewLast', this.state.newLast)
+  }
+
+  updateReservationName = async (reservationId) => {
+      const newState = {...this.state}
+      newState.displayNameChange = 0
+      this.setState({displayNameChange: newState.displayNameChange})
+
+      const newBody = {}
+      if (this.state.newFirst){
+        newBody.willCallFirstName = this.state.newFirst
+      }
+      if (this.state.newLast){
+        newBody.willCallLastName = this.state.newLast
+      }
+      console.log('body in patch and typeof', newBody, typeof newBody);
+      await fetch(`${fetchUrl}/reservations/${reservationId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(newBody),
+        headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+      this.getReservations()
+  }
+
+  toggleVerifyNameChangePrompt = (reservationId) => {
+    const newState = {...this.state}
+    newState.displayVerifyNameChangePrompt = reservationId
+    this.setState({displayVerifyNameChangePrompt: newState.displayVerifyNameChangePrompt})
+
   }
 
   updateReservation = async (reservation, status) => {
@@ -313,10 +407,15 @@ class AdminView extends React.Component {
               updateReservation={this.updateReservation}
               cancelPrompt={this.cancelPrompt}
               cancelPromptId={this.state.cancelPromptId}
+              changeName={this.changeName}
               displayAdminPanel={this.state.displayAdminPanel}
               displayAdminReservationsList={this.state.displayAdminReservationsList}
+              displayNameChange={this.state.displayNameChange}
+              displayVerifyNameChangePrompt={this.state.displayVerifyNameChangePrompt}
+              openNameChangeForm={this.openNameChangeForm}
               eventId={this.state.eventId}
               editPickupParty={this.editPickupParty}
+              updateReservationName={this.updateReservationName}
               filterString={this.state.filterString}
               getPickupParty={this.getPickupParty}
               getReservations={this.getReservations}
@@ -325,6 +424,8 @@ class AdminView extends React.Component {
               pickupLocationId={this.state.pickupLocationId}
               pickupParties={this.state.pickupParties}
               makeSelection={this.makeSelection}
+              newWillCallFirst={this.state.newWillCallFirst}
+              newWillCallLast={this.state.newWillCallLast}
               reservations={this.state.reservations}
               searchItems={this.searchItems}
               shows={this.state.showsWithResAndCap}
@@ -335,6 +436,7 @@ class AdminView extends React.Component {
               theseLocations={this.state.theseLocations}
               thisLocation={this.state.thisLocation}
               toggleProperty={this.toggleProperty}
+              toggleVerifyNameChangePrompt={this.toggleVerifyNameChangePrompt}
               />
             }
             {this.state.displayUserCheckin &&
