@@ -145,12 +145,12 @@ const AdminEditPanel = (props) => {
             </div>
           </div>
         <div className="row">
-          <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>{resetStuff(); makeSelection('pickupLocationId', pickupLocationId, 'ReservationsList')}}>Cancel a Reservation</button>
+          <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>{resetStuff(); makeSelection('pickupLocationId', pickupLocationId, 'ReservationsList')}}>Edit a Reservation</button>
         </div>
       </li>
       }
     </div>
-  
+
   )
 }
 

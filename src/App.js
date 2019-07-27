@@ -93,7 +93,10 @@ class App extends Component {
     //   name: 'Dustin Huth',
     //   email:'dustin@thebasicsfund.org',
     //   picture:'',
-    //   userDetails: {isAdmin: true},
+    //   userDetails: {
+    //     isAdmin: true,
+    //     isStaff: true
+    //   },
     // },
     filterString: '',
     firstBusLoad: null,
