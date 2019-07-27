@@ -75,7 +75,7 @@ const ShowDetailView = (props) => {
                       <div className="form-group">
                       <MediaQuery minWidth={700}>
                         <select id="departureOption" className={`custom-select dropdown-select dropdown-option mt-2 ${props.displayQuantity ? 'is-valid' : ''} `} onChange={props.selectPickupLocationId}  required>
-                          <option id="select" value="Select a Departure Option..." >Select a Departure Stoption...</option>
+                          <option id="select" value="Select a Departure Option..." >Select a Departure Option...</option>
                           {props.assignedParties ?
                             props.assignedParties.map(location => {
                               return (
