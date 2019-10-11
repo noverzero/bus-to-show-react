@@ -52,6 +52,7 @@ class App extends Component {
     checked: false,
     confirmRemove: false,
     dateIcon: true,
+    discountApplied: false,
     displayAboutus: false,
     displayAddBtn: false,
     displayBios: false,
@@ -410,51 +411,15 @@ class App extends Component {
       const newState = {...this.state}
       newState.totalCost = json[0].totalPriceAfterDiscount
       newState.afterDiscountObj = json[0]
+      newState.discountApplied = true
       console.log(newState.afterDiscountObj)
-      this.setState(newState)
-
-      // else {
-      //     const result = await json.filter((discountObj) => discountObj.eventsId === eventId)[0]
-      //     const newState = { ...this.State }
-      //     if (!result) {
-      //       console.log('no match')
-      //       return "no match"
-      //     }
-      //     if (json && result.remainingUses <= 0) {
-      //       return 'this code is all used up!'
-      //     }
-      //     const expiration = Date.parse(result.expiresOn.toLocaleString('en-US'))
-      //     const today = Date.parse(new Date().toLocaleString('en-US', { timeZone: 'America/Denver' }))
-      //
-      //     if (expiration < today) {
-      //       return 'this code is expired'
-      //     } else {
-      //       let priceWithoutFeesPerTicket = this.state.totalCost * 10 / 11 / ticketQuantity
-      //       let effectiveRate = (100 - result.percentage) / 100
-      //       const afterDiscountObj = {}
-      //
-      //       if (result.remainingUses >= ticketQuantity) {
-      //         afterDiscountObj.timesUsed = ticketQuantity * 1
-      //         afterDiscountObj.totalPriceAfterDiscount = priceWithoutFeesPerTicket * ticketQuantity * effectiveRate * 1.10
-      //         afterDiscountObj.totalSavings = this.state.totalCost - priceWithoutFeesPerTicket * ticketQuantity * effectiveRate * 1.10
-      //         afterDiscountObj.newRemainingUses = result.remainingUses - ticketQuantity
-      //
-      //         newState.afterDiscountObj = afterDiscountObj
-      //         newState.totalSavings = afterDiscountObj.totalSavings
-      //         this.setState({ afterDiscountObj: newState.afterDiscountObj, totalSavings: newState.totalSavings })
-      //       }
-      //       if (result.remainingUses < ticketQuantity) {
-      //         afterDiscountObj.timesUsed = result.remainingUses
-      //         afterDiscountObj.totalSavings = this.state.totalCost - (priceWithoutFeesPerTicket * (ticketQuantity - result.remainingUses) + priceWithoutFeesPerTicket * effectiveRate * result.remainingUses) * 1.10
-      //         afterDiscountObj.totalPriceAfterDiscount = (priceWithoutFeesPerTicket * (ticketQuantity - result.remainingUses) + priceWithoutFeesPerTicket * effectiveRate * result.remainingUses) * 1.10
-      //         afterDiscountObj.newRemainingUses = 0
-      //
-      //         newState.afterDiscountObj = afterDiscountObj
-      //         this.setState({ afterDiscountObj: newState.afterDiscountObj })
-      //       }
-      //     }
-      //   }
-      }
+      this.setState({
+        totalCost: newState.totalCost,
+        afterDiscountObj: newState.afterDiscountObj,
+        discountApplied: newState.discountApplied
+      })
+      console.log('this.state.discountApplied =>', this.state.discountApplied)
+    }
 
   }
 
@@ -1397,6 +1362,7 @@ class App extends Component {
                             checked={this.state.checked}
                             closeAlert={this.closeAlert}
                             confirmedRemove={this.confirmedRemove}
+                            discountApplied={this.state.discountApplied}
                             displayAddBtn={this.state.displayAddBtn}
                             displayBorder={this.state.displayBorder}
                             displayCart={this.state.displayCart}

@@ -213,7 +213,11 @@ const Cart = (props) => {
                               placeholder="Discount Code" />
                           </div>
                           <div className="col-md-4 mb-3">
-                            <button type="button" onClick={props.findDiscountCode} className="btn btn-outline-secondary">Apply</button>
+                            {!props.discountApplied ?
+                              <button type="button" onClick={props.findDiscountCode} className="btn btn-outline-secondary" >Apply</button>
+                              :
+                              <button type="button" onClick={props.findDiscountCode} className="btn btn-outline-secondary" disabled>Apply</button>
+                            }
                           </div>
                         </div>
 
