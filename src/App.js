@@ -401,48 +401,52 @@ class App extends Component {
 
     if(json.length){
       if(json[0].type === 420){
-        console.log( 'fuck yeah lets party!')
+        console.log( 'ok lets party!', json[0])
       } else {
-          const result = await json.filter((discountObj) => discountObj.eventsId === eventId)[0]
-          const newState = { ...this.State }
-          if (!result) {
-            console.log('no match')
-            return "no match"
-          }
-          if (json && result.remainingUses <= 0) {
-            return 'this code is all used up!'
-          }
-          const expiration = Date.parse(result.expiresOn.toLocaleString('en-US'))
-          const today = Date.parse(new Date().toLocaleString('en-US', { timeZone: 'America/Denver' }))
-
-          if (expiration < today) {
-            return 'this code is expired'
-          } else {
-            let priceWithoutFeesPerTicket = this.state.totalCost * 10 / 11 / ticketQuantity
-            let effectiveRate = (100 - result.percentage) / 100
-            const afterDiscountObj = {}
-
-            if (result.remainingUses >= ticketQuantity) {
-              afterDiscountObj.timesUsed = ticketQuantity * 1
-              afterDiscountObj.totalPriceAfterDiscount = priceWithoutFeesPerTicket * ticketQuantity * effectiveRate * 1.10
-              afterDiscountObj.totalSavings = this.state.totalCost - priceWithoutFeesPerTicket * ticketQuantity * effectiveRate * 1.10
-              afterDiscountObj.newRemainingUses = result.remainingUses - ticketQuantity
-
-              newState.afterDiscountObj = afterDiscountObj
-              newState.totalSavings = afterDiscountObj.totalSavings
-              this.setState({ afterDiscountObj: newState.afterDiscountObj, totalSavings: newState.totalSavings })
-            }
-            if (result.remainingUses < ticketQuantity) {
-              afterDiscountObj.timesUsed = result.remainingUses
-              afterDiscountObj.totalSavings = this.state.totalCost - (priceWithoutFeesPerTicket * (ticketQuantity - result.remainingUses) + priceWithoutFeesPerTicket * effectiveRate * result.remainingUses) * 1.10
-              afterDiscountObj.totalPriceAfterDiscount = (priceWithoutFeesPerTicket * (ticketQuantity - result.remainingUses) + priceWithoutFeesPerTicket * effectiveRate * result.remainingUses) * 1.10
-              afterDiscountObj.newRemainingUses = 0
-
-              newState.afterDiscountObj = afterDiscountObj
-              this.setState({ afterDiscountObj: newState.afterDiscountObj })
-            }
-          }
-        }
+        console.log('no response')
+        return
+      }
+      // else {
+      //     const result = await json.filter((discountObj) => discountObj.eventsId === eventId)[0]
+      //     const newState = { ...this.State }
+      //     if (!result) {
+      //       console.log('no match')
+      //       return "no match"
+      //     }
+      //     if (json && result.remainingUses <= 0) {
+      //       return 'this code is all used up!'
+      //     }
+      //     const expiration = Date.parse(result.expiresOn.toLocaleString('en-US'))
+      //     const today = Date.parse(new Date().toLocaleString('en-US', { timeZone: 'America/Denver' }))
+      //
+      //     if (expiration < today) {
+      //       return 'this code is expired'
+      //     } else {
+      //       let priceWithoutFeesPerTicket = this.state.totalCost * 10 / 11 / ticketQuantity
+      //       let effectiveRate = (100 - result.percentage) / 100
+      //       const afterDiscountObj = {}
+      //
+      //       if (result.remainingUses >= ticketQuantity) {
+      //         afterDiscountObj.timesUsed = ticketQuantity * 1
+      //         afterDiscountObj.totalPriceAfterDiscount = priceWithoutFeesPerTicket * ticketQuantity * effectiveRate * 1.10
+      //         afterDiscountObj.totalSavings = this.state.totalCost - priceWithoutFeesPerTicket * ticketQuantity * effectiveRate * 1.10
+      //         afterDiscountObj.newRemainingUses = result.remainingUses - ticketQuantity
+      //
+      //         newState.afterDiscountObj = afterDiscountObj
+      //         newState.totalSavings = afterDiscountObj.totalSavings
+      //         this.setState({ afterDiscountObj: newState.afterDiscountObj, totalSavings: newState.totalSavings })
+      //       }
+      //       if (result.remainingUses < ticketQuantity) {
+      //         afterDiscountObj.timesUsed = result.remainingUses
+      //         afterDiscountObj.totalSavings = this.state.totalCost - (priceWithoutFeesPerTicket * (ticketQuantity - result.remainingUses) + priceWithoutFeesPerTicket * effectiveRate * result.remainingUses) * 1.10
+      //         afterDiscountObj.totalPriceAfterDiscount = (priceWithoutFeesPerTicket * (ticketQuantity - result.remainingUses) + priceWithoutFeesPerTicket * effectiveRate * result.remainingUses) * 1.10
+      //         afterDiscountObj.newRemainingUses = 0
+      //
+      //         newState.afterDiscountObj = afterDiscountObj
+      //         this.setState({ afterDiscountObj: newState.afterDiscountObj })
+      //       }
+      //     }
+      //   }
       }
 
   }
@@ -913,6 +917,7 @@ class App extends Component {
   }
 
   addTicketsInCart = async (pickupPartyId, ticketQty) => {
+    console.log('addTicketsInCart fired')
     if (pickupPartyId && ticketQty){
       let timeStamp = new Date()
       console.log('timeStamp', timeStamp)
