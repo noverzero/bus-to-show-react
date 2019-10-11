@@ -406,6 +406,13 @@ class App extends Component {
         console.log('no response')
         return
       }
+      //we have a valid afterDiscountObj, let's apply it!
+      const newState = {...this.state}
+      newState.totalCost = json[0].totalPriceAfterDiscount
+      newState.afterDiscountObj = json[0]
+      console.log(newState.afterDiscountObj)
+      this.setState(newState)
+
       // else {
       //     const result = await json.filter((discountObj) => discountObj.eventsId === eventId)[0]
       //     const newState = { ...this.State }
