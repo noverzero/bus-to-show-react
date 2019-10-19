@@ -216,7 +216,7 @@ const Cart = (props) => {
                             {!props.discountApplied ?
                               <button type="button" onClick={props.findDiscountCode} className="btn btn-outline-secondary" >Apply</button>
                               :
-                              <button type="button" onClick={props.findDiscountCode} className="btn btn-outline-secondary" disabled>Apply</button>
+                              <button type="button" onClick={props.findDiscountCode} className="btn btn-outline-secondary" disabled>Your Savings: {props.afterDiscountObj.savings.toFixed(2)}</button>
                             }
                           </div>
                         </div>
@@ -242,6 +242,7 @@ const Cart = (props) => {
                           {!props.purchasePending ?
                             <Checkout
                               cartToSend={props.cartToSend}
+                              comp={props.comp}
                               makePurchase={props.makePurchase}
                               purchasePending={props.purchasePending}
                               validated={props.validated}

@@ -950,6 +950,7 @@ class App extends Component {
   }
 
   purchase = async (err) => {
+    console.log('purchase fired!')
     this.ticketTimer(false)
     if (err) {
       console.log('purchase error', err)
@@ -970,6 +971,26 @@ class App extends Component {
     const json = await response.json()
     await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
     this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [], ticketQuantity: null })
+    window.removeEventListener("beforeunload", this.clearCartOnClose)
+  }
+
+  comp = async (details) => {
+    console.log('comp fired!', this.state.afterDiscountObj)
+
+    this.ticketTimer(false)
+    const cartObj = this.state.cartToSend
+    cartObj.userId = this.state.facebook.userDetails.id
+    cartObj.discountCode = this.state.afterDiscountObj.id
+    const response = await fetch(`${fetchUrl}/orders`, {
+      method: 'POST',
+      body: JSON.stringify(cartObj),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const json = await response.json()
+    await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
+    this.setState({ purchaseSuccessful: true, purchaseFailed: false, purchasePending: false, displayQuantity: false, inCart: [], ticketQuantity: null, discountApplied: false })
     window.removeEventListener("beforeunload", this.clearCartOnClose)
   }
 
@@ -1182,12 +1203,14 @@ class App extends Component {
     newState.displayAddBtn = false
     newState.purchasePending = true
     newState.purchaseFailed = false
+    newState.discountApplied = false
 
     this.setState({
       purchaseFailed: newState.purchaseFailed,
       purchasePending: newState.purchasePending,
       displayQuantity: newState.displayQuantity,
-      displayAddBtn: newState.displayAddBtn
+      displayAddBtn: newState.displayAddBtn,
+      discountApplied: newState.discountApplied
     })
   }
 
@@ -1361,6 +1384,7 @@ class App extends Component {
                             cartToSend={this.state.cartToSend}
                             checked={this.state.checked}
                             closeAlert={this.closeAlert}
+                            comp={this.comp}
                             confirmedRemove={this.confirmedRemove}
                             discountApplied={this.state.discountApplied}
                             displayAddBtn={this.state.displayAddBtn}

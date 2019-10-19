@@ -39,13 +39,24 @@ export default class Checkout extends React.Component {
         this.props.validated ?
         this.props.makePurchase(e) :
         this.props.invalidOnSubmit(e)
+
+
     }
+
     return (
       <React.Fragment>
+        {!this.props.totalCost ?
+          <button
+            onClick={this.props.comp}
+            className={`btn mr-1 ${this.props.validated ? 'btn-outline-success' : 'btn-secondary'}`}
+          >
+          Happy Birthday
+          </button>
+          :
         <StripeCheckout
           token={this.onToken}
-          //stripeKey="pk_test_J0CdRMCGmBlrlOiGKnGgUEwT"
-          stripeKey="pk_live_WZRwtpLAFcufugeQKbtwKobm"
+          stripeKey="pk_test_J0CdRMCGmBlrlOiGKnGgUEwT"
+          //stripeKey="pk_live_WZRwtpLAFcufugeQKbtwKobm"
           name='Bus To Show'
           description='Receipt will be emailed after purchase'
           email={email}
@@ -54,13 +65,16 @@ export default class Checkout extends React.Component {
           metadata={this.props.cartToSend}
           disabled={this.props.validated ? false : true}
         >
+
           <button
             onClick={e=>selectResponse(e)}
             className={`btn mr-1 ${this.props.validated ? 'btn-outline-success' : 'btn-secondary'}`}
           >
           Purchase
           </button>
+
         </StripeCheckout>
+      }
       </React.Fragment>
     )
   }
