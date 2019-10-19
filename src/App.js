@@ -30,7 +30,8 @@ class App extends Component {
   state = {
     adminView: false,
     afterDiscountObj: {
-      totalSavings: 0
+      totalSavings: 0,
+      discountCodeId: 0
     },
     artistDescription: null,
     artistIcon: false,
@@ -960,6 +961,7 @@ class App extends Component {
       return this.setState({purchaseFailed: true})
     }
     const cartObj = this.state.cartToSend
+    cartObj.discountCode = this.state.afterDiscountObj.id
     cartObj.userId = this.state.facebook.userDetails.id
     const response = await fetch(`${fetchUrl}/orders`, {
       method: 'POST',
@@ -990,7 +992,7 @@ class App extends Component {
     })
     const json = await response.json()
     await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
-    this.setState({ purchaseSuccessful: true, purchaseFailed: false, purchasePending: false, displayQuantity: false, inCart: [], ticketQuantity: null, discountApplied: false })
+    this.setState({ purchaseSuccessful: true, purchaseFailed: false, purchasePending: false, displayQuantity: false, inCart: [], ticketQuantity: null, discountApplied: false, afterDiscountObj: {discountCodeId: null, totalSavings: 0} })
     window.removeEventListener("beforeunload", this.clearCartOnClose)
   }
 
@@ -1204,13 +1206,15 @@ class App extends Component {
     newState.purchasePending = true
     newState.purchaseFailed = false
     newState.discountApplied = false
+    newState.afterDiscountObj= {discountCodeId: null, totalSavings: 0}
 
     this.setState({
       purchaseFailed: newState.purchaseFailed,
       purchasePending: newState.purchasePending,
       displayQuantity: newState.displayQuantity,
       displayAddBtn: newState.displayAddBtn,
-      discountApplied: newState.discountApplied
+      discountApplied: newState.discountApplied,
+      afterDiscountObj: newState.afterDiscountObj
     })
   }
 
