@@ -382,7 +382,6 @@ class App extends Component {
   }
 
   findDiscountCode = async () => {
-    console.log('findDiscountCode fired')
     const discountCode = this.state.discountCode
     const ticketQuantity = this.state.ticketQuantity
     const eventId = this.state.displayShow.id
@@ -400,11 +399,10 @@ class App extends Component {
         }
     })
     const json = await response.json()
-    console.log('findDiscountCode json', json)
 
     if(json.length){
       if(json[0].type === 420){
-        console.log( 'ok lets party!', json[0])
+        console.log( 'ok lets party!')
       } else {
         console.log('no response')
         return
@@ -415,7 +413,6 @@ class App extends Component {
       newState.afterDiscountObj = json[0]
       newState.afterDiscountObj.totalPriceAfterDiscount = Number(json[0].totalPriceAfterDiscount.toFixed(2))
       newState.discountApplied = true
-      console.log(newState.afterDiscountObj)
       this.setState({
         totalCost: newState.totalCost,
         afterDiscountObj: newState.afterDiscountObj,
@@ -973,15 +970,12 @@ class App extends Component {
       }
     })
     const json = await response.json()
-    console.log('purchase orders response.json =>', json)
     await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
     this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [], ticketQuantity: null, discountApplied: false, afterDiscountObj: {discountCodeId: null, totalSavings: 0} })
     window.removeEventListener("beforeunload", this.clearCartOnClose)
   }
 
   comp = async (details) => {
-    console.log('comp fired!', this.state.afterDiscountObj)
-
     this.ticketTimer(false)
     const cartObj = this.state.cartToSend
     cartObj.userId = this.state.facebook.userDetails.id
