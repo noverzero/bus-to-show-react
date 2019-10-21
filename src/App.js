@@ -31,7 +31,8 @@ class App extends Component {
     adminView: false,
     afterDiscountObj: {
       totalSavings: 0,
-      discountCodeId: 0
+      discountCodeId: 0,
+      totalPriceAfterDiscount: 0
     },
     artistDescription: null,
     artistIcon: false,
@@ -335,7 +336,7 @@ class App extends Component {
     oldQty > 0 && this.clearTicketsInCart(pickupPartyId, oldQty)
     event.target.value && (newState.displayAddBtn = true)
 
-    const subTotal = (Number(newState.partyPrice) * Number(event.target.value))
+    const subTotal = (Number(newState.partyPrice) * Number(event.target.value)).toFixed(2)
     const total = ((Number(subTotal) * .1) + Number(subTotal)).toFixed(2)
     newState.ticketQuantity = ~~event.target.value
     newState.totalCost = total
@@ -410,8 +411,9 @@ class App extends Component {
       }
       //we have a valid afterDiscountObj, let's apply it!
       const newState = {...this.state}
-      newState.totalCost = json[0].totalPriceAfterDiscount
+      newState.totalCost = Number(json[0].totalPriceAfterDiscount).toFixed(2)
       newState.afterDiscountObj = json[0]
+      newState.afterDiscountObj.totalPriceAfterDiscount = Number(json[0].totalPriceAfterDiscount.toFixed(2))
       newState.discountApplied = true
       console.log(newState.afterDiscountObj)
       this.setState({
@@ -971,8 +973,9 @@ class App extends Component {
       }
     })
     const json = await response.json()
+    console.log('purchase orders response.json =>', json)
     await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
-    this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [], ticketQuantity: null })
+    this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [], ticketQuantity: null, discountApplied: false, afterDiscountObj: {discountCodeId: null, totalSavings: 0} })
     window.removeEventListener("beforeunload", this.clearCartOnClose)
   }
 

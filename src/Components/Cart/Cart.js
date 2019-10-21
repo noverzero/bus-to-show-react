@@ -12,8 +12,8 @@ const Cart = (props) => {
   const showInfo = props.shows.find(show => parseInt(show.id) === parseInt(cTSendId))
 
   let savings = Number(props.afterDiscountObj.totalSavings)
-  let costAfterSavings = Number(props.totalCost - savings)
-  let finalTotalCost = costAfterSavings.toFixed(2)
+  let costAfterSavings = Number(props.afterDiscountObj.totalPriceAfterDiscount)
+  let finalTotalCost = costAfterSavings
   console.log('finalTotalCost ', finalTotalCost, 'costAfterSavings ', costAfterSavings, 'props.totalCost ', props.totalCost )
 
   const maskPhoneInput = (e) => {
@@ -225,7 +225,7 @@ const Cart = (props) => {
                           {savings ?
                             <div className="col-4">
                               <h5>Total savings:
-                          <span className="badge badge-secondary ml-1">{`$${savings.toFixed(2)}`}</span>
+                          <span className="badge badge-secondary ml-1">{`$${savings}`}</span>
                               </h5>
                             </div>
                             : ""
