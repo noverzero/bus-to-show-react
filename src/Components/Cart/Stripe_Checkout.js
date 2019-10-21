@@ -43,10 +43,11 @@ export default class Checkout extends React.Component {
         this.props.makePurchase(e) :
         this.props.invalidOnSubmit(e)
     }
+    const totalCostInt = parseInt(this.props.totalCost * 100)
 
     return (
       <React.Fragment>
-        {!this.props.totalCost ?
+        {!totalCostInt ?
           <button
             onClick={this.props.comp}
             className={`btn mr-1 ${this.props.validated ? 'btn-outline-success' : 'btn-secondary'}`}
