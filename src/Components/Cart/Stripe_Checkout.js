@@ -7,16 +7,19 @@ const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 export default class Checkout extends React.Component {
 
+
   onToken = (token) => {
     this.props.ticketTimer(false)
     const orderInfo = this.props.cartToSend
+    const totalCostInt = parseInt(this.props.totalCost * 100)
+    console.log('totalCostInt', totalCostInt)
     orderInfo.receiptDescription = this.props.receiptDescription
     fetch(`${fetchUrl}/orders/charge`, {
       method: 'POST',
       body: JSON.stringify({
         stripeEmail: token.email,
         stripeToken: token,
-        amount: this.props.totalCost * 100,
+        amount: totalCostInt,
         metadata: orderInfo
       }),
       headers: {
@@ -40,8 +43,18 @@ export default class Checkout extends React.Component {
         this.props.makePurchase(e) :
         this.props.invalidOnSubmit(e)
     }
+    const totalCostInt = parseInt(this.props.totalCost * 100)
+
     return (
       <React.Fragment>
+        {!totalCostInt ?
+          <button
+            onClick={this.props.comp}
+            className={`btn mr-1 ${this.props.validated ? 'btn-outline-success' : 'btn-secondary'}`}
+          >
+          Happy Birthday
+          </button>
+          :
         <StripeCheckout
           token={this.onToken}
           //stripeKey="pk_test_J0CdRMCGmBlrlOiGKnGgUEwT"
@@ -49,18 +62,21 @@ export default class Checkout extends React.Component {
           name='Bus To Show'
           description='Receipt will be emailed after purchase'
           email={email}
-          amount={this.props.totalCost * 100}
+          amount={Number(this.props.totalCost) * 100}
           currency='USD'
           metadata={this.props.cartToSend}
           disabled={this.props.validated ? false : true}
         >
+
           <button
             onClick={e=>selectResponse(e)}
             className={`btn mr-1 ${this.props.validated ? 'btn-outline-success' : 'btn-secondary'}`}
           >
           Purchase
           </button>
+
         </StripeCheckout>
+      }
       </React.Fragment>
     )
   }

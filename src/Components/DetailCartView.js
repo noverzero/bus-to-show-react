@@ -50,8 +50,10 @@ const DetailCartView = (props) => {
                   backToCalendar={props.backToCalendar}
                   cartToSend={props.cartToSend}
                   checked={props.checked}
+                  comp={props.comp}
                   confirmedRemove={props.confirmedRemove}
                   closeAlert={props.closeAlert}
+                  discountApplied={props.discountApplied}
                   displayConfirmRemove={props.displayConfirmRemove}
                   displayWarning={props.displayWarning}
                   findDiscountCode={props.findDiscountCode}

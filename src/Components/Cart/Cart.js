@@ -12,8 +12,8 @@ const Cart = (props) => {
   const showInfo = props.shows.find(show => parseInt(show.id) === parseInt(cTSendId))
 
   let savings = Number(props.afterDiscountObj.totalSavings)
-  let costAfterSavings = Number(props.totalCost - savings)
-  let finalTotalCost = costAfterSavings.toFixed(2)
+  let costAfterSavings = Number(props.afterDiscountObj.totalPriceAfterDiscount)
+  let finalTotalCost = costAfterSavings
   console.log('finalTotalCost ', finalTotalCost, 'costAfterSavings ', costAfterSavings, 'props.totalCost ', props.totalCost )
 
   const maskPhoneInput = (e) => {
@@ -213,7 +213,11 @@ const Cart = (props) => {
                               placeholder="Discount Code" />
                           </div>
                           <div className="col-md-4 mb-3">
-                            <button type="button" onClick={props.findDiscountCode} className="btn btn-outline-secondary">Apply</button>
+                            {!props.discountApplied ?
+                              <button type="button" onClick={props.findDiscountCode} className="btn btn-outline-secondary" >Apply</button>
+                              :
+                              <button type="button" onClick={props.findDiscountCode} className="btn btn-outline-secondary" disabled>Your Savings: {props.afterDiscountObj.savings.toFixed(2)}</button>
+                            }
                           </div>
                         </div>
 
@@ -221,7 +225,7 @@ const Cart = (props) => {
                           {savings ?
                             <div className="col-4">
                               <h5>Total savings:
-                          <span className="badge badge-secondary ml-1">{`$${savings.toFixed(2)}`}</span>
+                          <span className="badge badge-secondary ml-1">{`$${savings}`}</span>
                               </h5>
                             </div>
                             : ""
@@ -238,6 +242,7 @@ const Cart = (props) => {
                           {!props.purchasePending ?
                             <Checkout
                               cartToSend={props.cartToSend}
+                              comp={props.comp}
                               makePurchase={props.makePurchase}
                               purchasePending={props.purchasePending}
                               validated={props.validated}

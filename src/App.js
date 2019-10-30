@@ -30,7 +30,9 @@ class App extends Component {
   state = {
     adminView: false,
     afterDiscountObj: {
-      totalSavings: 0
+      totalSavings: 0,
+      discountCodeId: 0,
+      totalPriceAfterDiscount: 0
     },
     artistDescription: null,
     artistIcon: false,
@@ -52,6 +54,7 @@ class App extends Component {
     checked: false,
     confirmRemove: false,
     dateIcon: true,
+    discountApplied: false,
     displayAboutus: false,
     displayAddBtn: false,
     displayBios: false,
@@ -333,7 +336,7 @@ class App extends Component {
     oldQty > 0 && this.clearTicketsInCart(pickupPartyId, oldQty)
     event.target.value && (newState.displayAddBtn = true)
 
-    const subTotal = (Number(newState.partyPrice) * Number(event.target.value))
+    const subTotal = (Number(newState.partyPrice) * Number(event.target.value)).toFixed(2)
     const total = ((Number(subTotal) * .1) + Number(subTotal)).toFixed(2)
     newState.ticketQuantity = ~~event.target.value
     newState.totalCost = total
@@ -379,49 +382,45 @@ class App extends Component {
   }
 
   findDiscountCode = async () => {
+    const discountCode = this.state.discountCode
     const ticketQuantity = this.state.ticketQuantity
-    const eventId = this.state.cartToSend.eventId
-    const response = await fetch(`${fetchUrl}/discount_codes/${this.state.discountCode}`)
+    const eventId = this.state.displayShow.id
+    const totalPrice = this.state.totalCost
+    const response = await fetch(`${fetchUrl}/discount_codes`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          discountCode: discountCode,
+          ticketQuantity: ticketQuantity,
+          totalPrice: totalPrice,
+          eventId: eventId
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+    })
     const json = await response.json()
 
-    const result = json.filter((discountObj) => discountObj.eventsId === eventId)[0]
-    const newState = { ...this.State }
-    if (!result) {
-      return "no match"
-    }
-    if (result.remainingUses <= 0) {
-      return 'this code is all used up!'
-    }
-    const expiration = Date.parse(result.expiresOn.toLocaleString('en-US'))
-    const today = Date.parse(new Date().toLocaleString('en-US', { timeZone: 'America/Denver' }))
-
-    if (expiration < today) {
-      return 'this code is expired'
-    } else {
-      let priceWithoutFeesPerTicket = this.state.totalCost * 10 / 11 / ticketQuantity
-      let effectiveRate = (100 - result.percentage) / 100
-      const afterDiscountObj = {}
-
-      if (result.remainingUses >= ticketQuantity) {
-        afterDiscountObj.timesUsed = ticketQuantity * 1
-        afterDiscountObj.totalPriceAfterDiscount = priceWithoutFeesPerTicket * ticketQuantity * effectiveRate * 1.10
-        afterDiscountObj.totalSavings = this.state.totalCost - priceWithoutFeesPerTicket * ticketQuantity * effectiveRate * 1.10
-        afterDiscountObj.newRemainingUses = result.remainingUses - ticketQuantity
-
-        newState.afterDiscountObj = afterDiscountObj
-        newState.totalSavings = afterDiscountObj.totalSavings
-        this.setState({ afterDiscountObj: newState.afterDiscountObj, totalSavings: newState.totalSavings })
+    if(json.length){
+      if(json[0].type === 420){
+        console.log( 'ok lets party!')
+      } else {
+        console.log('no response')
+        return
       }
-      if (result.remainingUses < ticketQuantity) {
-        afterDiscountObj.timesUsed = result.remainingUses
-        afterDiscountObj.totalSavings = this.state.totalCost - (priceWithoutFeesPerTicket * (ticketQuantity - result.remainingUses) + priceWithoutFeesPerTicket * effectiveRate * result.remainingUses) * 1.10
-        afterDiscountObj.totalPriceAfterDiscount = (priceWithoutFeesPerTicket * (ticketQuantity - result.remainingUses) + priceWithoutFeesPerTicket * effectiveRate * result.remainingUses) * 1.10
-        afterDiscountObj.newRemainingUses = 0
-
-        newState.afterDiscountObj = afterDiscountObj
-        this.setState({ afterDiscountObj: newState.afterDiscountObj })
-      }
+      //we have a valid afterDiscountObj, let's apply it!
+      const newState = {...this.state}
+      newState.totalCost = Number(json[0].totalPriceAfterDiscount).toFixed(2)
+      newState.afterDiscountObj = json[0]
+      newState.afterDiscountObj.totalPriceAfterDiscount = Number(json[0].totalPriceAfterDiscount.toFixed(2))
+      newState.discountApplied = true
+      this.setState({
+        totalCost: newState.totalCost,
+        afterDiscountObj: newState.afterDiscountObj,
+        discountApplied: newState.discountApplied
+      })
+      console.log('this.state.discountApplied =>', this.state.discountApplied)
     }
+
   }
 
   // Header Functions
@@ -890,6 +889,7 @@ class App extends Component {
   }
 
   addTicketsInCart = async (pickupPartyId, ticketQty) => {
+    console.log('addTicketsInCart fired')
     if (pickupPartyId && ticketQty){
       let timeStamp = new Date()
       console.log('timeStamp', timeStamp)
@@ -950,6 +950,7 @@ class App extends Component {
   }
 
   purchase = async (err) => {
+    console.log('purchase fired!')
     this.ticketTimer(false)
     if (err) {
       console.log('purchase error', err)
@@ -959,6 +960,7 @@ class App extends Component {
       return this.setState({purchaseFailed: true})
     }
     const cartObj = this.state.cartToSend
+    cartObj.discountCode = this.state.afterDiscountObj.id
     cartObj.userId = this.state.facebook.userDetails.id
     const response = await fetch(`${fetchUrl}/orders`, {
       method: 'POST',
@@ -969,7 +971,25 @@ class App extends Component {
     })
     const json = await response.json()
     await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
-    this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [], ticketQuantity: null })
+    this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [], ticketQuantity: null, discountApplied: false, afterDiscountObj: {discountCodeId: null, totalSavings: 0} })
+    window.removeEventListener("beforeunload", this.clearCartOnClose)
+  }
+
+  comp = async (details) => {
+    this.ticketTimer(false)
+    const cartObj = this.state.cartToSend
+    cartObj.userId = this.state.facebook.userDetails.id
+    cartObj.discountCode = this.state.afterDiscountObj.id
+    const response = await fetch(`${fetchUrl}/orders`, {
+      method: 'POST',
+      body: JSON.stringify(cartObj),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const json = await response.json()
+    await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
+    this.setState({ purchaseSuccessful: true, purchaseFailed: false, purchasePending: false, displayQuantity: false, inCart: [], ticketQuantity: null, discountApplied: false, afterDiscountObj: {discountCodeId: null, totalSavings: 0} })
     window.removeEventListener("beforeunload", this.clearCartOnClose)
   }
 
@@ -1182,12 +1202,16 @@ class App extends Component {
     newState.displayAddBtn = false
     newState.purchasePending = true
     newState.purchaseFailed = false
+    newState.discountApplied = false
+    newState.afterDiscountObj= {discountCodeId: null, totalSavings: 0}
 
     this.setState({
       purchaseFailed: newState.purchaseFailed,
       purchasePending: newState.purchasePending,
       displayQuantity: newState.displayQuantity,
-      displayAddBtn: newState.displayAddBtn
+      displayAddBtn: newState.displayAddBtn,
+      discountApplied: newState.discountApplied,
+      afterDiscountObj: newState.afterDiscountObj
     })
   }
 
@@ -1361,7 +1385,9 @@ class App extends Component {
                             cartToSend={this.state.cartToSend}
                             checked={this.state.checked}
                             closeAlert={this.closeAlert}
+                            comp={this.comp}
                             confirmedRemove={this.confirmedRemove}
+                            discountApplied={this.state.discountApplied}
                             displayAddBtn={this.state.displayAddBtn}
                             displayBorder={this.state.displayBorder}
                             displayCart={this.state.displayCart}
