@@ -162,7 +162,7 @@ class App extends Component {
   getVerify = async () => {
     const response = await fetch(`${fetchUrl}/api`)
     const json =  await response.json()
-    console.log('getVerify', json)
+    //console.log('getVerify', json)
     //document.cookie = `token=; expires=Wed, 21 Oct 2015 07:28:00 GMT`
     document.cookie = `token=${json.token}; secure`
   }
