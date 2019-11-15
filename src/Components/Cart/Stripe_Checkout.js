@@ -12,7 +12,6 @@ export default class Checkout extends React.Component {
     this.props.ticketTimer(false)
     const orderInfo = this.props.cartToSend
     const totalCostInt = parseInt(this.props.totalCost * 100)
-    console.log('totalCostInt', totalCostInt)
     orderInfo.receiptDescription = this.props.receiptDescription
     fetch(`${fetchUrl}/orders/charge`, {
       method: 'POST',

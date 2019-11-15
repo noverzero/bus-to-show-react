@@ -90,17 +90,6 @@ class App extends Component {
       picture:'',
       userDetails: {},
     },
-    // facebook: {
-    //   isLoggedIn: true,
-    //   userID: '',
-    //   name: 'Dustin Huth',
-    //   email:'dustin@thebasicsfund.org',
-    //   picture:'',
-    //   userDetails: {
-    //     isAdmin: true,
-    //     isStaff: true
-    //   },
-    // },
     filterString: '',
     firstBusLoad: null,
     googleResponse: null,
@@ -137,6 +126,7 @@ class App extends Component {
   }
 
   async componentDidMount() {
+    await this.getVerify()
     const response = await fetch(`${fetchUrl}/events`)
     let allShows = await response.json()
 
@@ -169,6 +159,13 @@ class App extends Component {
     this.setState({ pickupLocations, allShows, userShows })
   }
 
+  getVerify = async () => {
+    const response = await fetch(`${fetchUrl}/api`)
+    const json =  await response.json()
+    //console.log('getVerify', json)
+    //document.cookie = `token=; expires=Wed, 21 Oct 2015 07:28:00 GMT`
+    document.cookie = `token=${json.token}; secure`
+  }
   //status: over-ridden by onclick event in the "ride with us button" where called in "loading.js"
   onLoad = () => {
 
