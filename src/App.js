@@ -21,9 +21,9 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-//const fetchUrl = `http://localhost:3000`
+const fetchUrl = `http://localhost:3000`
 //const fetchUrl = `https://bts-test-backend.herokuapp.com`
-const fetchUrl = `https://innocuous-junior.herokuapp.com`
+//const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -82,13 +82,24 @@ class App extends Component {
     displayReservations: false,
     displayUserReservationSummary: false,
     displayTimes: false,
+    // facebook: {
+    //   isLoggedIn: false,
+    //   userID: '',
+    //   name: '',
+    //   email:'',
+    //   picture:'',
+    //   userDetails: {},
+    // },
     facebook: {
-      isLoggedIn: false,
-      userID: '',
-      name: '',
-      email:'',
+      isLoggedIn: true,
+      userID: '3',
+      name: 'Chevy Chase',
+      email:'chevy@chase.com',
       picture:'',
-      userDetails: {},
+      userDetails: {
+        isAdmin: true,
+        isStaff: true
+      },
     },
     filterString: '',
     firstBusLoad: null,
@@ -160,11 +171,13 @@ class App extends Component {
   }
 
   getVerify = async () => {
+    console.log('GETTING GET VERIFY APP.JS')
     const response = await fetch(`${fetchUrl}/api`)
     const json =  await response.json()
     //console.log('getVerify', json)
     //document.cookie = `token=; expires=Wed, 21 Oct 2015 07:28:00 GMT`
     document.cookie = `token=${json.token}; secure`
+    console.log('json.token', json.token)
   }
   //status: over-ridden by onclick event in the "ride with us button" where called in "loading.js"
   onLoad = () => {

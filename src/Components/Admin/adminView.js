@@ -3,9 +3,9 @@ import '../../App.css';
 import UserCheckin from './userCheckin'
 import AdminEdit from './Edit/AdminEdit'
 
- //const fetchUrl = `http://localhost:3000`
+ const fetchUrl = `http://localhost:3000`
  //const fetchUrl = `https://bts-test-backend.herokuapp.com`
- const fetchUrl = `https://innocuous-junior.herokuapp.com`
+ //const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class AdminView extends React.Component {
 
@@ -39,7 +39,9 @@ class AdminView extends React.Component {
     })
   }
 
-
+  addShowClick = event => {
+    console.log("addShowClick:: ", event)
+  }
 
   getPickupParties = async () => {
     const response = await fetch(`${fetchUrl}/pickup_parties`, {
@@ -404,6 +406,7 @@ newName = (id, first, last) => {
           <div>
             {this.state.displayAdminPanel &&
               <AdminEdit
+              addShowClick={this.addShowClick}
               updateReservation={this.updateReservation}
               cancelPrompt={this.cancelPrompt}
               cancelPromptId={this.state.cancelPromptId}

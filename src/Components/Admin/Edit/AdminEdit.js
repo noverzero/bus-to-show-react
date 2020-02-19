@@ -102,7 +102,14 @@ const AdminEdit = (props) => {
             <div className="col-3 mb-3" >
               <button type="button" className="btn btn-outline-light" onClick={e=>{resetStuff(); toggleProperty(previousProperty)}}>Back</button>
             </div>
-            <div className="col-9 mb-3" >
+            <div className="col-1 mb-3">
+              <div
+                onClick={props.addShowClick}
+              >
+                <i className="fas fa-plus-circle"></i>
+              </div>
+            </div>
+            <div className="col-8 mb-3" >
               <form className="form-inline float-right">
                 <input
                 className={"form-control search-bar"}
