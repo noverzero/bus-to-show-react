@@ -41,6 +41,7 @@ class AdminView extends React.Component {
 
   addShowClick = event => {
     console.log("addShowClick:: ", event)
+    this.toggleProperty("displayAddShowForm")
   }
 
   getPickupParties = async () => {
@@ -61,6 +62,7 @@ class AdminView extends React.Component {
   }
 
   toggleProperty = async (property) => {
+    console.log("toggleProperty fired", property)
     const newState = {...this.state}
     newState.filterString = ''
     if (property === 'displayUserCheckin') {
@@ -72,6 +74,12 @@ class AdminView extends React.Component {
       newState.displayAdminPanel = !newState.displayAdminPanel
       newState.displayList = 'ShowList'
       await this.setState(newState)
+    }
+    else if(property === 'displayAddShowForm'){
+      newState.displayList = 'displayAddShowForm'
+      console.log("displayAddShowForm")
+      await this.setState(newState)
+
     }
     else {
       newState.displayList = property

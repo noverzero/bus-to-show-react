@@ -4,6 +4,8 @@ import AdminPickupsList from './AdminPickupsList'
 import AdminShowList from './AdminShowList'
 import AdminEditPanel from './AdminEditPanel'
 import AdminReservationsList from './AdminReservationsList'
+import AdminAddShowForm from './AdminAddShowForm'
+
 
 const AdminEdit = (props) => {
   let { cancelPrompt, cancelPromptId, updateReservation, updateReservationName, displayAdminPanel, displayList, editPickupParty, eventId, filterString, getReservations, makeSelection, pickupLocationId, pickupLocations, pickupParties, reservations, searchItems, shows, toggleProperty, theseParties, theseLocations, thisCapacity, thisLocation, thisPickupParty, thisShow } = props
@@ -22,8 +24,10 @@ const AdminEdit = (props) => {
     displayList === 'PickupsList' ? 'ShowList' :
     displayList === 'AdminEditPanel' ? 'PickupsList' :
     displayList === 'ReservationsList' ? 'AdminEditPanel' :
+    displayList === 'displayAddShowForm' ? 'ShowList':
     null
   )
+  console.log('previousProperty: ', previousProperty)
 
   const displaySearch = (
     displayList === 'AdminEditPanel' ?
@@ -56,6 +60,11 @@ const AdminEdit = (props) => {
     else if (displayList === 'ReservationsList') return (
       <div>Cancel a Reservation<br/>
       **Please verify email address before canceling a reservation**
+      </div>
+    )
+    else if (displayList === 'displayAddShowForm') return (
+      <div>Add a Show<br/>
+      **Please verify that show does not already exist before adding it**
       </div>
     )
     else return ''
@@ -142,6 +151,21 @@ const AdminEdit = (props) => {
             </div>
             <div className={displayList === 'ReservationsList' ? '' : 'hidden'}>
               <AdminReservationsList
+                filterString={filterString}
+                reservations={reservations}
+                updateReservation={updateReservation}
+                updateReservationName={updateReservationName}
+                cancelPrompt={cancelPrompt}
+                cancelPromptId={cancelPromptId}
+                displayNameChange={props.displayNameChange}
+                openNameChangeForm={props.openNameChangeForm}
+                changeName={props.changeName}
+                displayVerifyNameChangePrompt={props.displayVerifyNameChangePrompt}
+                toggleVerifyNameChangePrompt={props.toggleVerifyNameChangePrompt}
+              />
+            </div>
+            <div className={displayList === 'displayAddShowForm' ? '' : 'hidden'}>
+              <AdminAddShowForm
                 filterString={filterString}
                 reservations={reservations}
                 updateReservation={updateReservation}
