@@ -166,17 +166,8 @@ const AdminEdit = (props) => {
             </div>
             <div className={displayList === 'displayAddShowForm' ? '' : 'hidden'}>
               <AdminAddShowForm
-                filterString={filterString}
-                reservations={reservations}
-                updateReservation={updateReservation}
-                updateReservationName={updateReservationName}
-                cancelPrompt={cancelPrompt}
-                cancelPromptId={cancelPromptId}
-                displayNameChange={props.displayNameChange}
-                openNameChangeForm={props.openNameChangeForm}
-                changeName={props.changeName}
-                displayVerifyNameChangePrompt={props.displayVerifyNameChangePrompt}
-                toggleVerifyNameChangePrompt={props.toggleVerifyNameChangePrompt}
+                pickupLocations={pickupLocations}
+                dropdownTimes={props.dropdownTimes}
               />
             </div>
           </ul>

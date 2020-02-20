@@ -17,6 +17,7 @@ class AdminView extends React.Component {
     displayList: 'ShowList',
     displayNameChange: 0,
     displayVerifyNameChangePrompt: 0,
+    dropdownTimes: [],
     eventId: null,
     filterString: '',
     newFirst: null,
@@ -33,16 +34,50 @@ class AdminView extends React.Component {
 
   componentDidMount = async() => {
     const pickupParties = await this.getPickupParties()
+    const dropdownTimes = await this.populateTimes()
     await this.setState({
       pickupLocations: this.props.pickupLocations,
       pickupParties: pickupParties,
+      dropdownTimes: dropdownTimes
     })
+    console.log("pickupLocations", this.state.pickupLocations, this.state.dropdownTimes)
   }
+
+// Add Show Feature Functions vvvvvvvv
 
   addShowClick = event => {
     console.log("addShowClick:: ", event)
     this.toggleProperty("displayAddShowForm")
   }
+
+  populateTimes = () => {
+    let hours, minutes, ampm
+    let result = []
+    let increment = []
+    for(let i = 0; i <= 1440; i += 15){
+      let time = {}
+      increment.push(i)
+      hours = Math.floor(i / 60);
+      minutes = i % 60;
+      if (minutes < 10){
+        minutes = '0' + minutes; // adding leading zero
+      }
+      ampm = hours % 24 < 12 ? 'AM' : 'PM'
+      hours = hours % 12
+      if (hours === 0){
+        hours = 12;
+      }
+        time.i = i
+        time.hours = hours
+        time.minutes = minutes
+        time.ampm = ampm
+        result.push(time)
+      }
+    
+    return result
+}
+
+//End Add Show Feature Functions ^^^^^
 
   getPickupParties = async () => {
     const response = await fetch(`${fetchUrl}/pickup_parties`, {
@@ -55,6 +90,9 @@ class AdminView extends React.Component {
   return result
   }
 
+  getPickupLocations = async () => {
+    console.log("getPickupLocations is firing")
+  }
   searchItems = event => {
     const newState = { ...this.state }
     newState.filterString = event.target.value
@@ -423,6 +461,7 @@ newName = (id, first, last) => {
               displayAdminReservationsList={this.state.displayAdminReservationsList}
               displayNameChange={this.state.displayNameChange}
               displayVerifyNameChangePrompt={this.state.displayVerifyNameChangePrompt}
+              dropdownTimes={this.state.dropdownTimes}
               openNameChangeForm={this.openNameChangeForm}
               eventId={this.state.eventId}
               editPickupParty={this.editPickupParty}
