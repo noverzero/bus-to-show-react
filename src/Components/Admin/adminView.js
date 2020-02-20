@@ -54,7 +54,7 @@ class AdminView extends React.Component {
     let hours, minutes, ampm
     let result = []
     let increment = []
-    for(let i = 0; i <= 1440; i += 15){
+    for(let i = 0; i <= 1425; i += 15){
       let time = {}
       increment.push(i)
       hours = Math.floor(i / 60);

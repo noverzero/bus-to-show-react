@@ -40,13 +40,35 @@ const AdminAddShowForm = (props) => {
                             )}       
                         </select>
                     </div>
-                    <div className="form-check">
+                    <div className="form-check border border-info p-2">
+                        <div><strong>Check box next to each Departure Location and select desired Departure Time</strong></div>
                         {props.pickupLocations.map(location =>
-                        <div key={location.id}>
-                            <input className="form-check-input" type="checkbox" value="" id={`checkBox${location.id}`}/>
-                            <label className="form-check-label" htmlFor={`checkLabel${location.id}`}>
-                                <strong>id: {location.id}</strong> {location.locationName}
-                            </label>
+                        <div className="row m-2" key={location.id}>
+                            <div className="col-6">
+                                <input className="form-check-input" type="checkbox" value="" id={`checkBox${location.id}`}/>
+                                <label className="form-check-label" htmlFor={`checkLabel${location.id}`}>
+                                    <strong>id: {location.id}</strong> {location.locationName}<br/>
+                                    <div className="pl-2 col-8">
+                                        {location.streetAddress}
+                                    </div>
+                                </label>
+                            </div>
+                            <div className="col-3">
+                                <div className="form-group">
+                                    <label htmlFor={`departureTime${location.id}`}><strong>Departure Time: </strong></label>
+                                    <select className="form-control" id={`departureTime${location.id}`}>
+                                        {props.dropdownTimes.map((time) =>
+                                        <option key={time.i}>{time.hours} : {time.minutes} {time.ampm}</option>
+                                        )}       
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="col-3">
+                                <div className="form-group">
+                                    <label htmlFor={`price${location.id}`}><strong>Price: $</strong></label>
+                                    <input className="form-control form-control-sm col-6" id={`price${location.id}`} type="number" maxLength="8" size="8" placeholder={location.basePrice}/>
+                                </div>
+                            </div>
                         </div>
                         )}
                     </div>
