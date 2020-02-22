@@ -26,6 +26,9 @@ class AdminView extends React.Component {
     pickupLocations: null,
     pickupParties: null,
     reservations: [],
+    showToAdd: {
+      locations: [],
+    },
     thisShow: null,
     thisPickupParty: null,
     theseParties: [],
@@ -75,7 +78,42 @@ class AdminView extends React.Component {
       }
     
     return result
-}
+  }
+
+  handleAddShowChange =(event, location)=>{
+    console.log('handle change inside add show form', event.target.id, event.target.value)
+    let newState = { ...this.state }
+    let newValue
+    switch (event.target.id) {
+      case "venue":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.venue = newValue
+        console.log("venue newValue: ", newValue)
+        break;
+      case "showStartTime":
+        newValue = event.target.value.replace(/[^0-9:]/g, '')
+        event.target.value = newValue
+        newState.showToAdd.showStartTime = newValue
+        console.log("showStartTime newValue: ", newValue)
+        break;
+      case `checkBox${location.id}`:
+        newValue = location.id
+        if(newState.showToAdd.locations.includes(newValue)){
+          const result = newState.showToAdd.locations.filter((location) => location !== newValue)
+          newState.showToAdd.locations = result
+          console.log('genius! ', result)
+
+        } else {
+          newState.showToAdd.locations.push(newValue)
+        }
+        break;
+      default:
+        break;
+    }
+    this.setState({showToAdd: newState.showToAdd})
+    console.log('this.state.showToAdd', this.state.showToAdd)
+  }
 
 //End Add Show Feature Functions ^^^^^
 
@@ -90,9 +128,6 @@ class AdminView extends React.Component {
   return result
   }
 
-  getPickupLocations = async () => {
-    console.log("getPickupLocations is firing")
-  }
   searchItems = event => {
     const newState = { ...this.state }
     newState.filterString = event.target.value
@@ -469,6 +504,7 @@ newName = (id, first, last) => {
               filterString={this.state.filterString}
               getPickupParty={this.getPickupParty}
               getReservations={this.getReservations}
+              handleAddShowChange={this.handleAddShowChange}
               displayList={this.state.displayList}
               pickupLocations={this.state.pickupLocations}
               pickupLocationId={this.state.pickupLocationId}

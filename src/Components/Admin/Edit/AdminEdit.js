@@ -168,6 +168,7 @@ const AdminEdit = (props) => {
               <AdminAddShowForm
                 pickupLocations={pickupLocations}
                 dropdownTimes={props.dropdownTimes}
+                handleAddShowChange={props.handleAddShowChange}
               />
             </div>
           </ul>
