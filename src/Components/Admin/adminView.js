@@ -28,6 +28,7 @@ class AdminView extends React.Component {
     reservations: [],
     showToAdd: {
       locations: [],
+      departureTimes: {},
     },
     thisShow: null,
     thisPickupParty: null,
@@ -85,6 +86,42 @@ class AdminView extends React.Component {
     let newState = { ...this.state }
     let newValue
     switch (event.target.id) {
+      case "headliner":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.headliner = newValue
+        console.log("headliner newValue: ", newValue)
+        break;
+      case "support1":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.support1 = newValue
+        console.log("support1 newValue: ", newValue)
+        break;
+      case "support2":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.support2 = newValue
+        console.log("support2 newValue: ", newValue)
+        break;
+      case "support3":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.support3 = newValue
+        console.log("support3 newValue: ", newValue)
+        break;
+      case "headlinerBio":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.headlinerBio = newValue
+        console.log("headlinerBio newValue: ", newValue)
+        break;
+      case "headlinerImgLink":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.headlinerImgLink = newValue
+        console.log("headlinerImgLink newValue: ", newValue)
+        break;
       case "venue":
         newValue = event.target.value
         event.target.value = newValue
@@ -92,7 +129,7 @@ class AdminView extends React.Component {
         console.log("venue newValue: ", newValue)
         break;
       case "showStartTime":
-        newValue = event.target.value.replace(/[^0-9:]/g, '')
+        newValue = event.target.value
         event.target.value = newValue
         newState.showToAdd.showStartTime = newValue
         console.log("showStartTime newValue: ", newValue)
@@ -103,10 +140,15 @@ class AdminView extends React.Component {
           const result = newState.showToAdd.locations.filter((location) => location !== newValue)
           newState.showToAdd.locations = result
           console.log('genius! ', result)
-
         } else {
           newState.showToAdd.locations.push(newValue)
         }
+        break;
+      case `departureTime${location.id}`:
+      newValue = event.target.value
+      event.target.value = newValue
+      newState.showToAdd.departureTimes[location.id] = newValue
+      console.log(`departureTime${location.id} newValue: `, newValue)
         break;
       default:
         break;

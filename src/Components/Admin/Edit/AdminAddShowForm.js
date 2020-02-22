@@ -46,7 +46,7 @@ const AdminAddShowForm = (props) => {
                         <label htmlFor="showStartTime">Show Start Time (required)   </label>
                         <select className="form-control" id="showStartTime" onChange={e=>props.handleAddShowChange(e)} required>
                             {props.dropdownTimes.map((time) =>
-                                <option key={time.i}>{time.hours} : {time.minutes} {time.ampm}</option>
+                                <option key={time.i}>{time.hours} : {time.minutes} {time.ampm} (id: {time.i})</option>
                             )}       
                         </select>
                     </div>
@@ -68,7 +68,7 @@ const AdminAddShowForm = (props) => {
                                     <label htmlFor={`departureTime${location.id}`}><strong>Departure Time: </strong></label>
                                     <select className="form-control" id={`departureTime${location.id}`} onChange={e=>props.handleAddShowChange(e, location)}>
                                         {props.dropdownTimes.map((time) =>
-                                        <option key={time.i}>{time.hours} : {time.minutes} {time.ampm}</option>
+                                        <option key={time.i}>{time.hours} : {time.minutes} {time.ampm} (id: {time.i})</option>
                                         )}       
                                     </select>
                                 </div>
@@ -82,7 +82,7 @@ const AdminAddShowForm = (props) => {
                         </div>
                         )}
                     </div>
-                    <button type="button" className="btn bts-orange-bg" onClick={()=> {console.log("Add Show clicked")}}>Add Show</button>
+                    <button type="submit" id="addShowSubmit" className="btn bts-orange-bg" onClick={(e)=> {console.log("Add Show clicked")}}>Add Show</button>
                 </form>
             </div>
         </div>
