@@ -27,8 +27,10 @@ class AdminView extends React.Component {
     pickupParties: null,
     reservations: [],
     showToAdd: {
+      venue: 'Red Rocks Amphitheatre',
       locations: [],
       departureTimes: {},
+      locationPrices: {}
     },
     thisShow: null,
     thisPickupParty: null,
@@ -145,10 +147,16 @@ class AdminView extends React.Component {
         }
         break;
       case `departureTime${location.id}`:
-      newValue = event.target.value
-      event.target.value = newValue
-      newState.showToAdd.departureTimes[location.id] = newValue
-      console.log(`departureTime${location.id} newValue: `, newValue)
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.departureTimes[location.id] = newValue
+        console.log(`departureTime${location.id} newValue: `, newValue)
+        break;
+      case `price${location.id}`:
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.locationPrices[location.id] = newValue
+        console.log(`price${location.id} newValue`, newValue)
         break;
       default:
         break;
@@ -156,6 +164,33 @@ class AdminView extends React.Component {
     this.setState({showToAdd: newState.showToAdd})
     console.log('this.state.showToAdd', this.state.showToAdd)
   }
+
+  handleAddShowSubmit = async (e) => {
+    console.log('handleAddShowSubmit clicked', e)
+    //Validate Form
+    //Check DB to see if show exists at Venue on Date
+        //if yes, warn before allowing or prevent with alternative suggestion
+        //if no, continue
+    //Post Show
+    await this.postShow(this.state.showToAdd)
+    //Post pickup Parties
+    
+  }
+
+
+  postShow = async (show) => {
+    const response = await fetch(`${fetchUrl}/events`, {
+    method: 'POST',
+    body: JSON.stringify(show),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  const json = await response.json()
+  console.log('response from postShow', json)
+  return json
+  }
+
 
 //End Add Show Feature Functions ^^^^^
 
@@ -547,6 +582,7 @@ newName = (id, first, last) => {
               getPickupParty={this.getPickupParty}
               getReservations={this.getReservations}
               handleAddShowChange={this.handleAddShowChange}
+              handleAddShowSubmit={this.handleAddShowSubmit}
               displayList={this.state.displayList}
               pickupLocations={this.state.pickupLocations}
               pickupLocationId={this.state.pickupLocationId}

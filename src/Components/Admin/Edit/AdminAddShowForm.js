@@ -9,6 +9,42 @@ const AdminAddShowForm = (props) => {
             Admin Add Show Form Component
             <div>
                 <form>
+                    <div>
+                        <div>
+                            Date:
+                        </div>
+                        <div className="col-3">
+                            <div className="form-group">
+                                <label htmlFor={``}></label>
+                                <select className="form-control" id={``} onChange={e=>props.handleAddShowChange(e)}>
+                                    {props.dropdownTimes.map((time) =>
+                                    <option key={time.i}>{time.hours} : {time.minutes} {time.ampm} (id: {time.i})</option>
+                                    )}       
+                                </select>
+                            </div>
+                        </div>
+                        <div className="col-3">
+                            <div className="form-group">
+                                <label htmlFor={``}></label>
+                                <select className="form-control" id={``} onChange={e=>props.handleAddShowChange(e)}>
+                                    {props.dropdownTimes.map((time) =>
+                                    <option key={time.i}>{time.hours} : {time.minutes} {time.ampm} (id: {time.i})</option>
+                                    )}       
+                                </select>
+                            </div>
+                        </div>
+                        <div className="col-3">
+                            <div className="form-group">
+                                <label htmlFor={``}></label>
+                                <select className="form-control" id={``} onChange={e=>props.handleAddShowChange(e)}>
+                                    {props.dropdownTimes.map((time) =>
+                                    <option key={time.i}>{time.hours} : {time.minutes} {time.ampm} (id: {time.i})</option>
+                                    )}       
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div className="form-group">
                         <label htmlFor="headliner">Headliner / Title (Required)</label>
                         <input type="text" className="form-control" id="headliner" placeholder="" onChange={e=>props.handleAddShowChange(e)} required />
@@ -82,7 +118,7 @@ const AdminAddShowForm = (props) => {
                         </div>
                         )}
                     </div>
-                    <button type="submit" id="addShowSubmit" className="btn bts-orange-bg" onClick={(e)=> {console.log("Add Show clicked")}}>Add Show</button>
+                    <button type="button" id="addShowSubmit" className="btn bts-orange-bg" onClick={(e)=> props.handleAddShowSubmit(e)}>Add Show</button>
                 </form>
             </div>
         </div>
