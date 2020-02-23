@@ -8,7 +8,7 @@ import AdminEdit from './Edit/AdminEdit'
  //const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
  const d = new Date()
- const year = d.getFullYear()
+ const year = d.getFullYear().toString()
 
 class AdminView extends React.Component {
 
@@ -32,8 +32,8 @@ class AdminView extends React.Component {
     showToAdd: {
       date:{
         year: year,
-        month: 1,
-        day: 1
+        month: '01',
+        day: '01'
       },
       venue: 'Red Rocks Amphitheatre',
       locations: [],
@@ -100,19 +100,19 @@ class AdminView extends React.Component {
       case "year":
         newValue = event.target.value
         event.target.value = newValue
-        newState.showToAdd.year = newValue
+        newState.showToAdd.date.year = newValue
         console.log("year newValue: ", newValue)
         break;
       case "month":
         newValue = event.target.value
         event.target.value = newValue
-        newState.showToAdd.month = newValue
+        newState.showToAdd.date.month = newValue
         console.log("month newValue: ", newValue)
         break;
       case "day":
         newValue = event.target.value
         event.target.value = newValue
-        newState.showToAdd.day = newValue
+        newState.showToAdd.date.day = newValue
         console.log("day newValue: ", newValue)
         break;
       case "headliner":
@@ -205,7 +205,21 @@ class AdminView extends React.Component {
   }
 
 
-  postShow = async (show) => {
+  postShow = async (showToAdd) => {
+
+    let show = {
+      date: `${showToAdd.date.month}/${showToAdd.date.day}/${showToAdd.date.year}`,
+      startTime: showToAdd.showStartTime,
+      venue: showToAdd.venue,
+      headliner: showToAdd.headliner,
+      support1: showToAdd.support1,
+      support2: showToAdd.support2, 
+      support3: showToAdd.support3, 
+      headlinerImgLink: showToAdd.headlinerImgLink,
+      headlinerBio: showToAdd.headlinerBio, 
+      external: ''
+    } 
+
     const response = await fetch(`${fetchUrl}/events`, {
     method: 'POST',
     body: JSON.stringify(show),
@@ -353,7 +367,6 @@ class AdminView extends React.Component {
     else if (stop && this.state.reservationsInterval) {
       clearInterval(this.state.reservationsInterval)
     }
-
   }
 
   toggleCheckedIn = async (isCheckedIn, reservation) => {
