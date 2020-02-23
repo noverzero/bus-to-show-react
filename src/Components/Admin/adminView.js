@@ -3,9 +3,9 @@ import '../../App.css';
 import UserCheckin from './userCheckin'
 import AdminEdit from './Edit/AdminEdit'
 
- const fetchUrl = `http://localhost:3000`
+ //const fetchUrl = `http://localhost:3000`
  //const fetchUrl = `https://bts-test-backend.herokuapp.com`
- //const fetchUrl = `https://innocuous-junior.herokuapp.com`
+ const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
  const d = new Date()
  const year = d.getFullYear().toString()
@@ -63,7 +63,7 @@ class AdminView extends React.Component {
 // Add Show Feature Functions vvvvvvvv
 
   addShowClick = event => {
-    console.log("addShowClick:: ", event)
+    console.log("addShowClick:: ")
     this.toggleProperty("displayAddShowForm")
   }
 
@@ -206,7 +206,30 @@ class AdminView extends React.Component {
     console.log('this.state.showToAdd.id: ', this.state.showToAdd.id)
     //Post pickup Parties
     await this.postPickupParties(this.state.showToAdd)
+    this.resetAfterAddShow()
     
+  }
+
+  resetAfterAddShow = async () => {
+    let newState = {...this.state}
+    newState.showToAdd = {
+      id: 0,
+      date:{
+        year: year,
+        month: '01',
+        day: '01'
+      },
+      venue: 'Red Rocks Amphitheatre',
+      showStartTime: '00:00:00',
+      locations: [],
+      departureTimes: {},
+      locationPrices: {}
+    }
+    newState.displayList = 'ShowList'
+    this.setState({
+      displayList: newState.displayList,
+      showToAdd: newState.showToAdd
+    })
   }
 
   postPickupParties = async (showToAdd) => {
