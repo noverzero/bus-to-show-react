@@ -7,6 +7,9 @@ import AdminEdit from './Edit/AdminEdit'
  //const fetchUrl = `https://bts-test-backend.herokuapp.com`
  //const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
+ const d = new Date()
+ const year = d.getFullYear()
+
 class AdminView extends React.Component {
 
   state = {
@@ -27,6 +30,11 @@ class AdminView extends React.Component {
     pickupParties: null,
     reservations: [],
     showToAdd: {
+      date:{
+        year: year,
+        month: 1,
+        day: 1
+      },
       venue: 'Red Rocks Amphitheatre',
       locations: [],
       departureTimes: {},
@@ -39,6 +47,7 @@ class AdminView extends React.Component {
   }
 
   componentDidMount = async() => {
+
     const pickupParties = await this.getPickupParties()
     const dropdownTimes = await this.populateTimes()
     await this.setState({
@@ -88,6 +97,24 @@ class AdminView extends React.Component {
     let newState = { ...this.state }
     let newValue
     switch (event.target.id) {
+      case "year":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.year = newValue
+        console.log("year newValue: ", newValue)
+        break;
+      case "month":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.month = newValue
+        console.log("month newValue: ", newValue)
+        break;
+      case "day":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.day = newValue
+        console.log("day newValue: ", newValue)
+        break;
       case "headliner":
         newValue = event.target.value
         event.target.value = newValue

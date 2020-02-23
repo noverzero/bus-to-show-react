@@ -3,48 +3,49 @@ import '../../../App.css';
 
 const AdminAddShowForm = (props) => {
     console.log("pickup lOcations in AdminAddShowForm:  ", props.pickupLocations)
+    let d = new Date()
+    let n = d.getFullYear()
+    const years = [n, n+1]
+    const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    const days = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,  23, 24, 25, 26, 27, 28, 29, 30, 31]
 
     return (
         <div className="bts-white-bg p-2 border border-dark">
             Admin Add Show Form Component
             <div>
                 <form>
-                    <div>
-                        <div>
-                            Date:
-                        </div>
+                    <div className="row">
                         <div className="col-3">
                             <div className="form-group">
-                                <label htmlFor={``}></label>
-                                <select className="form-control" id={``} onChange={e=>props.handleAddShowChange(e)}>
-                                    {props.dropdownTimes.map((time) =>
-                                    <option key={time.i}>{time.hours} : {time.minutes} {time.ampm} (id: {time.i})</option>
+                                <label htmlFor="year"><strong>Year: </strong></label>
+                                <select className="form-control" id="year" onChange={e=>props.handleAddShowChange(e)}>
+                                    {years.map((year, i) =>
+                                    <option key={i}>{year}</option>
                                     )}       
                                 </select>
                             </div>
                         </div>
                         <div className="col-3">
                             <div className="form-group">
-                                <label htmlFor={``}></label>
-                                <select className="form-control" id={``} onChange={e=>props.handleAddShowChange(e)}>
-                                    {props.dropdownTimes.map((time) =>
-                                    <option key={time.i}>{time.hours} : {time.minutes} {time.ampm} (id: {time.i})</option>
+                                <label htmlFor="month"><strong>Month: </strong></label>
+                                <select className="form-control" id="month" onChange={e=>props.handleAddShowChange(e)}>
+                                    {months.map((month, i) =>
+                                    <option key={i}>{month}</option>
                                     )}       
                                 </select>
                             </div>
                         </div>
                         <div className="col-3">
                             <div className="form-group">
-                                <label htmlFor={``}></label>
-                                <select className="form-control" id={``} onChange={e=>props.handleAddShowChange(e)}>
-                                    {props.dropdownTimes.map((time) =>
-                                    <option key={time.i}>{time.hours} : {time.minutes} {time.ampm} (id: {time.i})</option>
+                                <label htmlFor="day"><strong>Day: </strong></label>
+                                <select className="form-control" id="day" onChange={e=>props.handleAddShowChange(e)}>
+                                    {days.map((day, i) =>
+                                    <option key={i}>{day}</option>
                                     )}       
                                 </select>
                             </div>
                         </div>
                     </div>
-                    
                     <div className="form-group">
                         <label htmlFor="headliner">Headliner / Title (Required)</label>
                         <input type="text" className="form-control" id="headliner" placeholder="" onChange={e=>props.handleAddShowChange(e)} required />
