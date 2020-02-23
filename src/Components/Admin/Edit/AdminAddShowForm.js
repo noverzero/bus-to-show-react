@@ -77,13 +77,13 @@ const AdminAddShowForm = (props) => {
                     </div>
                     <div className="form-group">
                         <label htmlFor="headlinerImgLink">Headliner Image Link (if applicable)</label>
-                        <textarea className="form-control" id="headlinerImgLink" rows="1" onChange={e=>props.handleAddShowChange(e)}></textarea>
+                        <textarea className="form-control" id="headlinerImgLink" rows="1" maxLength="255" onChange={e=>props.handleAddShowChange(e)}></textarea>
                     </div>
                     <div className="form-group">
                         <label htmlFor="showStartTime">Show Start Time (required)   </label>
-                        <select className="form-control" id="showStartTime" onChange={e=>props.handleAddShowChange(e)} required>
+                        <select className="form-control" id="showStartTime" onChange={e=>props.handleAddShowChange(e)}>
                             {props.dropdownTimes.map((time) =>
-                                <option key={time.i}>{time.hours} : {time.minutes} {time.ampm} (id: {time.i})</option>
+                                <option key={time.i}>{time.hours}:{time.minutes} </option>
                             )}       
                         </select>
                     </div>
@@ -105,7 +105,7 @@ const AdminAddShowForm = (props) => {
                                     <label htmlFor={`departureTime${location.id}`}><strong>Departure Time: </strong></label>
                                     <select className="form-control" id={`departureTime${location.id}`} onChange={e=>props.handleAddShowChange(e, location)}>
                                         {props.dropdownTimes.map((time) =>
-                                        <option key={time.i}>{time.hours} : {time.minutes} {time.ampm} (id: {time.i})</option>
+                                        <option key={time.i}>{time.hours}:{time.minutes}</option>
                                         )}       
                                     </select>
                                 </div>

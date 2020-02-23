@@ -30,12 +30,14 @@ class AdminView extends React.Component {
     pickupParties: null,
     reservations: [],
     showToAdd: {
+      id: 0,
       date:{
         year: year,
         month: '01',
         day: '01'
       },
       venue: 'Red Rocks Amphitheatre',
+      showStartTime: '00:00:00',
       locations: [],
       departureTimes: {},
       locationPrices: {}
@@ -77,15 +79,15 @@ class AdminView extends React.Component {
       if (minutes < 10){
         minutes = '0' + minutes; // adding leading zero
       }
-      ampm = hours % 24 < 12 ? 'AM' : 'PM'
-      hours = hours % 12
-      if (hours === 0){
-        hours = 12;
-      }
+      // ampm = hours % 24 < 12 ? 'AM' : 'PM'
+      // hours = hours % 12
+      // if (hours === 0){
+      //   hours = 12;
+      // }
         time.i = i
         time.hours = hours
         time.minutes = minutes
-        time.ampm = ampm
+        //time.ampm = ampm
         result.push(time)
       }
     
@@ -160,7 +162,7 @@ class AdminView extends React.Component {
       case "showStartTime":
         newValue = event.target.value
         event.target.value = newValue
-        newState.showToAdd.showStartTime = newValue
+        newState.showToAdd.showStartTime = `${newValue}:00`
         console.log("showStartTime newValue: ", newValue)
         break;
       case `checkBox${location.id}`:
@@ -176,7 +178,7 @@ class AdminView extends React.Component {
       case `departureTime${location.id}`:
         newValue = event.target.value
         event.target.value = newValue
-        newState.showToAdd.departureTimes[location.id] = newValue
+        newState.showToAdd.departureTimes[location.id] = `${newValue}:00`
         console.log(`departureTime${location.id} newValue: `, newValue)
         break;
       case `price${location.id}`:
@@ -190,6 +192,7 @@ class AdminView extends React.Component {
     }
     this.setState({showToAdd: newState.showToAdd})
     console.log('this.state.showToAdd', this.state.showToAdd)
+    
   }
 
   handleAddShowSubmit = async (e) => {
@@ -200,13 +203,38 @@ class AdminView extends React.Component {
         //if no, continue
     //Post Show
     await this.postShow(this.state.showToAdd)
+    console.log('this.state.showToAdd.id: ', this.state.showToAdd.id)
     //Post pickup Parties
+    await this.postPickupParties(this.state.showToAdd)
     
   }
 
+  postPickupParties = async (showToAdd) => {
+    const locations = showToAdd.locations
+    await locations.forEach(async location => {
+      const party = {
+        eventId: showToAdd.id,
+        pickupLocationId: location,
+        lastBusDepartureTime: showToAdd.departureTimes[location],
+        firstBusLoadTime: '',
+        partyPrice: showToAdd.locationPrices[location]
+      }
+      const response = await fetch(`${fetchUrl}/pickup_parties`, {
+        method: 'POST',
+        body: JSON.stringify(party),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      const json = await response.json()
+      console.log('response from postPickupParties', json)
+      return json
+    })
+
+  }
 
   postShow = async (showToAdd) => {
-
+    const newState = { ...this.state }
     let show = {
       date: `${showToAdd.date.month}/${showToAdd.date.day}/${showToAdd.date.year}`,
       startTime: showToAdd.showStartTime,
@@ -217,7 +245,7 @@ class AdminView extends React.Component {
       support3: showToAdd.support3, 
       headlinerImgLink: showToAdd.headlinerImgLink,
       headlinerBio: showToAdd.headlinerBio, 
-      external: ''
+      external: showToAdd.external
     } 
 
     const response = await fetch(`${fetchUrl}/events`, {
@@ -229,6 +257,8 @@ class AdminView extends React.Component {
   })
   const json = await response.json()
   console.log('response from postShow', json)
+  newState.showToAdd.id = json.id
+  this.setState({showToAdd: newState.showToAdd})
   return json
   }
 
