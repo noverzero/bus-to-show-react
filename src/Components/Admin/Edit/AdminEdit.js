@@ -108,7 +108,7 @@ const AdminEdit = (props) => {
       <div className="list-group mr-n1 ml-n1">
         <div className="list-group-item show-header" style={{ maxHeight: calcHeightVal()}}>
           <div className="row show-list-flex">
-            <div className="col-3 mb-3" >
+            <div className="col-1 mb-3" >
               <button type="button" className="btn btn-outline-light" onClick={e=>{resetStuff(); toggleProperty(previousProperty)}}>Back</button>
             </div>
             <div className="col-1 mb-3">
@@ -118,7 +118,21 @@ const AdminEdit = (props) => {
                 <i className="fas fa-plus-circle"></i>
               </div>
             </div>
-            <div className="col-8 mb-3" >
+            <div className="col-4">
+              <div className="row">
+                <form className="form-horizontal">
+                  <div className="form-group">
+                      <label htmlFor="displayShowDates">Display: </label>
+                      <select className="form-control" id="displayShowDates" onChange={e=>props.handleAddShowChange(e)}>
+                          <option>Future</option>
+                          <option>Past</option>
+                          <option>All</option>
+                      </select>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div className="col-4 mb-3" >
               <form className="form-inline float-right">
                 <input
                 className={"form-control search-bar"}

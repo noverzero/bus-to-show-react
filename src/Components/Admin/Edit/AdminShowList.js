@@ -4,7 +4,7 @@ import '../../../App.css';
 const AdminShowList = (props) => {
 
   let { filterString, shows, makeSelection, resetStuff } = props
-  
+  console.log("show in AdminShowList", shows)
   shows = shows.sort((show1, show2) => {
     const a = new Date(show1.date)
     const b = new Date(show2.date)

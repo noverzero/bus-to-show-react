@@ -3,9 +3,9 @@ import '../../App.css';
 import UserCheckin from './userCheckin'
 import AdminEdit from './Edit/AdminEdit'
 
- //const fetchUrl = `http://localhost:3000`
+ const fetchUrl = `http://localhost:3000`
  //const fetchUrl = `https://bts-test-backend.herokuapp.com`
- const fetchUrl = `https://innocuous-junior.herokuapp.com`
+ //const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
  const d = new Date()
  const year = d.getFullYear().toString()
@@ -57,13 +57,11 @@ class AdminView extends React.Component {
       pickupParties: pickupParties,
       dropdownTimes: dropdownTimes
     })
-    console.log("pickupLocations", this.state.pickupLocations, this.state.dropdownTimes)
   }
 
 // Add Show Feature Functions vvvvvvvv
 
   addShowClick = event => {
-    console.log("addShowClick:: ")
     this.toggleProperty("displayAddShowForm")
   }
 
@@ -95,7 +93,7 @@ class AdminView extends React.Component {
   }
 
   handleAddShowChange =(event, location)=>{
-    console.log('handle change inside add show form', event.target.id, event.target.value)
+    console.log('handle change inside add show form')
     let newState = { ...this.state }
     let newValue
     switch (event.target.id) {
@@ -103,31 +101,31 @@ class AdminView extends React.Component {
         newValue = event.target.value
         event.target.value = newValue
         newState.showToAdd.date.year = newValue
-        console.log("year newValue: ", newValue)
+        //console.log("year newValue: ", newValue)
         break;
       case "month":
         newValue = event.target.value
         event.target.value = newValue
         newState.showToAdd.date.month = newValue
-        console.log("month newValue: ", newValue)
+        //console.log("month newValue: ", newValue)
         break;
       case "day":
         newValue = event.target.value
         event.target.value = newValue
         newState.showToAdd.date.day = newValue
-        console.log("day newValue: ", newValue)
+        //console.log("day newValue: ", newValue)
         break;
       case "headliner":
         newValue = event.target.value
         event.target.value = newValue
         newState.showToAdd.headliner = newValue
-        console.log("headliner newValue: ", newValue)
+        //console.log("headliner newValue: ", newValue)
         break;
       case "support1":
         newValue = event.target.value
         event.target.value = newValue
         newState.showToAdd.support1 = newValue
-        console.log("support1 newValue: ", newValue)
+        //console.log("support1 newValue: ", newValue)
         break;
       case "support2":
         newValue = event.target.value
@@ -139,13 +137,13 @@ class AdminView extends React.Component {
         newValue = event.target.value
         event.target.value = newValue
         newState.showToAdd.support3 = newValue
-        console.log("support3 newValue: ", newValue)
+        //console.log("support3 newValue: ", newValue)
         break;
       case "headlinerBio":
         newValue = event.target.value
         event.target.value = newValue
         newState.showToAdd.headlinerBio = newValue
-        console.log("headlinerBio newValue: ", newValue)
+        //console.log("headlinerBio newValue: ", newValue)
         break;
       case "headlinerImgLink":
         newValue = event.target.value
@@ -157,7 +155,7 @@ class AdminView extends React.Component {
         newValue = event.target.value
         event.target.value = newValue
         newState.showToAdd.venue = newValue
-        console.log("venue newValue: ", newValue)
+        //console.log("venue newValue: ", newValue)
         break;
       case "showStartTime":
         newValue = event.target.value
@@ -170,7 +168,7 @@ class AdminView extends React.Component {
         if(newState.showToAdd.locations.includes(newValue)){
           const result = newState.showToAdd.locations.filter((location) => location !== newValue)
           newState.showToAdd.locations = result
-          console.log('genius! ', result)
+          //console.log('genius! ', result)
         } else {
           newState.showToAdd.locations.push(newValue)
         }
@@ -179,31 +177,29 @@ class AdminView extends React.Component {
         newValue = event.target.value
         event.target.value = newValue
         newState.showToAdd.departureTimes[location.id] = `${newValue}:00`
-        console.log(`departureTime${location.id} newValue: `, newValue)
+        //console.log(`departureTime${location.id} newValue: `, newValue)
         break;
       case `price${location.id}`:
         newValue = event.target.value
         event.target.value = newValue
         newState.showToAdd.locationPrices[location.id] = newValue
-        console.log(`price${location.id} newValue`, newValue)
+        //console.log(`price${location.id} newValue`, newValue)
         break;
       default:
         break;
     }
     this.setState({showToAdd: newState.showToAdd})
-    console.log('this.state.showToAdd', this.state.showToAdd)
+    //console.log('this.state.showToAdd', this.state.showToAdd)
     
   }
 
   handleAddShowSubmit = async (e) => {
-    console.log('handleAddShowSubmit clicked', e)
     //Validate Form
     //Check DB to see if show exists at Venue on Date
         //if yes, warn before allowing or prevent with alternative suggestion
         //if no, continue
     //Post Show
     await this.postShow(this.state.showToAdd)
-    console.log('this.state.showToAdd.id: ', this.state.showToAdd.id)
     //Post pickup Parties
     await this.postPickupParties(this.state.showToAdd)
     this.resetAfterAddShow()
@@ -250,7 +246,7 @@ class AdminView extends React.Component {
         }
       })
       const json = await response.json()
-      console.log('response from postPickupParties', json)
+      //console.log('response from postPickupParties', json)
       return json
     })
 
@@ -279,7 +275,7 @@ class AdminView extends React.Component {
     }
   })
   const json = await response.json()
-  console.log('response from postShow', json)
+  //console.log('response from postShow', json)
   newState.showToAdd.id = json.id
   this.setState({showToAdd: newState.showToAdd})
   return json
@@ -513,7 +509,7 @@ class AdminView extends React.Component {
   }
 
   editPickupParty = async (pickupPartyId, field, value) => {
-    console.log('editPickupParty value ' , value)
+    console.log('editPickupParty ')
     if (!pickupPartyId || !field || !value) {
       return null
     }

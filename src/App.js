@@ -21,9 +21,9 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-//const fetchUrl = `http://localhost:3000`
+const fetchUrl = `http://localhost:3000`
 //const fetchUrl = `https://bts-test-backend.herokuapp.com`
-const fetchUrl = `https://innocuous-junior.herokuapp.com`
+//const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -82,25 +82,25 @@ class App extends Component {
     displayReservations: false,
     displayUserReservationSummary: false,
     displayTimes: false,
-    facebook: {
-      isLoggedIn: false,
-      userID: '',
-      name: '',
-      email:'',
-      picture:'',
-      userDetails: {},
-    },
     // facebook: {
-    //   isLoggedIn: true,
-    //   userID: '3',
-    //   name: 'Chevy Chase',
-    //   email:'chevy@chase.com',
+    //   isLoggedIn: false,
+    //   userID: '',
+    //   name: '',
+    //   email:'',
     //   picture:'',
-    //   userDetails: {
-    //     isAdmin: true,
-    //     isStaff: true
-    //   },
+    //   userDetails: {},
     // },
+    facebook: {
+      isLoggedIn: true,
+      userID: '3',
+      name: 'Chevy Chase',
+      email:'chevy@chase.com',
+      picture:'',
+      userDetails: {
+        isAdmin: true,
+        isStaff: true
+      },
+    },
     filterString: '',
     firstBusLoad: null,
     googleResponse: null,
