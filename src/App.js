@@ -90,6 +90,17 @@ class App extends Component {
       picture:'',
       userDetails: {},
     },
+    // facebook: {
+    //   isLoggedIn: true,
+    //   userID: '3',
+    //   name: 'Chevy Chase',
+    //   email:'chevy@chase.com',
+    //   picture:'',
+    //   userDetails: {
+    //     isAdmin: true,
+    //     isStaff: true
+    //   },
+    // },
     filterString: '',
     firstBusLoad: null,
     googleResponse: null,
@@ -160,11 +171,13 @@ class App extends Component {
   }
 
   getVerify = async () => {
+    console.log('GETTING GET VERIFY APP.JS')
     const response = await fetch(`${fetchUrl}/api`)
     const json =  await response.json()
     //console.log('getVerify', json)
     //document.cookie = `token=; expires=Wed, 21 Oct 2015 07:28:00 GMT`
     document.cookie = `token=${json.token}; secure`
+    console.log('json.token', json.token)
   }
   //status: over-ridden by onclick event in the "ride with us button" where called in "loading.js"
   onLoad = () => {

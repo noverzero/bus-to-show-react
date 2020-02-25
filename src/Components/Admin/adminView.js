@@ -7,6 +7,9 @@ import AdminEdit from './Edit/AdminEdit'
  //const fetchUrl = `https://bts-test-backend.herokuapp.com`
  const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
+ const d = new Date()
+ const year = d.getFullYear().toString()
+
 class AdminView extends React.Component {
 
   state = {
@@ -17,6 +20,7 @@ class AdminView extends React.Component {
     displayList: 'ShowList',
     displayNameChange: 0,
     displayVerifyNameChangePrompt: 0,
+    dropdownTimes: [],
     eventId: null,
     filterString: '',
     newFirst: null,
@@ -25,6 +29,19 @@ class AdminView extends React.Component {
     pickupLocations: null,
     pickupParties: null,
     reservations: [],
+    showToAdd: {
+      id: 0,
+      date:{
+        year: year,
+        month: '01',
+        day: '01'
+      },
+      venue: 'Red Rocks Amphitheatre',
+      showStartTime: '00:00:00',
+      locations: [],
+      departureTimes: {},
+      locationPrices: {}
+    },
     thisShow: null,
     thisPickupParty: null,
     theseParties: [],
@@ -32,14 +49,244 @@ class AdminView extends React.Component {
   }
 
   componentDidMount = async() => {
+
     const pickupParties = await this.getPickupParties()
+    const dropdownTimes = await this.populateTimes()
     await this.setState({
       pickupLocations: this.props.pickupLocations,
       pickupParties: pickupParties,
+      dropdownTimes: dropdownTimes
+    })
+    console.log("pickupLocations", this.state.pickupLocations, this.state.dropdownTimes)
+  }
+
+// Add Show Feature Functions vvvvvvvv
+
+  addShowClick = event => {
+    console.log("addShowClick:: ")
+    this.toggleProperty("displayAddShowForm")
+  }
+
+  populateTimes = () => {
+    let hours, minutes, ampm
+    let result = []
+    let increment = []
+    for(let i = 0; i <= 1425; i += 15){
+      let time = {}
+      increment.push(i)
+      hours = Math.floor(i / 60);
+      minutes = i % 60;
+      if (minutes < 10){
+        minutes = '0' + minutes; // adding leading zero
+      }
+      // ampm = hours % 24 < 12 ? 'AM' : 'PM'
+      // hours = hours % 12
+      // if (hours === 0){
+      //   hours = 12;
+      // }
+        time.i = i
+        time.hours = hours
+        time.minutes = minutes
+        //time.ampm = ampm
+        result.push(time)
+      }
+    
+    return result
+  }
+
+  handleAddShowChange =(event, location)=>{
+    console.log('handle change inside add show form', event.target.id, event.target.value)
+    let newState = { ...this.state }
+    let newValue
+    switch (event.target.id) {
+      case "year":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.date.year = newValue
+        console.log("year newValue: ", newValue)
+        break;
+      case "month":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.date.month = newValue
+        console.log("month newValue: ", newValue)
+        break;
+      case "day":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.date.day = newValue
+        console.log("day newValue: ", newValue)
+        break;
+      case "headliner":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.headliner = newValue
+        console.log("headliner newValue: ", newValue)
+        break;
+      case "support1":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.support1 = newValue
+        console.log("support1 newValue: ", newValue)
+        break;
+      case "support2":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.support2 = newValue
+        console.log("support2 newValue: ", newValue)
+        break;
+      case "support3":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.support3 = newValue
+        console.log("support3 newValue: ", newValue)
+        break;
+      case "headlinerBio":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.headlinerBio = newValue
+        console.log("headlinerBio newValue: ", newValue)
+        break;
+      case "headlinerImgLink":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.headlinerImgLink = newValue
+        console.log("headlinerImgLink newValue: ", newValue)
+        break;
+      case "venue":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.venue = newValue
+        console.log("venue newValue: ", newValue)
+        break;
+      case "showStartTime":
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.showStartTime = `${newValue}:00`
+        console.log("showStartTime newValue: ", newValue)
+        break;
+      case `checkBox${location.id}`:
+        newValue = location.id
+        if(newState.showToAdd.locations.includes(newValue)){
+          const result = newState.showToAdd.locations.filter((location) => location !== newValue)
+          newState.showToAdd.locations = result
+          console.log('genius! ', result)
+        } else {
+          newState.showToAdd.locations.push(newValue)
+        }
+        break;
+      case `departureTime${location.id}`:
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.departureTimes[location.id] = `${newValue}:00`
+        console.log(`departureTime${location.id} newValue: `, newValue)
+        break;
+      case `price${location.id}`:
+        newValue = event.target.value
+        event.target.value = newValue
+        newState.showToAdd.locationPrices[location.id] = newValue
+        console.log(`price${location.id} newValue`, newValue)
+        break;
+      default:
+        break;
+    }
+    this.setState({showToAdd: newState.showToAdd})
+    console.log('this.state.showToAdd', this.state.showToAdd)
+    
+  }
+
+  handleAddShowSubmit = async (e) => {
+    console.log('handleAddShowSubmit clicked', e)
+    //Validate Form
+    //Check DB to see if show exists at Venue on Date
+        //if yes, warn before allowing or prevent with alternative suggestion
+        //if no, continue
+    //Post Show
+    await this.postShow(this.state.showToAdd)
+    console.log('this.state.showToAdd.id: ', this.state.showToAdd.id)
+    //Post pickup Parties
+    await this.postPickupParties(this.state.showToAdd)
+    this.resetAfterAddShow()
+    
+  }
+
+  resetAfterAddShow = async () => {
+    let newState = {...this.state}
+    newState.showToAdd = {
+      id: 0,
+      date:{
+        year: year,
+        month: '01',
+        day: '01'
+      },
+      venue: 'Red Rocks Amphitheatre',
+      showStartTime: '00:00:00',
+      locations: [],
+      departureTimes: {},
+      locationPrices: {}
+    }
+    newState.displayList = 'ShowList'
+    this.setState({
+      displayList: newState.displayList,
+      showToAdd: newState.showToAdd
     })
   }
 
+  postPickupParties = async (showToAdd) => {
+    const locations = showToAdd.locations
+    await locations.forEach(async location => {
+      const party = {
+        eventId: showToAdd.id,
+        pickupLocationId: location,
+        lastBusDepartureTime: showToAdd.departureTimes[location],
+        firstBusLoadTime: '',
+        partyPrice: showToAdd.locationPrices[location]
+      }
+      const response = await fetch(`${fetchUrl}/pickup_parties`, {
+        method: 'POST',
+        body: JSON.stringify(party),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      const json = await response.json()
+      console.log('response from postPickupParties', json)
+      return json
+    })
 
+  }
+
+  postShow = async (showToAdd) => {
+    const newState = { ...this.state }
+    let show = {
+      date: `${showToAdd.date.month}/${showToAdd.date.day}/${showToAdd.date.year}`,
+      startTime: showToAdd.showStartTime,
+      venue: showToAdd.venue,
+      headliner: showToAdd.headliner,
+      support1: showToAdd.support1,
+      support2: showToAdd.support2, 
+      support3: showToAdd.support3, 
+      headlinerImgLink: showToAdd.headlinerImgLink,
+      headlinerBio: showToAdd.headlinerBio, 
+      external: showToAdd.external
+    } 
+
+    const response = await fetch(`${fetchUrl}/events`, {
+    method: 'POST',
+    body: JSON.stringify(show),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  const json = await response.json()
+  console.log('response from postShow', json)
+  newState.showToAdd.id = json.id
+  this.setState({showToAdd: newState.showToAdd})
+  return json
+  }
+
+
+//End Add Show Feature Functions ^^^^^
 
   getPickupParties = async () => {
     const response = await fetch(`${fetchUrl}/pickup_parties`, {
@@ -59,6 +306,7 @@ class AdminView extends React.Component {
   }
 
   toggleProperty = async (property) => {
+    console.log("toggleProperty fired", property)
     const newState = {...this.state}
     newState.filterString = ''
     if (property === 'displayUserCheckin') {
@@ -70,6 +318,12 @@ class AdminView extends React.Component {
       newState.displayAdminPanel = !newState.displayAdminPanel
       newState.displayList = 'ShowList'
       await this.setState(newState)
+    }
+    else if(property === 'displayAddShowForm'){
+      newState.displayList = 'displayAddShowForm'
+      console.log("displayAddShowForm")
+      await this.setState(newState)
+
     }
     else {
       newState.displayList = property
@@ -166,7 +420,6 @@ class AdminView extends React.Component {
     else if (stop && this.state.reservationsInterval) {
       clearInterval(this.state.reservationsInterval)
     }
-
   }
 
   toggleCheckedIn = async (isCheckedIn, reservation) => {
@@ -404,6 +657,7 @@ newName = (id, first, last) => {
           <div>
             {this.state.displayAdminPanel &&
               <AdminEdit
+              addShowClick={this.addShowClick}
               updateReservation={this.updateReservation}
               cancelPrompt={this.cancelPrompt}
               cancelPromptId={this.state.cancelPromptId}
@@ -412,6 +666,7 @@ newName = (id, first, last) => {
               displayAdminReservationsList={this.state.displayAdminReservationsList}
               displayNameChange={this.state.displayNameChange}
               displayVerifyNameChangePrompt={this.state.displayVerifyNameChangePrompt}
+              dropdownTimes={this.state.dropdownTimes}
               openNameChangeForm={this.openNameChangeForm}
               eventId={this.state.eventId}
               editPickupParty={this.editPickupParty}
@@ -419,6 +674,8 @@ newName = (id, first, last) => {
               filterString={this.state.filterString}
               getPickupParty={this.getPickupParty}
               getReservations={this.getReservations}
+              handleAddShowChange={this.handleAddShowChange}
+              handleAddShowSubmit={this.handleAddShowSubmit}
               displayList={this.state.displayList}
               pickupLocations={this.state.pickupLocations}
               pickupLocationId={this.state.pickupLocationId}

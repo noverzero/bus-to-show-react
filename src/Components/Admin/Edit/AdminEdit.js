@@ -4,6 +4,8 @@ import AdminPickupsList from './AdminPickupsList'
 import AdminShowList from './AdminShowList'
 import AdminEditPanel from './AdminEditPanel'
 import AdminReservationsList from './AdminReservationsList'
+import AdminAddShowForm from './AdminAddShowForm'
+
 
 const AdminEdit = (props) => {
   let { cancelPrompt, cancelPromptId, updateReservation, updateReservationName, displayAdminPanel, displayList, editPickupParty, eventId, filterString, getReservations, makeSelection, pickupLocationId, pickupLocations, pickupParties, reservations, searchItems, shows, toggleProperty, theseParties, theseLocations, thisCapacity, thisLocation, thisPickupParty, thisShow } = props
@@ -22,8 +24,10 @@ const AdminEdit = (props) => {
     displayList === 'PickupsList' ? 'ShowList' :
     displayList === 'AdminEditPanel' ? 'PickupsList' :
     displayList === 'ReservationsList' ? 'AdminEditPanel' :
+    displayList === 'displayAddShowForm' ? 'ShowList':
     null
   )
+  console.log('previousProperty: ', previousProperty)
 
   const displaySearch = (
     displayList === 'AdminEditPanel' ?
@@ -56,6 +60,11 @@ const AdminEdit = (props) => {
     else if (displayList === 'ReservationsList') return (
       <div>Cancel a Reservation<br/>
       **Please verify email address before canceling a reservation**
+      </div>
+    )
+    else if (displayList === 'displayAddShowForm') return (
+      <div>Add a Show<br/>
+      **Please verify that show does not already exist before adding it**
       </div>
     )
     else return ''
@@ -102,7 +111,14 @@ const AdminEdit = (props) => {
             <div className="col-3 mb-3" >
               <button type="button" className="btn btn-outline-light" onClick={e=>{resetStuff(); toggleProperty(previousProperty)}}>Back</button>
             </div>
-            <div className="col-9 mb-3" >
+            <div className="col-1 mb-3">
+              <div
+                onClick={props.addShowClick}
+              >
+                <i className="fas fa-plus-circle"></i>
+              </div>
+            </div>
+            <div className="col-8 mb-3" >
               <form className="form-inline float-right">
                 <input
                 className={"form-control search-bar"}
@@ -146,6 +162,14 @@ const AdminEdit = (props) => {
                 changeName={props.changeName}
                 displayVerifyNameChangePrompt={props.displayVerifyNameChangePrompt}
                 toggleVerifyNameChangePrompt={props.toggleVerifyNameChangePrompt}
+              />
+            </div>
+            <div className={displayList === 'displayAddShowForm' ? '' : 'hidden'}>
+              <AdminAddShowForm
+                pickupLocations={pickupLocations}
+                dropdownTimes={props.dropdownTimes}
+                handleAddShowChange={props.handleAddShowChange}
+                handleAddShowSubmit={props.handleAddShowSubmit}
               />
             </div>
           </ul>
