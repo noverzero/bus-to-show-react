@@ -21,7 +21,7 @@
     "react-spotify-login": "^0.9.1",
     "react-stripe-checkout": "^2.6.3",
     "stripe-checkout": "^1.0.9",
-    "validator": "^10.11.0"
+    "validator": "^13.7.0"
   },
   "scripts": {
     "start": "react-scripts start",
