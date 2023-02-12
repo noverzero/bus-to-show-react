@@ -3,10 +3,11 @@ import '../../App.css'
 import Facebook from '../Facebook';
 import MediaQuery from 'react-responsive'
 import ReservationsView from '../ReservationsView/ReservationsView'
+import LoginForm from './LoginForm';
 
 const LoginView = (props) => {
 
-  const { userDashboard, toggleLoggedIn, userDetails, profileClick, responseFacebook, facebook, displayReservations, toggleReservationView, addBorder, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
+  const { userDashboard, toggleLoggedIn, userDetails, profileClick, responseLogin, facebook, displayReservations, toggleReservationView, addBorder, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
 
   const { isStaff, isAdmin, isDriver } = facebook.userDetails
 
@@ -32,23 +33,49 @@ const LoginView = (props) => {
       <div className="w-25 mx-auto">
         <div className='row p-2 mb-4'>
           {!facebook.isLoggedIn ?
+          <>
           <div className='col-12 text-center'>
             Continue as a Guest or Click below to Sign-In to (or create) your own account using Facebook:
           </div>
-          : ""}
-        </div>
-        <div className='row'>
-          <div className='col-12 text-center'>
-            <Facebook
-              userDashboard={userDashboard}
-              toggleLoggedIn={toggleLoggedIn}
-              userDetails={userDetails}
-              profileClick={profileClick}
-              responseFacebook={responseFacebook}
-              continueAsGuest={continueAsGuest}
-              facebook={facebook}
-            />
+          <div className='row'>
+            <div className='col-12 text-center'>
+              <LoginForm 
+                userDashboard={userDashboard}
+                toggleLoggedIn={toggleLoggedIn}
+                userDetails={userDetails}
+                profileClick={profileClick}
+                responseLogin={responseLogin}
+                continueAsGuest={continueAsGuest}
+                facebook={facebook}
+              />
+              {/* <Facebook
+                userDashboard={userDashboard}
+                toggleLoggedIn={toggleLoggedIn}
+                userDetails={userDetails}
+                profileClick={profileClick}
+                responseFacebook={responseFacebook}
+                continueAsGuest={continueAsGuest}
+                facebook={facebook}
+              /> */}
+              <div className="row p-2">
+              <div className='col-12 text-center'>
+                <button type="button" className="btn bts-orange-bg"
+                  onClick={()=> {props.toggleLoggedIn(false); props.profileClick()}}>
+                  <strong>Continue as Guest</strong>
+                </button>
+              </div>
+            </div>
+            </div>
           </div>
+          </>
+          : 
+          <button
+              onClick={props.logout}
+              type="button"
+              className="btn btn-outline-dark login-btn">
+              Log Out
+          </button>
+          }
         </div>
         <div className='row'>
           {facebook.isLoggedIn ?
@@ -152,7 +179,7 @@ const LoginView = (props) => {
           </div>
           <div className='row'>
             <div className='col-12 text-center'>
-              <Facebook
+              {/* <Facebook
                 userDashboard={userDashboard}
                 toggleLoggedIn={toggleLoggedIn}
                 userDetails={userDetails}
@@ -160,7 +187,7 @@ const LoginView = (props) => {
                 responseFacebook={responseFacebook}
                 continueAsGuest={continueAsGuest}
                 facebook={facebook}
-              />
+              /> */}
             </div>
           </div>
           <div className='row'>

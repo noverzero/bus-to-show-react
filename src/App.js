@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 import Validator from 'validator'
 import MediaQuery from 'react-responsive'
 import moment from 'moment'
+import { sha256 } from 'js-sha256';
+
 
 // Styling
 import './App.css';
@@ -21,9 +23,9 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-//const fetchUrl = `http://localhost:3000`
+const fetchUrl = `http://localhost:3000`
 //const fetchUrl = `https://bts-test-backend.herokuapp.com`
-const fetchUrl = `https://innocuous-junior.herokuapp.com`
+//const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -177,7 +179,6 @@ class App extends Component {
     //console.log('getVerify', json)
     //document.cookie = `token=; expires=Wed, 21 Oct 2015 07:28:00 GMT`
     document.cookie = `token=${json.token}; secure`
-    console.log('json.token', json.token)
   }
   //status: over-ridden by onclick event in the "ride with us button" where called in "loading.js"
   onLoad = () => {
@@ -561,6 +562,7 @@ class App extends Component {
   }
 
   toggleLoggedIn = (boolean) => {
+    console.log('toggleLoggedIn clicked ---' , boolean);
     if (boolean === false){
       this.setState({
         ...this.state,
@@ -570,7 +572,11 @@ class App extends Component {
           name: '',
           email:'',
           picture:'',
-          userDetails: {},
+          userDetails: {
+            isAdmin: false,
+            isStaff: false,
+            isDriver: false,
+          },
         }
       })
     } else {
@@ -615,7 +621,53 @@ class App extends Component {
     })
   }
 
+  responseLogin = async (response) => {
+    console.log('responseLogin response ====== ', response)
+    const {email, password} = response
+    const hashedPassword = sha256(password);
+    
+    const usersInfo = await fetch(`${fetchUrl}/users/login`, {
+      method: 'POST',
+      body: JSON.stringify({
+        username: email,
+        password: hashedPassword
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const userObj = await usersInfo.json()
+    console.log('login response from API === ', userObj)
+
+    // email: "dustin@undefinedindustries.com"
+    // id: 844
+    // isAdmin: true
+    // token: "eyJhb"
+
+    this.setState({
+      ...this.state,
+        facebook: {
+          ...this.state.facebook,
+          isLoggedIn: true,
+          userID: userObj.id,
+          email:userObj.email,
+          userDetails: {
+            isAdmin: userObj.isAdmin,
+            isStaff: userObj.isStaff
+          },
+          userDetails:userObj
+
+        }
+    })
+    this.toggleLoggedIn(true)
+    this.onLoad()
+
+  }
+
+
+
   responseFacebook = async (response) => {
+    console.log('facebook response ====> ', response)
     this.setState({
       ...this.state,
         facebook: {
@@ -666,10 +718,8 @@ class App extends Component {
   }
 
   logout = () => {
-    const newState = { ...this.state }
-    newState.googleResponse = null
-    newState.spotifyReponse = null
-    this.setState({ googleResponse: newState.googleResponse, spotifyReponse: newState.spotifyReponse })
+    this.toggleLoggedIn(false);
+    this.profileClick()
   }
 
   // Tab Functions
@@ -1343,6 +1393,7 @@ class App extends Component {
                   responseGoogle={this.responseGoogle}
                   responseSpotify={this.responseSpotify}
                   toggleLoggedIn={this.toggleLoggedIn}
+                  logout={this.logout}
                   userDetails={this.state.userDetails}
                   profileClick={this.profileClick}
                   toggleReservationView={this.toggleReservationView}
@@ -1352,6 +1403,7 @@ class App extends Component {
                   filterString={this.state.filterString}
                   showsExpandClick={this.showsExpandClick}
                   responseFacebook={this.responseFacebook}
+                  responseLogin={this.responseLogin}
                   continueAsGuest={this.continueAsGuest}
                   facebook={this.state.facebook}
                   toggleAdminView={this.toggleAdminView}

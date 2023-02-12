@@ -3,9 +3,9 @@ import '../../App.css';
 import UserCheckin from './userCheckin'
 import AdminEdit from './Edit/AdminEdit'
 
- //const fetchUrl = `http://localhost:3000`
+ const fetchUrl = `http://localhost:3000`
  //const fetchUrl = `https://bts-test-backend.herokuapp.com`
- const fetchUrl = `https://innocuous-junior.herokuapp.com`
+ //const fetchUrl = `https://innocuous-junior.herokuapp.com`
 
  const d = new Date()
  const year = d.getFullYear().toString()
@@ -730,7 +730,7 @@ newName = (id, first, last) => {
             {isDriver &&
               <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>console.log('also click')}>Driver Shifts</button>
             }
-            {isStaff &&
+            {isStaff || isAdmin &&
               <button type="button" className="btn bts-orange-bg btn-lg btn-block my-4" onClick={e=>this.toggleProperty('displayUserCheckin')}>Rider Check-In</button>
             }
           </div>
