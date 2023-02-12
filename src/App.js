@@ -140,6 +140,8 @@ class App extends Component {
 
   async componentDidMount() {
     await this.getVerify()
+    await this.checkAuth()
+ 
     const response = await fetch(`${fetchUrl}/events`)
     let allShows = await response.json()
 
@@ -180,6 +182,52 @@ class App extends Component {
     //document.cookie = `token=; expires=Wed, 21 Oct 2015 07:28:00 GMT`
     document.cookie = `token=${json.token}; secure`
   }
+
+  checkAuth = async () => {
+    const jwtToken = localStorage.getItem('jwt')
+    if(!jwtToken){
+      return
+    }
+    console.log(jwtToken)
+    const response = await fetch(`${fetchUrl}/api/secure`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+        },
+        withCredentials: true
+      }
+    )
+    console.log('checkAuth Response --------- >>>> ', response)
+    const userObj =  await response.json()
+    if (userObj && userObj.id){
+      this.setState({
+        ...this.state,
+          facebook: {
+            ...this.state.facebook,
+            isLoggedIn: true,
+            userID: userObj.id,
+            email:userObj.email,
+            userDetails: {
+              isAdmin: userObj.isAdmin,
+              isStaff: userObj.isStaff
+            },
+            userDetails:userObj
+  
+          }
+      })
+      this.toggleLoggedIn(true)
+      this.onLoad()
+    } else {
+      this.toggleLoggedIn(false)
+      this.onLoad()
+    }
+
+    console.log('checkAuth response =======>>>. ', userObj)
+
+
+  }
+
+
   //status: over-ridden by onclick event in the "ride with us button" where called in "loading.js"
   onLoad = () => {
 
@@ -579,6 +627,7 @@ class App extends Component {
           },
         }
       })
+      localStorage.setItem('jwt', '')
     } else {
       this.setState({
         ...this.state,
@@ -643,24 +692,26 @@ class App extends Component {
     // id: 844
     // isAdmin: true
     // token: "eyJhb"
-
-    this.setState({
-      ...this.state,
-        facebook: {
-          ...this.state.facebook,
-          isLoggedIn: true,
-          userID: userObj.id,
-          email:userObj.email,
-          userDetails: {
-            isAdmin: userObj.isAdmin,
-            isStaff: userObj.isStaff
-          },
-          userDetails:userObj
-
-        }
-    })
-    this.toggleLoggedIn(true)
-    this.onLoad()
+    if (userObj && userObj.token) {
+      localStorage.setItem('jwt', userObj.token)          
+      this.setState({
+        ...this.state,
+          facebook: {
+            ...this.state.facebook,
+            isLoggedIn: true,
+            userID: userObj.id,
+            email:userObj.email,
+            userDetails: {
+              isAdmin: userObj.isAdmin,
+              isStaff: userObj.isStaff
+            },
+            userDetails:userObj
+  
+          }
+      })
+      this.toggleLoggedIn(true)
+      this.onLoad()
+    }
 
   }
 
