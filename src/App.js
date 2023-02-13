@@ -4,6 +4,8 @@ import Validator from 'validator'
 import MediaQuery from 'react-responsive'
 import moment from 'moment'
 import { sha256 } from 'js-sha256';
+import env from "react-dotenv";
+
 
 
 // Styling
@@ -26,7 +28,7 @@ ReactGA.pageview('/app');
 //const fetchUrl = `http://localhost:3000`
 //const fetchUrl = `https://bts-test-backend.herokuapp.com`
 //const fetchUrl = `https://innocuous-junior.herokuapp.com`
-const fetchUrl = `blooming-fortress-13049.herokuapp.com`
+const fetchUrl = env.API_URL
 
 class App extends Component {
   // Please keep sorted alphabetically so we don't duplicate keys :) Thanks!
@@ -142,6 +144,8 @@ class App extends Component {
   async componentDidMount() {
     await this.getVerify()
     await this.checkAuth()
+    console.log('did .env work? ', fetchUrl)
+
  
     const response = await fetch(`${fetchUrl}/events`)
     let allShows = await response.json()
