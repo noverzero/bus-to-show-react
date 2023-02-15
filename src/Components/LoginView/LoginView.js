@@ -4,10 +4,12 @@ import Facebook from '../Facebook';
 import MediaQuery from 'react-responsive'
 import ReservationsView from '../ReservationsView/ReservationsView'
 import LoginForm from './LoginForm';
+import RegistrationForm from './RegistrationForm';
+import RegisterUserToast from './RegisterUserToast';
 
 const LoginView = (props) => {
 
-  const { userDashboard, toggleLoggedIn, userDetails, profileClick, responseLogin, facebook, displayReservations, toggleReservationView, addBorder, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
+  const { userDashboard, toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, userDetails, profileClick, responseLogin, facebook, displayReservations, toggleReservationView, addBorder, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
 
   const { isStaff, isAdmin, isDriver } = facebook.userDetails
 
@@ -32,7 +34,7 @@ const LoginView = (props) => {
     <MediaQuery minWidth={800}>
       <div className="w-25 mx-auto">
         <div className='row p-2 mb-4'>
-          {!facebook.isLoggedIn ?
+          {!facebook.isLoggedIn && !showRegisterForm? 
           <>
           <div className='col-12 text-center'>
             Continue as a Guest or Click below to Sign-In to (or create) your own account using Facebook:
@@ -48,20 +50,15 @@ const LoginView = (props) => {
                 continueAsGuest={continueAsGuest}
                 facebook={facebook}
               />
-              {/* <Facebook
-                userDashboard={userDashboard}
-                toggleLoggedIn={toggleLoggedIn}
-                userDetails={userDetails}
-                profileClick={profileClick}
-                responseFacebook={responseFacebook}
-                continueAsGuest={continueAsGuest}
-                facebook={facebook}
-              /> */}
               <div className="row p-2">
               <div className='col-12 text-center'>
                 <button type="button" className="btn bts-orange-bg"
                   onClick={()=> {props.toggleLoggedIn(false); props.profileClick()}}>
                   <strong>Continue as Guest</strong>
+                </button>
+                <button type="button" className="btn bts-orange-bg"
+                  onClick={()=> {toggleRegister()}}>
+                  <strong>Register</strong>
                 </button>
               </div>
             </div>
@@ -69,6 +66,16 @@ const LoginView = (props) => {
           </div>
           </>
           : 
+          showRegisterForm ? 
+          <div>
+            <RegistrationForm
+              toggleRegister={toggleRegister}
+              requestRegistration={requestRegistration}
+            />
+            {registerResponse.code && <RegisterUserToast response={registerResponse} />}
+          </div>
+
+          :
           <button
               onClick={props.logout}
               type="button"
@@ -179,15 +186,6 @@ const LoginView = (props) => {
           </div>
           <div className='row'>
             <div className='col-12 text-center'>
-              {/* <Facebook
-                userDashboard={userDashboard}
-                toggleLoggedIn={toggleLoggedIn}
-                userDetails={userDetails}
-                profileClick={profileClick}
-                responseFacebook={responseFacebook}
-                continueAsGuest={continueAsGuest}
-                facebook={facebook}
-              /> */}
             </div>
           </div>
           <div className='row'>

@@ -25,9 +25,6 @@ import ReactGA from 'react-ga';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-//const fetchUrl = `http://localhost:3000`
-//const fetchUrl = `https://bts-test-backend.herokuapp.com`
-//const fetchUrl = `https://innocuous-junior.herokuapp.com`
 const fetchUrl = env.API_URL
 
 class App extends Component {
@@ -117,10 +114,12 @@ class App extends Component {
     purchaseFailed: false,
     purchasePending: false,
     purchaseSuccessful: false,
+    registerResponse: {},
     reservationDetail: null,
     reservationToEditId: null,
     reservationEditsToSend: [],
     showBios: false,
+    showRegisterForm: false,
     spotifyResponse: null,
     startTimer: false,
     ticketTimer: null,
@@ -720,6 +719,30 @@ class App extends Component {
 
   }
 
+  requestRegistration = async (request) => {
+    console.log('request details ---- >>>> ', request)
+    const password = sha256(request.password)
+    const usersInfo = await fetch(`${fetchUrl}/users`, {
+      method: 'POST',
+      body: JSON.stringify({
+          firstName: request.firstName,
+          lastName: request.lastName,
+          email: request.email,
+          hshPwd: password
+      }),
+      headers: {
+          'Content-Type': 'application/json'
+      }
+    })
+    const userObj = await usersInfo.json()
+    console.log('registration response ====== >> >>> ', userObj)
+    const newState = {... this.state}
+    newState.registerResponse = userObj
+    this.setState({registerResponse: newState.registerResponse})
+
+    //{message: 'account already exists', code: '202', email: 'dustin@undefinedindustries.com'}
+
+  }
 
 
   responseFacebook = async (response) => {
@@ -776,6 +799,15 @@ class App extends Component {
   logout = () => {
     this.toggleLoggedIn(false);
     this.profileClick()
+  }
+
+  toggleRegister = () => {
+    console.log('toggleRegister hit & showRegisterForm ====> ', this.state.showRegisterForm)
+    const newState = { ...this.state }
+    newState.showRegisterForm = !newState.showRegisterForm;
+    this.setState({showRegisterForm: newState.showRegisterForm})
+    console.log('toggleRegister hit & showRegisterForm AFTER ====> ', this.state.showRegisterForm)
+
   }
 
   // Tab Functions
@@ -1415,7 +1447,7 @@ class App extends Component {
       <React.Fragment>
         <div className="App">
           {/* Desktop View */}
-          <MediaQuery minWidth={8}>
+          <MediaQuery minWidth={800}>
             {this.state.displayLoadingScreen && !this.state.facebook.isLoggedIn ?
               <Loading
                 onLoad={this.onLoad}
@@ -1450,6 +1482,10 @@ class App extends Component {
                   responseSpotify={this.responseSpotify}
                   toggleLoggedIn={this.toggleLoggedIn}
                   logout={this.logout}
+                  showRegisterForm={this.state.showRegisterForm}
+                  toggleRegister={this.toggleRegister}
+                  requestRegistration={this.requestRegistration}
+                  registerResponse={this.state.registerResponse}
                   userDetails={this.state.userDetails}
                   profileClick={this.profileClick}
                   toggleReservationView={this.toggleReservationView}
