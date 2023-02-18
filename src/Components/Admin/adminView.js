@@ -2,12 +2,11 @@ import React from 'react'
 import '../../App.css';
 import UserCheckin from './userCheckin'
 import AdminEdit from './Edit/AdminEdit'
-import env from "react-dotenv";
 
 
- //const fetchUrl = `http://localhost:3000`
+ const fetchUrl = `http://localhost:3000`
  //const fetchUrl = `https://bts-test-backend.herokuapp.com`
- const fetchUrl = env.API_URL
+ //const fetchUrl = env.API_URL
 
  const d = new Date()
  const year = d.getFullYear().toString()
@@ -54,11 +53,14 @@ class AdminView extends React.Component {
 
     const pickupParties = await this.getPickupParties()
     const dropdownTimes = await this.populateTimes()
+    const showsWithResAndCap = await this.getReservationCountsForAllShows
     await this.setState({
       pickupLocations: this.props.pickupLocations,
       pickupParties: pickupParties,
-      dropdownTimes: dropdownTimes
+      dropdownTimes: dropdownTimes,
+      showsWithResAndCap: showsWithResAndCap
     })
+
     console.log("pickupLocations", this.state.pickupLocations, this.state.dropdownTimes)
   }
 
@@ -291,6 +293,7 @@ class AdminView extends React.Component {
 //End Add Show Feature Functions ^^^^^
 
   getPickupParties = async () => {
+    console.log(' getPickupParties fetchUrl ====> ', fetchUrl)
     const response = await fetch(`${fetchUrl}/pickup_parties`, {
       method: 'GET',
       headers: {
@@ -298,7 +301,8 @@ class AdminView extends React.Component {
       }
     })
     const result = await response.json()
-  return result
+    console.log('pickupParties fetch Response ========>>> ', result)
+    return result
   }
 
   searchItems = event => {
@@ -316,7 +320,6 @@ class AdminView extends React.Component {
     newState.displayList = 'ShowList'
     await this.setState(newState)}
     else if (property === 'displayAdminPanel'){
-      newState.showsWithResAndCap = await this.getReservationCountsForAllShows()
       newState.displayAdminPanel = !newState.displayAdminPanel
       newState.displayList = 'ShowList'
       await this.setState(newState)

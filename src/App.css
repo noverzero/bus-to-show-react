@@ -499,6 +499,14 @@ border-width: 1px;
 
 }
 
+.container-border-orange {
+  border-style: solid;
+  border-color: #ff240f;
+  border-width: 1px;
+  border-radius: 4px;
+
+}
+
 .limit-height {
 height: 60vh;
 }
