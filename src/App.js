@@ -1,7 +1,13 @@
+//ToDo: 
+//1. Add Popover promoting account benefits
+//2. Add passwords to all old fb login accounts
+//3. get dotenv working on front end.
+//4. Deal with toggle sync on dashboard/account button.
+
 // Packages
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-
+import env from "react-dotenv";
 
 // Styling
 import './App.css';
@@ -11,10 +17,11 @@ import ReactGA from 'react-ga';
 import MembershipsPage from './Pages/MembershipsPage'
 import LayoutPage from './Pages/LayoutPage';
 import VerifyPage from './Pages/VerifyPage';
+import ResetPage from './Pages/ResetPage';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-const fetchUrl = `http://localhost:3000`
+const fetchUrl = `${env.API_URL}`
 const verifyEmailUrl = `${fetchUrl}/users/confirm-email`
 
 class App extends Component {
@@ -54,6 +61,14 @@ class App extends Component {
           <Route exact path="/memberships" component={MembershipsPage} />
           <Route path="/verify/:token" component={(props) => 
             <VerifyPage 
+              verifyEmail={this.verifyEmail}
+              isVerified={this.state.isVerified}
+              isCalled={this.state.isCalled}
+              {...props}
+            />}
+          />
+          <Route path="/reset/:token" component={(props) => 
+            <ResetPage 
               verifyEmail={this.verifyEmail}
               isVerified={this.state.isVerified}
               isCalled={this.state.isCalled}

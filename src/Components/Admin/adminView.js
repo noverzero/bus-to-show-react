@@ -2,11 +2,10 @@ import React from 'react'
 import '../../App.css';
 import UserCheckin from './userCheckin'
 import AdminEdit from './Edit/AdminEdit'
+import env from "react-dotenv";
 
 
- const fetchUrl = `http://localhost:3000`
- //const fetchUrl = `https://bts-test-backend.herokuapp.com`
- //const fetchUrl = env.API_URL
+const fetchUrl = `${env.API_URL}`
 
  const d = new Date()
  const year = d.getFullYear().toString()

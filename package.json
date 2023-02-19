@@ -6,10 +6,12 @@
     "axios": "^0.21.1",
     "calendar-js": "^1.4.4",
     "font-awesome": "^4.7.0",
+    "fsevents": "^2.3.2",
     "js-sha256": "^0.9.0",
     "moment": "^2.24.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "react-dotenv": "^0.1.3",
     "react-facebook-login": "^4.1.1",
     "react-ga": "^2.5.7",
     "react-google-login": "^5.0.2",
@@ -23,8 +25,9 @@
     "validator": "^13.7.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-dotenv && react-scripts start", 
+    "build": "react-dotenv && react-scripts build",
+    "serve": "react-dotenv && serve build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -41,8 +44,5 @@
     "whitelist": [
       "API_URL"
     ]
-  },
-  "optionalDependencies": {
-    "fsevents": "^2.3.2"
   }
 }
