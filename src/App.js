@@ -1,8 +1,6 @@
 //ToDo: 
 //1. Add Popover promoting account benefits
-//2. Add passwords to all old fb login accounts
-//3. get dotenv working on front end.
-//4. Deal with toggle sync on dashboard/account button.
+
 
 // Packages
 import React, { Component } from 'react'

@@ -67,23 +67,5 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
 
-### Steps to switch to Dev mode
 
-App.js 
-1. change fetchUrl = `http://localhost:3000`
-2. comment out facebook instate and hard code user to state: 
-    facebook: {
-      isLoggedIn: true,
-      userID: '3',
-      name: 'Chevy Chase',
-      email:'chevy@chase.com',
-      picture:'',
-      userDetails: {
-        isAdmin: true,
-        isStaff: true
-      },
-    },
-
-AdminView.js
-1. fetchUrl = `http://localhost:3000`
 

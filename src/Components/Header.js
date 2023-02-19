@@ -16,14 +16,20 @@ const Header = (props) => {
     <div
       onClick={props.profileClick}
       className={props.adminView ? "border-0 bts-admin-purple p-2 mr-2" : "border-0 bts-orange-bg p-2 mr-2"}>
-      {!props.facebook.isLoggedIn ?
+      
       <div>
           <button className="btn detail-btn mr-2" onClick={()=>{toggleShowDashboardButton(!showDashboardButton)}}>
             { showDashboardButton 
             ?
-            <div>
-              Sign in or up
-            </div>
+              !props.facebook.isLoggedIn 
+              ?
+                <div>
+                  Sign in or up
+                </div>
+              :
+                <div>
+                  <i className="fas fa-user-check fa-lg"></i>
+                </div>
             :
             <div>
               Dashboard
@@ -31,20 +37,6 @@ const Header = (props) => {
             }
           </button>
       </div>
-      :
-      <div onClick={()=>{toggleShowDashboardButton(!showDashboardButton)}}>
-         { showDashboardButton 
-            ?
-            <div>
-              <i className="fas fa-user-check fa-lg"></i>
-            </div>
-            :
-            <div>
-              Dashboard
-            </div>
-            }
-      </div>
-      }
     </div>
   </div>
   </nav>
