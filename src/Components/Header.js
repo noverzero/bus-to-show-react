@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useRef, useState , useEffect} from 'react';
+
 import '../App.css';
 import logo from '../Images/Logos/bustoshow-text-logo--white-outline-no-fill-328x46.png'
 
 const Header = (props) => {
   const [showDashboardButton, toggleShowDashboardButton] = useState(true);
+  const myRef = useRef(null);
+
+  useEffect(() => {
+    window.$(myRef.current).tooltip();
+  }, []);
 
   return (
     <nav className={props.adminView ? 'Header row bts-admin-purple nav-flex' : 'Header row bts-orange-bg nav-flex'}>
@@ -23,7 +29,7 @@ const Header = (props) => {
             ?
               !props.facebook.isLoggedIn 
               ?
-                <div>
+                <div ref={myRef} data-toggle="tooltip" data-placement="bottom" title="Sign in to view your reservations, history and more.">
                   Sign in or up
                 </div>
               :
