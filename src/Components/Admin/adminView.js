@@ -5,7 +5,7 @@ import AdminEdit from './Edit/AdminEdit'
 import env from "react-dotenv";
 
 
-const fetchUrl = `${env.API_URL}`
+const fetchUrl = `${process.env.REACT_APP_API_URL}`
 
  const d = new Date()
  const year = d.getFullYear().toString()

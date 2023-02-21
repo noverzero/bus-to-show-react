@@ -19,7 +19,7 @@ import ResetPage from './Pages/ResetPage';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-const fetchUrl = `${env.API_URL}`
+const fetchUrl = `${process.env.REACT_APP_API_URL}`
 const verifyEmailUrl = `${fetchUrl}/users/confirm-email`
 
 class App extends Component {

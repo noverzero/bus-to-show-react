@@ -3,7 +3,7 @@ import StripeCheckout from 'react-stripe-checkout'
 import env from "react-dotenv";
 
 
-const fetchUrl = `${env.API_URL}`
+const fetchUrl = `${process.env.REACT_APP_API_URL}`
 
 
 export default class Checkout extends React.Component {
