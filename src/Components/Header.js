@@ -11,6 +11,7 @@ const Header = (props) => {
 
   useEffect(() => {
     window.$(myRef.current).tooltip();
+    if(!props.facebook.isLoggedIn) toggleShowDashboardButton(false)
   }, []);
 
   return (
