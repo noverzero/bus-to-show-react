@@ -29,7 +29,6 @@ class App extends Component {
   }
   
   verifyEmail = async (token) => {
-    console.log('verifyEmail called!  ')
     if (this.state.isCalled === true) return
     const isCalled = true
     const response = await fetch(`${verifyEmailUrl}/${token}`, {
@@ -39,7 +38,6 @@ class App extends Component {
         }
     })
     const result = await response.json()
-    console.log('verifyEmail result!  ', result)
     const isVerified = result ? true : false;
     this.setState({
       isVerified: isVerified,

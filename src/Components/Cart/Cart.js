@@ -14,7 +14,6 @@ const Cart = (props) => {
   let savings = Number(props.afterDiscountObj.totalSavings)
   let costAfterSavings = Number(props.afterDiscountObj.totalPriceAfterDiscount)
   let finalTotalCost = costAfterSavings
-  console.log('finalTotalCost ', finalTotalCost, 'costAfterSavings ', costAfterSavings, 'props.totalCost ', props.totalCost )
 
   const maskPhoneInput = (e) => {
     var part = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
