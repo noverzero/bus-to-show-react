@@ -2,7 +2,6 @@ import React from 'react'
 import '../../../App.css';
 
 const AdminAddShowForm = (props) => {
-    console.log("pickup lOcations in AdminAddShowForm:  ", props.pickupLocations)
     let d = new Date()
     let n = d.getFullYear()
     const years = [n.toString(), (n+1).toString()]

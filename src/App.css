@@ -367,7 +367,14 @@ color: #ff420f;
 .bts-orange-bg {
 background-color: #ff420f;
 color: white;
+margin: 4px;
 }
+
+.bts-orange-header {
+  background-color: #ff420f;
+  color: white;
+  padding: 2px;
+  }
 
 .bts-white-bg {
 background-color: white;
@@ -495,6 +502,14 @@ font-size: 15px;
 .aboutUsPage {
 border-color: #ff420f;
 border-width: 1px;
+
+}
+
+.container-border-orange {
+  border-style: solid;
+  border-color: #ff240f;
+  border-width: 1px;
+  border-radius: 4px;
 
 }
 

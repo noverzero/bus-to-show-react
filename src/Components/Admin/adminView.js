@@ -5,9 +5,7 @@ import AdminEdit from './Edit/AdminEdit'
 import env from "react-dotenv";
 
 
- //const fetchUrl = `http://localhost:3000`
- //const fetchUrl = `https://bts-test-backend.herokuapp.com`
- const fetchUrl = env.API_URL
+const fetchUrl = `${process.env.REACT_APP_API_URL}`
 
  const d = new Date()
  const year = d.getFullYear().toString()
@@ -54,18 +52,19 @@ class AdminView extends React.Component {
 
     const pickupParties = await this.getPickupParties()
     const dropdownTimes = await this.populateTimes()
+    const showsWithResAndCap = await this.getReservationCountsForAllShows
     await this.setState({
       pickupLocations: this.props.pickupLocations,
       pickupParties: pickupParties,
-      dropdownTimes: dropdownTimes
+      dropdownTimes: dropdownTimes,
+      showsWithResAndCap: showsWithResAndCap
     })
-    console.log("pickupLocations", this.state.pickupLocations, this.state.dropdownTimes)
+
   }
 
 // Add Show Feature Functions vvvvvvvv
 
   addShowClick = event => {
-    console.log("addShowClick:: ")
     this.toggleProperty("displayAddShowForm")
   }
 
@@ -97,7 +96,6 @@ class AdminView extends React.Component {
   }
 
   handleAddShowChange =(event, location)=>{
-    console.log('handle change inside add show form', event.target.id, event.target.value)
     let newState = { ...this.state }
     let newValue
     switch (event.target.id) {
@@ -172,7 +170,6 @@ class AdminView extends React.Component {
         if(newState.showToAdd.locations.includes(newValue)){
           const result = newState.showToAdd.locations.filter((location) => location !== newValue)
           newState.showToAdd.locations = result
-          console.log('genius! ', result)
         } else {
           newState.showToAdd.locations.push(newValue)
         }
@@ -187,7 +184,6 @@ class AdminView extends React.Component {
         newValue = event.target.value
         event.target.value = newValue
         newState.showToAdd.locationPrices[location.id] = newValue
-        console.log(`price${location.id} newValue`, newValue)
         break;
       default:
         break;
@@ -298,7 +294,7 @@ class AdminView extends React.Component {
       }
     })
     const result = await response.json()
-  return result
+    return result
   }
 
   searchItems = event => {
@@ -316,14 +312,12 @@ class AdminView extends React.Component {
     newState.displayList = 'ShowList'
     await this.setState(newState)}
     else if (property === 'displayAdminPanel'){
-      newState.showsWithResAndCap = await this.getReservationCountsForAllShows()
       newState.displayAdminPanel = !newState.displayAdminPanel
       newState.displayList = 'ShowList'
       await this.setState(newState)
     }
     else if(property === 'displayAddShowForm'){
       newState.displayList = 'displayAddShowForm'
-      console.log("displayAddShowForm")
       await this.setState(newState)
 
     }
@@ -515,7 +509,6 @@ class AdminView extends React.Component {
   }
 
   editPickupParty = async (pickupPartyId, field, value) => {
-    console.log('editPickupParty value ' , value)
     if (!pickupPartyId || !field || !value) {
       return null
     }
@@ -525,7 +518,6 @@ class AdminView extends React.Component {
       const currentPickupParty = newState.thisPickupParty
       currentPickupParty[field] = value
       const newBody = {[field]: value}
-      console.log('body in patch and typeof', newBody, typeof newBody[field]);
       const response = await fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}`, {
         method: 'PATCH',
         body: JSON.stringify(newBody),
@@ -585,7 +577,6 @@ newName = (id, first, last) => {
       case "willCallLastName":
         newValue = event.target.value.replace('', '')
         event.target.value = newValue
-        console.log('willCallLastName', newValue)
         newNewLast = newValue
         this.setState({
           newLast: newNewLast
@@ -613,7 +604,6 @@ newName = (id, first, last) => {
       if (this.state.newLast){
         newBody.willCallLastName = this.state.newLast
       }
-      console.log('body in patch and typeof', newBody, typeof newBody);
       await fetch(`${fetchUrl}/reservations/${reservationId}`, {
         method: 'PATCH',
         body: JSON.stringify(newBody),
@@ -645,7 +635,6 @@ newName = (id, first, last) => {
   }
 
   cancelPrompt = async(reservationId, prompt) => {
-    console.log('cancelPrompt', prompt)
     prompt && await this.setState({cancelPromptId: reservationId})
     !prompt && await this.setState({cancelPromptId: null})
   }
