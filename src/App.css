@@ -317,27 +317,6 @@ padding: 0;
 margin-bottom: 0;
 }
 
-
-.something-image {
-  color: white;
-  background: url('./Images/bts-something-is-coming-2.png');
-  background-position: top;
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 93vh;
-  width: 100%;
-}
-.something-image-mobile {
-  color: white;
-  
-  background: url('../src/Images/bts-something-is-coming-2-mobile.png');
-  background-position: top;
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 100vh;
-  width: 100vw;
-  }
-
 .loading-image {
 color: white;
 background: url('./Images/BTS-redrocks-website-crop.png');
