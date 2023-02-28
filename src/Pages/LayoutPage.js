@@ -442,7 +442,7 @@ class LayoutPage extends Component {
         }
     })
     const json = await response.json()
-
+    console.log('discount response ===> ', json)
     if(json.length){
       if(json[0].type === 420){
         console.log( 'ok lets party!')
