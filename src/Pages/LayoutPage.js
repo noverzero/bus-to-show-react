@@ -20,6 +20,7 @@ import Loading from '../Components/Loading'
 import SponsorBox from '../Components/SponsorBox'
 import DetailCartView from '../Components/DetailCartView'
 import BannerRotator from '../Components/BannerRotator'
+import NavButtons from '../Components/NavButtons'
 import ReactGA from 'react-ga';
 import env from 'react-dotenv'
 
@@ -93,17 +94,6 @@ class LayoutPage extends Component {
       picture:'',
       userDetails: {},
     },
-    // facebook: {
-    //   isLoggedIn: true,
-    //   userID: '3',
-    //   name: 'Chevy Chase',
-    //   email:'chevy@chase.com',
-    //   picture:'',
-    //   userDetails: {
-    //     isAdmin: true,
-    //     isStaff: true
-    //   },
-    // },
     filterString: '',
     firstBusLoad: null,
     googleResponse: null,
@@ -1589,10 +1579,16 @@ class LayoutPage extends Component {
                           />
                           </div>
                           :
-                          <SponsorBox
-                            showAboutus={this.showAboutus}
-                            displayAboutus={this.state.displayAboutus}
-                          />}
+                          <div>
+                            <SponsorBox
+                              showAboutus={this.showAboutus}
+                              displayAboutus={this.state.displayAboutus}
+                            />
+                          <NavButtons/>
+
+                          </div>
+                            
+                            }
                       </div>
                         <MediaQuery maxWidth={799}>
                         <div className='col-md-6 float-left'>

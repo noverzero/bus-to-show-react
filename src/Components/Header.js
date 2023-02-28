@@ -27,7 +27,7 @@ const Header = (props) => {
           className={props.adminView ? "border-0 bts-admin-purple p-2 mr-2" : "border-0 bts-orange-bg p-2 mr-2"}>
           <div>
               <button className="btn detail-btn mr-2" onClick={()=>{toggleShowDashboardButton(!showDashboardButton)}}>
-                { showDashboardButton 
+                { !showDashboardButton 
                 ?
                   !props.facebook.isLoggedIn 
                   ?

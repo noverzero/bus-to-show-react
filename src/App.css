@@ -422,6 +422,9 @@ p {
 font-size: 14px;
 }
 
+.btn-widener {
+  width: 12vw;
+}
 .detail-btn {
 background: #ffffff;
 border-color: #ff420f;

@@ -12,7 +12,7 @@ import './App.css';
 
 // Components
 import ReactGA from 'react-ga';
-import MembershipsPage from './Pages/MembershipsPage'
+import StorePage from './Pages/StorePage'
 import LayoutPage from './Pages/LayoutPage';
 import VerifyPage from './Pages/VerifyPage';
 import ResetPage from './Pages/ResetPage';
@@ -54,7 +54,7 @@ class App extends Component {
       <div>
         <Switch>
           <Route exact path="/" component={LayoutPage} />
-          <Route exact path="/memberships" component={MembershipsPage} />
+          <Route exact path="/store" component={StorePage} />
           <Route path="/verify/:token" component={(props) => 
             <VerifyPage 
               verifyEmail={this.verifyEmail}
