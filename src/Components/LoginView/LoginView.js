@@ -15,7 +15,7 @@ const LoginView = (props) => {
     window.$(myRef.current).tooltip();
   }, []);
 
-  const { toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, showForgotForm, toggleForgot, userDetails, profileClick, responseLogin, btsUser, displayReservations, toggleReservationView, addBorder, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
+  const { toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, showForgotForm, toggleForgot, profileClick, responseLogin, btsUser, displayReservations, toggleReservationView, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
 
   const { isStaff, isAdmin, isDriver } = btsUser.userDetails
 
@@ -54,7 +54,6 @@ const LoginView = (props) => {
               <div className='col-12 text-center'>
                 <LoginForm 
                   toggleLoggedIn={toggleLoggedIn}
-                  userDetails={userDetails}
                   profileClick={profileClick}
                   responseLogin={responseLogin}
                   continueAsGuest={continueAsGuest}
@@ -161,7 +160,6 @@ const LoginView = (props) => {
                     displayFuture={props.displayFuture}
                     displayPast={props.displayPast}
                     userReservations={userReservations}
-                    addBorder={addBorder}
                     displayShow={displayShow}
                     filterString={filterString}
                     showsExpandClick={showsExpandClick}
@@ -208,7 +206,6 @@ const LoginView = (props) => {
               <div className='col-12 text-center'>
                 <LoginForm 
                   toggleLoggedIn={toggleLoggedIn}
-                  userDetails={userDetails}
                   profileClick={profileClick}
                   responseLogin={responseLogin}
                   continueAsGuest={continueAsGuest}
@@ -315,7 +312,6 @@ const LoginView = (props) => {
                     displayFuture={props.displayFuture}
                     displayPast={props.displayPast}
                     userReservations={userReservations}
-                    addBorder={addBorder}
                     displayShow={displayShow}
                     filterString={filterString}
                     showsExpandClick={showsExpandClick}

@@ -116,7 +116,6 @@ class LayoutPage extends Component {
     ticketsAvailable: [],
     ticketQuantity: null,
     totalCost: 0,
-    userDetails: {},
     userReservations: [],
     validated: false,
     validatedElements: {
@@ -727,11 +726,9 @@ class LayoutPage extends Component {
   }
 
   toggleRegister = () => {
-    console.log('toggleRegister hit & showRegisterForm ====> ', this.state.showRegisterForm)
     const newState = { ...this.state }
     newState.showRegisterForm = !newState.showRegisterForm;
     this.setState({showRegisterForm: newState.showRegisterForm})
-    console.log('toggleRegister hit & showRegisterForm AFTER ====> ', this.state.showRegisterForm)
 
   }
 
@@ -1405,11 +1402,9 @@ class LayoutPage extends Component {
                   registerResponse={this.state.registerResponse}
                   showForgotForm={this.state.showForgotForm}
                   toggleForgot={this.toggleForgot}
-                  userDetails={this.state.userDetails}
                   profileClick={this.profileClick}
                   toggleReservationView={this.toggleReservationView}
                   userReservations={this.state.userReservations}
-                  addBorder={this.addBorder}
                   displayShow={this.state.displayShow}
                   filterString={this.state.filterString}
                   showsExpandClick={this.showsExpandClick}
@@ -1527,7 +1522,6 @@ class LayoutPage extends Component {
                           ""
                         :
                         <ShowList
-                          addBorder={this.addBorder}
                           confirmedRemove={this.confirmedRemove}
                           displayShow={this.state.displayShow}
                           filterString={this.state.filterString}
@@ -1547,7 +1541,6 @@ class LayoutPage extends Component {
                       </MediaQuery>
                       <MediaQuery minWidth={800}>
                         <ShowList
-                          addBorder={this.addBorder}
                           confirmedRemove={this.confirmedRemove}
                           displayShow={this.state.displayShow}
                           filterString={this.state.filterString}
