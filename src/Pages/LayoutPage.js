@@ -42,6 +42,14 @@ class LayoutPage extends Component {
     artistIcon: false,
     assignedParties: [],
     basePrice: null,
+    btsUser: {
+      isLoggedIn: false,
+      userID: '',
+      name: '',
+      email:'',
+      picture:'',
+      userDetails: {},
+    },
     cartToSend: {
       eventId: null,
       pickupLocationId: null,
@@ -86,17 +94,8 @@ class LayoutPage extends Component {
     displayReservations: false,
     displayUserReservationSummary: false,
     displayTimes: false,
-    facebook: {
-      isLoggedIn: false,
-      userID: '',
-      name: '',
-      email:'',
-      picture:'',
-      userDetails: {},
-    },
     filterString: '',
     firstBusLoad: null,
-    googleResponse: null,
     inCart: [],
     invalidFields: {},
     partyPrice: 0,
@@ -112,7 +111,6 @@ class LayoutPage extends Component {
     showBios: false,
     showForgotForm: false,
     showRegisterForm: false,
-    spotifyResponse: null,
     startTimer: false,
     ticketTimer: null,
     ticketsAvailable: [],
@@ -192,8 +190,8 @@ class LayoutPage extends Component {
     if (userObj && userObj.id){
       this.setState({
         ...this.state,
-          facebook: {
-            ...this.state.facebook,
+          btsUser: {
+            ...this.state.btsUser,
             isLoggedIn: true,
             userID: userObj.id,
             email:userObj.email,
@@ -401,7 +399,7 @@ class LayoutPage extends Component {
   }
 
   getReservations = async () => {
-    const userId = this.state.facebook.userDetails.id
+    const userId = this.state.btsUser.userDetails.id
     if (userId) {
       const reservations = await fetch(`${fetchUrl}/orders/${userId}`)
       const userReservations = await reservations.json()
@@ -424,11 +422,12 @@ class LayoutPage extends Component {
     })
   }
 
-  findDiscountCode = async () => {
+  findDiscountCode = async (applyOrRelease) => {
+    
     const discountCode = this.state.discountCode
-    const ticketQuantity = this.state.ticketQuantity
+    const ticketQuantity = applyOrRelease !== 'release' ? this.state.ticketQuantity : (this.state.ticketQuantity * -1)
     const eventId = this.state.displayShow.id
-    const totalPrice = this.state.totalCost
+    const totalPrice = applyOrRelease !== 'release' ?  this.state.totalCost : ''
     const response = await fetch(`${fetchUrl}/discount_codes`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -467,11 +466,6 @@ class LayoutPage extends Component {
   }
 
   // Header Functions
-  userDashboard = () => {
-    const newState = { ...this.state }
-    newState.displayReservations = !this.state.displayReservations
-    this.setState({ displayReservations: newState.displayReservations })
-  }
 
   returnHome = () => {
     const newState = { ...this.state }
@@ -600,7 +594,7 @@ class LayoutPage extends Component {
     if (boolean === false){
       this.setState({
         ...this.state,
-        facebook: {
+        btsUser: {
           isLoggedIn: false,
           userID: '',
           name: '',
@@ -617,8 +611,8 @@ class LayoutPage extends Component {
     } else {
       this.setState({
         ...this.state,
-          facebook: {
-          ...this.state.facebook,
+          btsUser: {
+          ...this.state.btsUser,
           isLoggedIn: boolean,
         }
       })
@@ -645,7 +639,7 @@ class LayoutPage extends Component {
   continueAsGuest = () => {
     this.setState({
       ...this.state,
-        facebook: {
+        btsUser: {
           isLoggedIn: false,
           userID: '',
           name: '',
@@ -682,8 +676,8 @@ class LayoutPage extends Component {
       localStorage.setItem('jwt', userObj.token)          
       this.setState({
         ...this.state,
-          facebook: {
-            ...this.state.facebook,
+          btsUser: {
+            ...this.state.btsUser,
             isLoggedIn: true,
             userID: userObj.id,
             email:userObj.email,
@@ -726,57 +720,6 @@ class LayoutPage extends Component {
 
   }
 
-
-  responseFacebook = async (response) => {
-    console.log('facebook response ====> ', response)
-    this.setState({
-      ...this.state,
-        facebook: {
-          ...this.state.facebook,
-          userID: response.id,
-          name: response.name,
-          email:response.email,
-          picture:response.picture.data.url
-        }
-    })
-    this.toggleLoggedIn(true)
-    this.onLoad()
-    const usersInfo = await fetch(`${fetchUrl}/users`, {
-      method: 'POST',
-      body: JSON.stringify({
-          firstName: response.name.split(" ")[0],
-          lastName: response.name.split(" ")[1],
-          email: response.email,
-      }),
-      headers: {
-          'Content-Type': 'application/json'
-      }
-    })
-    const userObj = await usersInfo.json()
-    const newState = { ...this.State }
-    newState.userDetails = userObj
-    this.setState({
-      ...this.state,
-      facebook: {
-        ...this.state.facebook,
-        userDetails: newState.userDetails
-      }
-    })
-  }
-
-  responseGoogle = response => {
-    const newState = { ...this.state }
-    newState.googleResponse = response.profileObj
-    newState.displayLoginView = false
-    this.setState({ googleResponse: newState.googleResponse, displayLoginView: newState.displayLoginView })
-  }
-
-  responseSpotify = response => {
-    const newState = { ...this.state }
-    newState.spotifyResponse = response
-    newState.displayLoginView = false
-    this.setState({ googleResponse: newState.googleResponse, displayLoginView: newState.displayLoginView })
-  }
 
   logout = () => {
     this.toggleLoggedIn(false);
@@ -959,7 +902,7 @@ class LayoutPage extends Component {
     newState.cartToSend.ticketQuantity = 0
     newState.cartToSend.totalCost = 0
     newState.cartToSend.discountCode = null
-    newState.cartToSend.userId = newState.facebook.userDetails.id
+    newState.cartToSend.userId = newState.btsUser.userDetails.id
     newState.validatedElements = {
       firstName: null,
       lastName: null,
@@ -1096,7 +1039,7 @@ class LayoutPage extends Component {
     }
     const cartObj = this.state.cartToSend
     cartObj.discountCode = this.state.afterDiscountObj.id
-    cartObj.userId = this.state.facebook.userDetails.id
+    cartObj.userId = this.state.btsUser.userDetails.id
     const response = await fetch(`${fetchUrl}/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
@@ -1113,7 +1056,7 @@ class LayoutPage extends Component {
   comp = async (details) => {
     this.ticketTimer(false)
     const cartObj = this.state.cartToSend
-    cartObj.userId = this.state.facebook.userDetails.id
+    cartObj.userId = this.state.btsUser.userDetails.id
     cartObj.discountCode = this.state.afterDiscountObj.id
     const response = await fetch(`${fetchUrl}/orders`, {
       method: 'POST',
@@ -1212,7 +1155,7 @@ class LayoutPage extends Component {
         pickupLocationId: parseInt(this.state.pickupLocationId),
         totalCost: Number(this.state.totalCost),
         discountCode,
-        userId: newState.facebook.userDetails.userId,
+        userId: newState.btsUser.userDetails.userId,
         willCallFirstName: (newValidElems.wcFirstName || newValidElems.firstName),
         willCallLastName: (newValidElems.wcLastName || newValidElems.lastName)
       }
@@ -1423,17 +1366,12 @@ class LayoutPage extends Component {
     const newEventsArr = this.state.oldStuff
   }
 
-  toggleAdminView = () => {
-    let adminView = this.state.adminView
-    adminView = !adminView
-    this.setState({ adminView })
-  }
   render() {
     return (
       <React.Fragment>
         <div className="App">
           <div>
-            {this.state.displayLoadingScreen && !this.state.facebook.isLoggedIn ?
+            {this.state.displayLoadingScreen && !this.state.btsUser.isLoggedIn ?
               <Loading
                 onLoad={this.onLoad}
                 handleBus={this.handleBus} />
@@ -1441,12 +1379,8 @@ class LayoutPage extends Component {
               <div>
               <Header
                 getReservations={this.getReservations}
-                googleResponse={this.state.googleResponse}
-                facebook={this.state.facebook}
+                btsUser={this.state.btsUser}
                 profileClick={this.profileClick}
-                logout={this.logout}
-                spotifyResponse={this.state.spotifyResponse}
-                userDashboard={this.userDashboard}
                 adminView={this.state.adminView}
                 />
 
@@ -1456,15 +1390,13 @@ class LayoutPage extends Component {
                     searchShows={this.searchShows}
                     shows={this.state.allShows}
                     showsExpandClick={this.showsExpandClick}
-                    userDetails={this.state.facebook.userDetails}
+                    userDetails={this.state.btsUser.userDetails}
                   />
                   :
                   this.state.displayLoginView ?
                   <LoginView
                   displayReservationDetail={this.state.displayReservationDetail}
                   displayReservations={this.state.displayReservations}
-                  responseGoogle={this.responseGoogle}
-                  responseSpotify={this.responseSpotify}
                   toggleLoggedIn={this.toggleLoggedIn}
                   logout={this.logout}
                   showRegisterForm={this.state.showRegisterForm}
@@ -1481,10 +1413,9 @@ class LayoutPage extends Component {
                   displayShow={this.state.displayShow}
                   filterString={this.state.filterString}
                   showsExpandClick={this.showsExpandClick}
-                  responseFacebook={this.responseFacebook}
                   responseLogin={this.responseLogin}
                   continueAsGuest={this.continueAsGuest}
-                  facebook={this.state.facebook}
+                  btsUser={this.state.btsUser}
                   toggleAdminView={this.toggleAdminView}
                   expandReservationDetailsClick={this.expandReservationDetailsClick}
                   reservationDetail={this.state.reservationDetail}
@@ -1637,7 +1568,7 @@ class LayoutPage extends Component {
                   </React.Fragment>
                   :
                 <Loading
-                  responseFacebook={this.responseFacebook}
+                  responseLogin={this.responseLogin}
                 />
               }
             </div>

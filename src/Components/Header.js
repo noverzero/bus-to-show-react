@@ -11,7 +11,7 @@ const Header = (props) => {
 
   useEffect(() => {
     window.$(myRef.current).tooltip();
-    if(!props.facebook.isLoggedIn) toggleShowDashboardButton(false)
+    if(!props.btsUser.isLoggedIn) toggleShowDashboardButton(false)
   }, []);
 
   return (
@@ -29,7 +29,7 @@ const Header = (props) => {
               <button className="btn detail-btn mr-2" onClick={()=>{toggleShowDashboardButton(!showDashboardButton)}}>
                 { !showDashboardButton 
                 ?
-                  !props.facebook.isLoggedIn 
+                  !props.btsUser.isLoggedIn 
                   ?
                     <div ref={myRef} data-toggle="tooltip" data-placement="bottom" title="Sign in to view your reservations, history and more.">
                       Sign in/up

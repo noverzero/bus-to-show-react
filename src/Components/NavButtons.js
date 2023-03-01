@@ -1,17 +1,12 @@
 import React, { useRef, useState , useEffect} from 'react';
-import { useHistory } from 'react-router-dom';
-import { withRouter } from 'react-router-dom';
-
-
-
-
 import MediaQuery from 'react-responsive'
-
-
 import '../App.css';
 import logo from '../Images/Logos/bustoshow-text-logo--white-outline-no-fill-328x46.png'
+import { useNavigate } from 'react-router-dom';
+
 
 const NavButtons = (props) => {
+  const navigate = useNavigate()
   const [showDashboardButton, toggleShowDashboardButton] = useState(true);
   const myRef = useRef(null);
 
@@ -31,7 +26,7 @@ const NavButtons = (props) => {
         <div
           className= "border-0 p-2 mr-2">
           <div>
-              <button className="btn detail-btn mr-2 btn-widener" onClick={()=>{props.history.push('/store')}}>Season Passes
+              <button className="btn detail-btn mr-2 btn-widener" onClick={()=>{navigate('/store')}}>Season Passes
               </button>
           </div>
     </div>
@@ -41,4 +36,4 @@ const NavButtons = (props) => {
   )
 }
 
-export default withRouter(NavButtons);
+export default NavButtons;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import env from 'react-dotenv'
 import MediaQuery from 'react-responsive'
 
@@ -7,6 +7,7 @@ const fetchUrl = `${process.env.REACT_APP_API_URL}`
 
 
 const ForgotForm = (props) => {
+    const navigate = useNavigate()
 
   const [values, setValues] = useState({
     email: '',
@@ -186,4 +187,4 @@ const requestPasswordReset = async (email) => {
   }
 };
 
-export default withRouter(ForgotForm);
+export default ForgotForm;

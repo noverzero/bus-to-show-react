@@ -1,12 +1,14 @@
 import React from 'react'
 import MediaQuery from 'react-responsive'
 import logo from '../Images/Logos/bustoshow-text-logo--white-outline-no-fill-328x46.png'
-import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 
 
 const StorePage = (props) => {
+  const navigate = useNavigate();
+
 
 
     return(
@@ -21,7 +23,7 @@ const StorePage = (props) => {
                   </a>
                 </div>
                 <div className="col-sm-2">
-                  <button className="btn detail-btn mr-2" onClick={()=>{props.history.push('/')}}>
+                  <button className="btn detail-btn mr-2" onClick={()=>{navigate('/')}}>
                     <div>
                       Dashboard
                     </div>
@@ -50,4 +52,4 @@ const StorePage = (props) => {
     )
 }
 
-export default withRouter(StorePage)
+export default StorePage

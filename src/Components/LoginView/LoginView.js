@@ -1,6 +1,5 @@
 import React, { useRef , useEffect} from 'react'
 import '../../App.css'
-import Facebook from '../Facebook';
 import MediaQuery from 'react-responsive'
 import ReservationsView from '../ReservationsView/ReservationsView'
 import LoginForm from './LoginForm';
@@ -16,9 +15,9 @@ const LoginView = (props) => {
     window.$(myRef.current).tooltip();
   }, []);
 
-  const { userDashboard, toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, showForgotForm, toggleForgot, userDetails, profileClick, responseLogin, facebook, displayReservations, toggleReservationView, addBorder, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
+  const { toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, showForgotForm, toggleForgot, userDetails, profileClick, responseLogin, btsUser, displayReservations, toggleReservationView, addBorder, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
 
-  const { isStaff, isAdmin, isDriver } = facebook.userDetails
+  const { isStaff, isAdmin, isDriver } = btsUser.userDetails
 
   let futureClass = 'border'
   let pastClass = 'border'
@@ -49,18 +48,17 @@ const LoginView = (props) => {
       <MediaQuery minWidth={800}>
         <div className="w-25 mx-auto">
           <div className='row p-2 mb-4'>
-            {!facebook.isLoggedIn && !showRegisterForm? 
+            {!btsUser.isLoggedIn && !showRegisterForm? 
             <>
             <div className='row'>
               <div className='col-12 text-center'>
                 <LoginForm 
-                  userDashboard={userDashboard}
                   toggleLoggedIn={toggleLoggedIn}
                   userDetails={userDetails}
                   profileClick={profileClick}
                   responseLogin={responseLogin}
                   continueAsGuest={continueAsGuest}
-                  facebook={facebook}
+                  btsUser={btsUser}
                 />
               <div className='row'>
               <div className='col-12 text-center'>
@@ -112,7 +110,7 @@ const LoginView = (props) => {
             }
           </div>
           <div className='row'>
-            {facebook.isLoggedIn ?
+            {btsUser.isLoggedIn ?
             <div className='col-12 text-center'>
               {displayReservations ?
               <div>
@@ -204,18 +202,17 @@ const LoginView = (props) => {
         </MediaQuery>
         <MediaQuery maxWidth={799}>
           <div className='row p-2 mb-4'>
-            {!facebook.isLoggedIn && !showRegisterForm? 
+            {!btsUser.isLoggedIn && !showRegisterForm? 
             <>
             <div className='row'>
               <div className='col-12 text-center'>
                 <LoginForm 
-                  userDashboard={userDashboard}
                   toggleLoggedIn={toggleLoggedIn}
                   userDetails={userDetails}
                   profileClick={profileClick}
                   responseLogin={responseLogin}
                   continueAsGuest={continueAsGuest}
-                  facebook={facebook}
+                  btsUser={btsUser}
                 />
               <div className='row'>
               <div className='col-12 text-center'>
@@ -267,7 +264,7 @@ const LoginView = (props) => {
             }
           </div>
           <div className='row'>
-            {facebook.isLoggedIn ?
+            {btsUser.isLoggedIn ?
             <div className='col-12 text-center'>
               {displayReservations ?
               <div>

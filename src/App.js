@@ -1,83 +1,117 @@
-//ToDo: 
-//1. Add Popover promoting account benefits
-
-
-// Packages
-import React, { Component } from 'react'
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import env from "react-dotenv";
-
-// Styling
-import './App.css';
-
-// Components
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ReactGA from 'react-ga';
-import StorePage from './Pages/StorePage'
+
+// Pages
+import StorePage from './Pages/StorePage';
 import LayoutPage from './Pages/LayoutPage';
 import VerifyPage from './Pages/VerifyPage';
 import ResetPage from './Pages/ResetPage';
+
+// Components
+import Header from './Components/Header';
+import LoginView from './Components/LoginView/LoginView';
+
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
 
-const fetchUrl = `${process.env.REACT_APP_API_URL}`
-const verifyEmailUrl = `${fetchUrl}/users/confirm-email`
+const fetchUrl = `${process.env.REACT_APP_API_URL}`;
+const verifyEmailUrl = `${fetchUrl}/users/confirm-email`;
 
-class App extends Component {
-  state ={
-    isVerified: false,
-    isCalled: false
+const App = () => {
+  const [adminView, setAdminView] = useState(false);
+  const [btsUser, setBtsUser] = useState({
+    isLoggedIn: false,
+    userID: '',
+    name: '',
+    email: '',
+    picture: '',
+    userDetails: {},
+  });
+  const [displayLoginView, setDisplayLoginView] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  const [isCalled, setIsCalled] = useState(false);
+
+  const getReservations = async () => {
+    const userId = this.state.btsUser.userDetails.id
+    if (userId) {
+      const reservations = await fetch(`${fetchUrl}/orders/${userId}`)
+      const userReservations = await reservations.json()
+      const newState = { ...this.State }
+      newState.userReservations = await userReservations
+      await this.setState({ userReservations: newState.userReservations })
+    }
   }
   
-  verifyEmail = async (token) => {
-    if (this.state.isCalled === true) return
-    const isCalled = true
-    const response = await fetch(`${verifyEmailUrl}/${token}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    const result = await response.json()
-    const isVerified = result ? true : false;
-    this.setState({
-      isVerified: isVerified,
-      isCalled: isCalled
-    })
-    // setIsCalled(true);
-    // setIsVerified(response ? true : false)
-    return
-}
+  const profileClick = () => {
+    setDisplayLoginView((prevState) => !prevState);
 
-  render() {
-    return (
+    if (adminView) {
+      setAdminView(false);
+    }
+  };
+
+  const verifyEmail = async (token) => {
+    if (isCalled === true) return;
+    setIsCalled(true);
+
+    const response = await fetch(`${verifyEmailUrl}/${token}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const result = await response.json();
+    const verified = result ? true : false;
+    setIsVerified(verified);
+  };
+
+  const displayHeader = true;
+
+  return (
     <Router>
       <div>
-        <Switch>
-          <Route exact path="/" component={LayoutPage} />
-          <Route exact path="/store" component={StorePage} />
-          <Route path="/verify/:token" component={(props) => 
-            <VerifyPage 
-              verifyEmail={this.verifyEmail}
-              isVerified={this.state.isVerified}
-              isCalled={this.state.isCalled}
-              {...props}
-            />}
+        {displayHeader ? (
+          <Header
+            getReservations={getReservations}
+            btsUser={btsUser}
+            profileClick={profileClick}
+            adminView={adminView}
           />
-          <Route path="/reset/:token" component={(props) => 
-            <ResetPage 
-              verifyEmail={this.verifyEmail}
-              isVerified={this.state.isVerified}
-              isCalled={this.state.isCalled}
-              {...props}
-            />}
+        ) : (
+          ''
+        )}
+        <Routes>
+          <Route exact path="/" element={<LayoutPage />} />
+          <Route exact path="/login" element={<LoginView />} />
+          <Route exact path="/store" element={<StorePage />} />
+          <Route
+            path="/verify/:token"
+            element={(props) => (
+              <VerifyPage
+                verifyEmail={verifyEmail}
+                isVerified={isVerified}
+                isCalled={isCalled}
+                {...props}
+              />
+            )}
           />
-          <Route component={LayoutPage} />
-
-        </Switch>
+          <Route
+            path="/reset/:token"
+            element={(props) => (
+              <ResetPage
+                verifyEmail={verifyEmail}
+                isVerified={isVerified}
+                isCalled={isCalled}
+                {...props}
+              />
+            )}
+          />
+          <Route element={<LayoutPage />} />
+        </Routes>
       </div>
     </Router>
-    )
-  }
-}
+  );
+};
 
 export default App;
