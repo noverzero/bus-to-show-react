@@ -42,14 +42,6 @@ class LayoutPage extends Component {
     artistIcon: false,
     assignedParties: [],
     basePrice: null,
-    btsUser: {
-      isLoggedIn: false,
-      userID: '',
-      name: '',
-      email:'',
-      picture:'',
-      userDetails: {},
-    },
     cartToSend: {
       eventId: null,
       pickupLocationId: null,
@@ -80,7 +72,6 @@ class LayoutPage extends Component {
     displayExternalShowDetails: false,
     displayFuture: true,
     displayPast: false,
-    displayLoadingScreen: true,
     displayLoginView: false,
     displayReservationDetail: false,
     displayShow: null,
@@ -127,11 +118,11 @@ class LayoutPage extends Component {
     },
     oldStuff: [],
     willCallEdits: {},
+    navLocation: '',
   }
 
   async componentDidMount() {
     await this.getVerify()
-    await this.checkAuth()
  
     const response = await fetch(`${fetchUrl}/events`)
     let allShows = await response.json()
@@ -172,53 +163,6 @@ class LayoutPage extends Component {
     document.cookie = `token=${json.token}; secure`
   }
 
-  checkAuth = async () => {
-    const jwtToken = localStorage.getItem('jwt')
-    if(!jwtToken){
-      return
-    }
-    const response = await fetch(`${fetchUrl}/api/secure`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('jwt')}`
-        },
-        withCredentials: true
-      }
-    )
-    const userObj =  await response.json()
-    if (userObj && userObj.id){
-      this.setState({
-        ...this.state,
-          btsUser: {
-            ...this.state.btsUser,
-            isLoggedIn: true,
-            userID: userObj.id,
-            email:userObj.email,
-            userDetails: {
-              isAdmin: userObj.isAdmin,
-              isStaff: userObj.isStaff
-            },
-            userDetails:userObj
-  
-          }
-      })
-      this.toggleLoggedIn(true)
-      this.onLoad()
-    } else {
-      this.toggleLoggedIn(false)
-      this.onLoad()
-    }
-
-  }
-
-
-  //status: over-ridden by onclick event in the "ride with us button" where called in "loading.js"
-  onLoad = () => {
-
-    const newState = { ...this.state }
-    newState.displayLoadingScreen = false
-    this.setState({ displayLoadingScreen: newState.displayLoadingScreen })
-  }
 
   //status: in progress.  where: called in "loading.js".  why: adding interactive animation so that buses fly away on click.
   handleBus = event => {
@@ -296,6 +240,7 @@ class LayoutPage extends Component {
         displayAddBtn: newState.displayAddBtn
       })
     }
+
     else if (parseInt(event.target.value) !== oldPickup) {
       console.log('when does (parseInt(event.target.value) !== newState.pickupPartyId)?')
       newState.ticketQuantity = 0
@@ -398,7 +343,7 @@ class LayoutPage extends Component {
   }
 
   getReservations = async () => {
-    const userId = this.state.btsUser.userDetails.id
+    const userId = this.props.btsUser.userDetails.id
     if (userId) {
       const reservations = await fetch(`${fetchUrl}/orders/${userId}`)
       const userReservations = await reservations.json()
@@ -589,7 +534,7 @@ class LayoutPage extends Component {
   }
 
   toggleLoggedIn = (boolean) => {
-    console.log('toggleLoggedIn clicked ---' , boolean);
+    console.log('toggleLoggedIn clicked --- Layout' , boolean);
     if (boolean === false){
       this.setState({
         ...this.state,
@@ -649,50 +594,6 @@ class LayoutPage extends Component {
     })
   }
 
-  responseLogin = async (response) => {
-    console.log('responseLogin response ====== ', response)
-    const {email, password} = response
-    const hashedPassword = sha256(password);
-    
-    const usersInfo = await fetch(`${fetchUrl}/users/login`, {
-      method: 'POST',
-      body: JSON.stringify({
-        username: email,
-        password: hashedPassword
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    const userObj = await usersInfo.json()
-    console.log('login response from API === ', userObj)
-
-    // email: "dustin@undefinedindustries.com"
-    // id: 844
-    // isAdmin: true
-    // token: "eyJhb"
-    if (userObj && userObj.token) {
-      localStorage.setItem('jwt', userObj.token)          
-      this.setState({
-        ...this.state,
-          btsUser: {
-            ...this.state.btsUser,
-            isLoggedIn: true,
-            userID: userObj.id,
-            email:userObj.email,
-            userDetails: {
-              isAdmin: userObj.isAdmin,
-              isStaff: userObj.isStaff
-            },
-            userDetails:userObj
-  
-          }
-      })
-      this.toggleLoggedIn(true)
-      this.onLoad()
-    }
-
-  }
 
   requestRegistration = async (request) => {
     console.log('request details ---- >>>> ', request)
@@ -717,12 +618,6 @@ class LayoutPage extends Component {
 
     //{message: 'account already exists', code: '202', email: 'dustin@undefinedindustries.com'}
 
-  }
-
-
-  logout = () => {
-    this.toggleLoggedIn(false);
-    this.profileClick()
   }
 
   toggleRegister = () => {
@@ -1036,7 +931,7 @@ class LayoutPage extends Component {
     }
     const cartObj = this.state.cartToSend
     cartObj.discountCode = this.state.afterDiscountObj.id
-    cartObj.userId = this.state.btsUser.userDetails.id
+    cartObj.userId = this.props.btsUser.userDetails.id
     const response = await fetch(`${fetchUrl}/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
@@ -1053,7 +948,7 @@ class LayoutPage extends Component {
   comp = async (details) => {
     this.ticketTimer(false)
     const cartObj = this.state.cartToSend
-    cartObj.userId = this.state.btsUser.userDetails.id
+    cartObj.userId = this.props.btsUser.userDetails.id
     cartObj.discountCode = this.state.afterDiscountObj.id
     const response = await fetch(`${fetchUrl}/orders`, {
       method: 'POST',
@@ -1368,18 +1263,14 @@ class LayoutPage extends Component {
       <React.Fragment>
         <div className="App">
           <div>
-            {this.state.displayLoadingScreen && !this.state.btsUser.isLoggedIn ?
+            {this.props.displayLoadingScreen && !this.props.btsUser.isLoggedIn ?
               <Loading
-                onLoad={this.onLoad}
-                handleBus={this.handleBus} />
+              setDisplayLoadingScreen={this.props.setDisplayLoadingScreen}
+              displayLoadingScreen={this.props.displayLoadingScreen}
+              handleBus={this.handleBus} />
                 :
               <div>
-              <Header
-                getReservations={this.getReservations}
-                btsUser={this.state.btsUser}
-                profileClick={this.profileClick}
-                adminView={this.state.adminView}
-                />
+
 
                 {this.state.adminView ?
                   <AdminView
@@ -1389,44 +1280,6 @@ class LayoutPage extends Component {
                     showsExpandClick={this.showsExpandClick}
                     userDetails={this.state.btsUser.userDetails}
                   />
-                  :
-                  this.state.displayLoginView ?
-                  <LoginView
-                  displayReservationDetail={this.state.displayReservationDetail}
-                  displayReservations={this.state.displayReservations}
-                  toggleLoggedIn={this.toggleLoggedIn}
-                  logout={this.logout}
-                  showRegisterForm={this.state.showRegisterForm}
-                  toggleRegister={this.toggleRegister}
-                  requestRegistration={this.requestRegistration}
-                  registerResponse={this.state.registerResponse}
-                  showForgotForm={this.state.showForgotForm}
-                  toggleForgot={this.toggleForgot}
-                  profileClick={this.profileClick}
-                  toggleReservationView={this.toggleReservationView}
-                  userReservations={this.state.userReservations}
-                  displayShow={this.state.displayShow}
-                  filterString={this.state.filterString}
-                  showsExpandClick={this.showsExpandClick}
-                  responseLogin={this.responseLogin}
-                  continueAsGuest={this.continueAsGuest}
-                  btsUser={this.state.btsUser}
-                  toggleAdminView={this.toggleAdminView}
-                  expandReservationDetailsClick={this.expandReservationDetailsClick}
-                  reservationDetail={this.state.reservationDetail}
-                  toggleFuturePast={this.toggleFuturePast}
-                  displayFuture={this.state.displayFuture}
-                  displayPast={this.state.displayPast}
-                  getEventDetails={this.getEventDetails}
-                  displayUserReservationSummary={this.state.displayUserReservationSummary}
-                  toggleEditReservation={this.toggleEditReservation}
-                  displayEditReservation={this.state.displayEditReservation}
-                  reservationEditField={this.reservationEditField}
-                  submitReservationForm={this.submitReservationForm}
-                  reservationToEditId={this.state.reservationToEditId}
-                  displayEditSuccess={this.state.displayEditSuccess}
-                  toggleEditSuccess={this.toggleEditSuccess}
-                />
                   :
                   this.state.displayAboutus ?
                   <Aboutus
@@ -1561,6 +1414,8 @@ class LayoutPage extends Component {
                   </React.Fragment>
                   :
                 <Loading
+                  setDisplayLoadingScreen={this.props.setDisplayLoadingScreen}
+                  displayLoadingScreen={this.props.displayLoadingScreen}
                   responseLogin={this.responseLogin}
                 />
               }

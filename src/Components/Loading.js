@@ -1,5 +1,5 @@
-import React from 'react'
-import '../App.css';
+import React, { useEffect} from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';import '../App.css';
 import spacebus from '../Images/bus-to-show-space-bus-forward.png'
 import Zoom from 'react-reveal/Zoom'
 import MediaQuery from 'react-responsive'
@@ -12,6 +12,23 @@ const Loading = (props) => {
 let bus2 = true
 let bus3 = true
 
+const location = useLocation()
+
+const handleClick = () => {
+  console.log('button clicked ==>>==>> ');
+  props.setDisplayLoadingScreen(false);
+}
+
+
+useEffect(() => {
+  const checkIfShouldNotDisplay = () => {
+    if(location){
+      console.log('props in Loading.js ==>>==>> ', props);
+    }
+  }
+  checkIfShouldNotDisplay()
+}
+)
   return (
     <div className=''>
       {/* // Mobile View */}
@@ -28,7 +45,7 @@ let bus3 = true
             <div className="col-4">
             </div>
               <div className='col-4'>
-                <button type="button" className="btn-med btn-outline-light loading-btn bg-transparent my-4" onClick={props.onLoad}>Ride with Us
+                <button type="button" className="btn-med btn-outline-light loading-btn bg-transparent my-4" onClick={()=> handleClick()}>Ride with Us
                 </button>
               </div>
             <div className="col-4">
@@ -59,7 +76,7 @@ let bus3 = true
             }
             </div>
             <div className='col-2 px-auto mx-auto py-4 my-4'>
-              <button type="button" className="btn-lg btn-outline-light bg-transparent loading-btn" onClick={props.onLoad}>Ride with Us
+              <button type="button" className="btn-lg btn-outline-light bg-transparent loading-btn" onClick={()=> handleClick()}>Ride with Us
               </button>
             </div>
             <div className='col-3'>

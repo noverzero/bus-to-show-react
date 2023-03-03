@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
 import ReactGA from 'react-ga';
 import { sha256 } from 'js-sha256';
-
 
 // Pages
 import StorePage from './Pages/StorePage';
@@ -20,7 +20,8 @@ ReactGA.pageview('/app');
 const fetchUrl = `${process.env.REACT_APP_API_URL}`;
 const verifyEmailUrl = `${fetchUrl}/users/confirm-email`;
 
-const App = () => {
+const App = (props) => {
+
   const [adminView, setAdminView] = useState(false);
   const [btsUser, setBtsUser] = useState({
     isLoggedIn: false,
@@ -30,13 +31,14 @@ const App = () => {
     picture: '',
     userDetails: {},
   });
-  
   const [assignedParties, setAssignedParties] = useState([]);
   const [displayDetailCartView, setDisplayDetailCartView] = useState(false);
   const [displayEditReservation, setDisplayEditReservation] = useState(false);
+  const [displayEditSuccess, setDisplayEditSuccess] = useState(false);
   const [displayExternalShowDetails, setDisplayExternalShowDetails] = useState(false);
   const [displayFuture, setDisplayFuture] = useState(false);
   const [displayHeader, setDisplayHeader] = useState(true);
+  const [displayLoadingScreen, setDisplayLoadingScreen] = useState(true);
   const [displayLoginView, setDisplayLoginView] = useState(false);
   const [displayPast, setDisplayPast] = useState(false);
   const [displayQuantity, setDisplayQuantity] = useState(false);
@@ -58,11 +60,32 @@ const App = () => {
   const [isCalled, setIsCalled] = useState(false);
   const [registerResponse, setRegisterResponse] = useState({});
   const [reservationDetail, setReservationDetail] = useState(null);
+  const [reservationEditsToSend, setReservationEditsToSend] = useState([]);
+  const [reservationToEditId, setReservationToEditId] = useState(null);
   const [pickupPartyId, setPickupPartyId] = useState(null);
   const [pickupLocations, setPickupLocations] = useState([]);
   const [userReservations, setUserReservations] = useState([]);
   const [userShows, setUserShows] = useState([]);
+  const [willCallEdits, setWillCallEdits] = useState({})
 
+  const continueAsGuest = () => {
+    setBtsUser(
+        {
+          isLoggedIn: false,
+          userID: '',
+          name: '',
+          email:'',
+          picture:'',
+          userDetails: {},
+        }
+    )
+  }
+
+  const expandReservationDetailsClick = (e) =>{
+    setDisplayUserReservationSummary(true);
+    setReservationDetail(userReservations.find(show => (parseInt(show.eventsId) === parseInt(e.target.id))))
+    setDisplayReservationDetail(true)
+  }
 
   const getPickupParties = async (eventId) => {
     const response = await fetch(`${fetchUrl}/pickup_parties/findParties`, {
@@ -81,22 +104,44 @@ const App = () => {
   }
 
   const getReservations = async () => {
-    const userId = this.state.btsUser.userDetails.id
+    const userId = btsUser.userDetails.id
     if (userId) {
       const reservations = await fetch(`${fetchUrl}/orders/${userId}`)
-      const userReservations = await reservations.json()
-      const newState = { ...this.State }
-      newState.userReservations = await userReservations
-      await this.setState({ userReservations: newState.userReservations })
+      const userReservations = reservations.json()
+      setUserReservations(userReservations)
     }
   }
 
-  const logout = () => {
-    this.toggleLoggedIn(false);
-    this.profileClick()
+  const handleEditSend= async(newRETS)=>{
+    newRETS.map(async(reservation)=>{
+      const editReservationResponse = await fetch(`${fetchUrl}/reservations`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          id: parseInt(reservation.id),
+          willCallFirstName: reservation.willCallFirstName,
+          willCallLastName: reservation.willCallLastName,
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .catch()
+      // const json = await editReservationResponse.json()
+      const e = {target: {id: "edit"}}
+      toggleReservationView(e)
+      if(editReservationResponse.status === 200){
+      }
+    })
   }
 
+  const logout = () => {
+    toggleLoggedIn(false);
+    profileClick()
+  }
 
+  const onLoad = () => {
+    setDisplayLoadingScreen(false)
+  }
 
   const profileClick = () => {
     setDisplayLoginView((prevState) => !prevState);
@@ -106,22 +151,72 @@ const App = () => {
     }
   };
 
+  
   const requestRegistration = async (request) => {
     const password = sha256(request.password)
     const usersInfo = await fetch(`${fetchUrl}/users`, {
       method: 'POST',
       body: JSON.stringify({
-          firstName: request.firstName,
-          lastName: request.lastName,
-          email: request.email,
-          hshPwd: password
+        firstName: request.firstName,
+        lastName: request.lastName,
+        email: request.email,
+        hshPwd: password
       }),
       headers: {
-          'Content-Type': 'application/json'
+        'Content-Type': 'application/json'
       }
     })
     const userObj = await usersInfo.json()
     setRegisterResponse(userObj)
+  }
+  
+  const reservationEditField = (e) => {
+    setWillCallEdits({
+      ...willCallEdits,
+      [e.target.name]: e.target.value,
+      id: e.target.id
+    })
+  }
+
+  const responseLogin = async (loginInfo) => {
+    console.log('responseLogin loginInfo ====== ', loginInfo)
+    const {email, password} = loginInfo
+    const hashedPassword = sha256(password);
+    
+    const usersInfo = await fetch(`${fetchUrl}/users/login`, {
+      method: 'POST',
+      body: JSON.stringify({
+        username: email,
+        password: hashedPassword
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const userObj = await usersInfo.json()
+    
+    if (userObj && userObj.token) {
+      localStorage.setItem('jwt', userObj.token);
+      console.log('btsUser Before ==>>==>> ', btsUser);   
+      
+      console.log('login response from API === ', userObj)
+      setBtsUser({
+          ...btsUser,
+          isLoggedIn: true,
+          userID: userObj.id,
+          email:userObj.email,
+          userDetails: {
+            isAdmin: userObj.isAdmin,
+            isStaff: userObj.isStaff
+          },
+          userDetails:userObj
+        }
+      ); 
+
+      toggleLoggedIn(true);
+      onLoad();
+    }
+
   }
 
   const showsExpandClick = async (event) => {
@@ -135,7 +230,7 @@ const App = () => {
       setDisplayShowList(false);
       setDisplayShow(clickedShow);
     } else {
-      const assignedPickupParties = await this.getPickupParties(clickedShow.id)
+      const assignedPickupParties = await getPickupParties(clickedShow.id)
       const currentPickups = assignedPickupParties.map(party => party.pickupLocationId)
       const pickupLocations = pickupLocations.filter(loc => currentPickups.includes(loc.id))
 
@@ -160,10 +255,42 @@ const App = () => {
     }
   }
 
+  const submitReservationForm = (e) => {
+    e.preventDefault()
+    let newRETS = [ ...reservationEditsToSend ]
+    setDisplayEditSuccess(!displayEditSuccess)
+    newRETS.push(willCallEdits)
+    setReservationEditsToSend(newRETS)
+    handleEditSend(newRETS)
+  }
+
+  const toggleAdminView = () => {
+    setAdminView(!adminView);
+  }
+
+  const toggleEditReservation = (e) =>{
+    setDisplayEditReservation(!displayEditReservation)
+    setReservationToEditId(parseInt(e.target.id))
+  }
+
+  const toggleEditSuccess=()=>{
+    setDisplayEditSuccess(!displayEditSuccess);
+  }
+
   const toggleForgot = () => {
     const showForgotForm = !showForgotForm;
     setShowForgotForm(showForgotForm);
-  }  
+  } 
+  
+  const toggleFuturePast = (e) => {
+    if(e.target.id==='future'){
+      setDisplayPast(false);
+      setDisplayFuture(true);
+    } else if(e.target.id==='past'){
+      setDisplayPast(true);
+      setDisplayFuture(false);
+    }
+  }
 
   const toggleLoggedIn = (boolean) => {
     console.log('toggleLoggedIn clicked ---' , boolean);
@@ -230,33 +357,77 @@ const App = () => {
     const verified = result ? true : false;
     setIsVerified(verified);
 
-    useEffect(() => {
-      const getPickupLocations = async () => {
-        const pickups =  await fetch(`${fetchUrl}/pickup_locations`).json()
-        setPickupLocations(pickups)
-      } 
-      getPickupLocations();
-    }, []);
   };
 
+  useEffect( () => {
+    const checkAuth = async () => {
+      const jwtToken = localStorage.getItem('jwt')
+      if(!jwtToken){
+        return
+      }
+      const response = await fetch(`${fetchUrl}/api/secure`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+          },
+          withCredentials: true
+        }
+      )
+      const userObj =  await response.json()
+      if (userObj && userObj.id){
+        setBtsUser({
+          ...btsUser,
+          isLoggedIn: true,
+              userID: userObj.id,
+              email:userObj.email,
+              userDetails: {
+                isAdmin: userObj.isAdmin,
+                isStaff: userObj.isStaff
+              },
+              userDetails:userObj
+        })
+        toggleLoggedIn(true)
+        onLoad()
+      } else {
+        toggleLoggedIn(false)
+        onLoad()
+      }
+  
+    }
+    checkAuth()
+    console.log('props.location 1==>>==>> ', props)
+    const getPickupLocations = async () => {
+      const pickups =  await fetch(`${fetchUrl}/pickup_locations`) 
+      setPickupLocations(pickups.json())
+    } 
+    getPickupLocations();
+  }, []);
 
   return (
     <Router>
       <div>
-        {displayHeader ? (
+        {!displayLoadingScreen ? (
           <Header
             getReservations={getReservations}
             btsUser={btsUser}
             profileClick={profileClick}
             adminView={adminView}
+            setDisplayHeader={setDisplayHeader}
+            displayLoadingScreen={displayLoadingScreen}
           />
         ) : (
           ''
         )}
         <Routes>
-          <Route exact path="/" element={<LayoutPage />} />
+          <Route exact path="/" element={
+          <LayoutPage
+            displayLoadingScreen={displayLoadingScreen}
+            setDisplayLoadingScreen={setDisplayLoadingScreen}
+            btsUser={btsUser}
+          />} />
           <Route exact path="/login" element={
             <LoginView
+              displayLoadingScreen={displayLoadingScreen}
               displayReservationDetail={displayReservationDetail}
               displayReservations={displayReservations}
               toggleLoggedIn={toggleLoggedIn}
@@ -273,24 +444,23 @@ const App = () => {
               displayShow={displayShow}
               filterString={filterString}
               showsExpandClick={showsExpandClick}
-              responseLogin={this.responseLogin}
-              continueAsGuest={this.continueAsGuest}
-              btsUser={this.state.btsUser}
-              toggleAdminView={this.toggleAdminView}
-              expandReservationDetailsClick={this.expandReservationDetailsClick}
-              reservationDetail={this.state.reservationDetail}
-              toggleFuturePast={this.toggleFuturePast}
-              displayFuture={this.state.displayFuture}
-              displayPast={this.state.displayPast}
-              getEventDetails={this.getEventDetails}
-              displayUserReservationSummary={this.state.displayUserReservationSummary}
-              toggleEditReservation={this.toggleEditReservation}
-              displayEditReservation={this.state.displayEditReservation}
-              reservationEditField={this.reservationEditField}
-              submitReservationForm={this.submitReservationForm}
-              reservationToEditId={this.state.reservationToEditId}
-              displayEditSuccess={this.state.displayEditSuccess}
-              toggleEditSuccess={this.toggleEditSuccess}
+              responseLogin={responseLogin}
+              continueAsGuest={continueAsGuest}
+              btsUser={btsUser}
+              toggleAdminView={toggleAdminView}
+              expandReservationDetailsClick={expandReservationDetailsClick}
+              reservationDetail={reservationDetail}
+              toggleFuturePast={toggleFuturePast}
+              displayFuture={displayFuture}
+              displayPast={displayPast}
+              displayUserReservationSummary={displayUserReservationSummary}
+              toggleEditReservation={toggleEditReservation}
+              displayEditReservation={displayEditReservation}
+              reservationEditField={reservationEditField}
+              submitReservationForm={submitReservationForm}
+              reservationToEditId={reservationToEditId}
+              displayEditSuccess={displayEditSuccess}
+              toggleEditSuccess={toggleEditSuccess}
           />
           } />
           <Route exact path="/store" element={<StorePage />} />
@@ -316,7 +486,12 @@ const App = () => {
               />
             )}
           />
-          <Route element={<LayoutPage />} />
+          <Route element={
+            <LayoutPage
+              displayLoadingScreen={displayLoadingScreen}
+              setDisplayLoadingScreen={setDisplayLoadingScreen}
+              btsUser={btsUser}
+           />} />
         </Routes>
       </div>
     </Router>

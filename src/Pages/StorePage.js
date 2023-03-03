@@ -13,23 +13,6 @@ const StorePage = (props) => {
 
     return(
         <div>
-            <div>
-              {//Replace with Header Component 
-              }
-              <nav className='Header row bts-orange-header align-items-center nav-flex'>
-                <div className="col-sm-2 ml-3 mt-1 mr-4">
-                  <a className="navbar-brand">
-                    <img src={logo} width="180" height="24" className="" alt="bts-logo" />
-                  </a>
-                </div>
-                <div className="col-sm-2">
-                  <button className="btn detail-btn mr-2" onClick={()=>{navigate('/')}}>
-                    <div>
-                      Dashboard
-                    </div>
-                  </button>
-                </div>
-              </nav>
               <MediaQuery minWidth={800}>
                 <div className="w-75 mx-auto">
                   <div className="container-border-orange m-4 p-4">
@@ -46,7 +29,6 @@ const StorePage = (props) => {
                     </div>
                 </div>
               </MediaQuery>
-            </div>
         </div>
 
     )
