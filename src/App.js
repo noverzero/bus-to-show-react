@@ -9,6 +9,7 @@ import StorePage from './Pages/StorePage';
 import LayoutPage from './Pages/LayoutPage';
 import VerifyPage from './Pages/VerifyPage';
 import ResetPage from './Pages/ResetPage';
+import {ProductDetail} from './Components/Products/Product'
 
 // Components
 import Header from './Components/Header';
@@ -464,6 +465,7 @@ const App = (props) => {
           />
           } />
           <Route exact path="/store" element={<StorePage />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
           <Route
             path="/verify/:token"
             element={(props) => (

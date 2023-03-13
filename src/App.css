@@ -411,6 +411,12 @@ justify-content: flex-end;
 height: 100%;
 }
 
+.store-grid {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  justify-content: center;
+  }
 
 .show-list-flex {
 display: flex;
