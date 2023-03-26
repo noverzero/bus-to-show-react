@@ -4,11 +4,13 @@ import spacebus from '../Images/bus-to-show-space-bus-forward.png'
 import Zoom from 'react-reveal/Zoom'
 import MediaQuery from 'react-responsive'
 import ReactGA from 'react-ga';
+import { useStore } from '../Store';
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/loading');
 
-
 const Loading = (props) => {
+const {setDisplayLoadingScreen, setHideHeader} = useStore();
+
 let bus2 = true
 let bus3 = true
 
@@ -16,17 +18,13 @@ const location = useLocation()
 
 const handleClick = () => {
   console.log('button clicked ==>>==>> ');
-  props.setDisplayLoadingScreen(false);
+  setDisplayLoadingScreen(false);
+  setHideHeader(false);
+
 }
 
-
 useEffect(() => {
-  const checkIfShouldNotDisplay = () => {
-    if(location){
-      console.log('props in Loading.js ==>>==>> ', props);
-    }
-  }
-  checkIfShouldNotDisplay()
+
 }
 )
   return (

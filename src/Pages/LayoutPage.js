@@ -5,24 +5,20 @@ import MediaQuery from 'react-responsive'
 import moment from 'moment'
 import { sha256 } from 'js-sha256';
 
-
-
 // Styling
 import '../App.css';
 
 // Components
 import AdminView from '../Components/Admin/adminView'
 import Aboutus from '../Components/Aboutus/Aboutus'
-import Header from '../Components/Header'
 import ShowList from '../Components/Shows/ShowList'
-import LoginView from '../Components/LoginView/LoginView'
 import Loading from '../Components/Loading'
 import SponsorBox from '../Components/SponsorBox'
 import DetailCartView from '../Components/DetailCartView'
 import BannerRotator from '../Components/BannerRotator'
 import NavButtons from '../Components/NavButtons'
 import ReactGA from 'react-ga';
-import env from 'react-dotenv'
+import {useStore} from '../Store'
 
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
@@ -121,7 +117,11 @@ class LayoutPage extends Component {
     navLocation: '',
   }
 
+
   async componentDidMount() {
+    const storeState = useStore.getState()
+    console.log('storeState ==>>==>> ', storeState);
+
     await this.getVerify()
  
     const response = await fetch(`${fetchUrl}/events`)
@@ -155,6 +155,7 @@ class LayoutPage extends Component {
     const pickupLocations = await pickups.json()
     this.setState({ pickupLocations, allShows, userShows })
   }
+
 
   getVerify = async () => {
     const response = await fetch(`${fetchUrl}/api`)
@@ -343,7 +344,7 @@ class LayoutPage extends Component {
   }
 
   getReservations = async () => {
-    const userId = this.props.btsUser.userDetails.id
+    const userId = useStore.getState().btsUser.userDetails.id
     if (userId) {
       const reservations = await fetch(`${fetchUrl}/orders/${userId}`)
       const userReservations = await reservations.json()
@@ -367,7 +368,6 @@ class LayoutPage extends Component {
   }
 
   findDiscountCode = async (applyOrRelease) => {
-    
     const discountCode = this.state.discountCode
     const ticketQuantity = applyOrRelease !== 'release' ? this.state.ticketQuantity : (this.state.ticketQuantity * -1)
     const eventId = this.state.displayShow.id
@@ -387,12 +387,6 @@ class LayoutPage extends Component {
     const json = await response.json()
     console.log('discount response ===> ', json)
     if(json.length){
-      if(json[0].type === 420){
-        console.log( 'ok lets party!')
-      } else {
-        console.log('no response')
-        return
-      }
       //we have a valid afterDiscountObj, let's apply it!
       const newState = {...this.state}
       newState.totalCost = Number(json[0].totalPriceAfterDiscount).toFixed(2)
@@ -533,36 +527,6 @@ class LayoutPage extends Component {
     this.setState({displayEditSuccess: newStateDisplayEditSuccess})
   }
 
-  toggleLoggedIn = (boolean) => {
-    console.log('toggleLoggedIn clicked --- Layout' , boolean);
-    if (boolean === false){
-      this.setState({
-        ...this.state,
-        btsUser: {
-          isLoggedIn: false,
-          userID: '',
-          name: '',
-          email:'',
-          picture:'',
-          userDetails: {
-            isAdmin: false,
-            isStaff: false,
-            isDriver: false,
-          },
-        }
-      })
-      localStorage.setItem('jwt', '')
-    } else {
-      this.setState({
-        ...this.state,
-          btsUser: {
-          ...this.state.btsUser,
-          isLoggedIn: boolean,
-        }
-      })
-    }
-  }
-
   profileClick = () => {
     const newState = { ...this.state }
     newState.displayLoginView = !newState.displayLoginView
@@ -578,20 +542,6 @@ class LayoutPage extends Component {
         displayLoginView: newState.displayLoginView
       })
     }
-  }
-
-  continueAsGuest = () => {
-    this.setState({
-      ...this.state,
-        btsUser: {
-          isLoggedIn: false,
-          userID: '',
-          name: '',
-          email:'',
-          picture:'',
-          userDetails: {},
-        }
-    })
   }
 
 
@@ -794,7 +744,7 @@ class LayoutPage extends Component {
     newState.cartToSend.ticketQuantity = 0
     newState.cartToSend.totalCost = 0
     newState.cartToSend.discountCode = null
-    newState.cartToSend.userId = newState.btsUser.userDetails.id
+    newState.cartToSend.userId = useStore.getState().btsUser.userDetails.id
     newState.validatedElements = {
       firstName: null,
       lastName: null,
@@ -931,7 +881,7 @@ class LayoutPage extends Component {
     }
     const cartObj = this.state.cartToSend
     cartObj.discountCode = this.state.afterDiscountObj.id
-    cartObj.userId = this.props.btsUser.userDetails.id
+    cartObj.userId = useStore.getState().btsUser.userDetails.id
     const response = await fetch(`${fetchUrl}/orders`, {
       method: 'POST',
       body: JSON.stringify(cartObj),
@@ -948,7 +898,7 @@ class LayoutPage extends Component {
   comp = async (details) => {
     this.ticketTimer(false)
     const cartObj = this.state.cartToSend
-    cartObj.userId = this.props.btsUser.userDetails.id
+    cartObj.userId = useStore.getState().btsUser.userDetails.id
     cartObj.discountCode = this.state.afterDiscountObj.id
     const response = await fetch(`${fetchUrl}/orders`, {
       method: 'POST',
@@ -1047,7 +997,7 @@ class LayoutPage extends Component {
         pickupLocationId: parseInt(this.state.pickupLocationId),
         totalCost: Number(this.state.totalCost),
         discountCode,
-        userId: newState.btsUser.userDetails.userId,
+        userId: useStore.getState().btsUser.userDetails.userId,
         willCallFirstName: (newValidElems.wcFirstName || newValidElems.firstName),
         willCallLastName: (newValidElems.wcLastName || newValidElems.lastName)
       }
@@ -1263,10 +1213,8 @@ class LayoutPage extends Component {
       <React.Fragment>
         <div className="App">
           <div>
-            {this.props.displayLoadingScreen && !this.props.btsUser.isLoggedIn ?
+            {this.displayLoadingScreen && !useStore.getState().btsUser.isLoggedIn ?
               <Loading
-              setDisplayLoadingScreen={this.props.setDisplayLoadingScreen}
-              displayLoadingScreen={this.props.displayLoadingScreen}
               handleBus={this.handleBus} />
                 :
               <div>
@@ -1278,7 +1226,7 @@ class LayoutPage extends Component {
                     searchShows={this.searchShows}
                     shows={this.state.allShows}
                     showsExpandClick={this.showsExpandClick}
-                    userDetails={this.state.btsUser.userDetails}
+                    userDetails={useStore.getState().btsUser.userDetails}
                   />
                   :
                   this.state.displayAboutus ?
@@ -1414,8 +1362,6 @@ class LayoutPage extends Component {
                   </React.Fragment>
                   :
                 <Loading
-                  setDisplayLoadingScreen={this.props.setDisplayLoadingScreen}
-                  displayLoadingScreen={this.props.displayLoadingScreen}
                   responseLogin={this.responseLogin}
                 />
               }

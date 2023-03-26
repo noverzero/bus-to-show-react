@@ -1,13 +1,15 @@
 import React, { useRef, useState , useEffect} from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-
 import MediaQuery from 'react-responsive'
 
 
 import '../App.css';
 import logo from '../Images/Logos/bustoshow-text-logo--white-outline-no-fill-328x46.png'
+import { useStore } from '../Store';
 
 const Header = (props) => {
+  const {btsUser, setBtsUser} = useStore();
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -16,8 +18,7 @@ const Header = (props) => {
 
   useEffect(() => {
     window.$(myRef.current).tooltip();
-    if(!props.btsUser.isLoggedIn) toggleShowDashboardButton(false)
-    location.pathname === '/' && props.displayLoadingScreen === true ? props.setDisplayHeader(false) : props.setDisplayHeader(true)
+    if(!btsUser.isLoggedIn) toggleShowDashboardButton(false)
   }, []);
 
   const navToDashboard = () => {
@@ -42,7 +43,7 @@ const Header = (props) => {
                 <button className="btn detail-btn mr-2" onClick={()=>{toggleShowDashboardButton(!showDashboardButton)}}>
                   { !showDashboardButton 
                   ?
-                    !props.btsUser.isLoggedIn 
+                    !btsUser.isLoggedIn 
                     ?
                       <div ref={myRef} data-toggle="tooltip" data-placement="bottom" title="Sign in to view your reservations, history and more.">
                         Sign in/up

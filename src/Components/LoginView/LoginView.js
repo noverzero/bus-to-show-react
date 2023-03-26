@@ -6,20 +6,27 @@ import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
 import RegisterUserToast from './RegisterUserToast';
 import ForgotForm from './ForgotForm';
+import { useStore } from '../../Store';
+import { useNavigate } from 'react-router-dom';
+
 
 const LoginView = (props) => {
+  const {btsUser, setBtsUser} = useStore();
 
   const myRef = useRef(null);
-
+  const navigate = useNavigate()
+  
   useEffect(() => {
     window.$(myRef.current).tooltip();
   }, []);
-
-  const { toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, showForgotForm, toggleForgot, profileClick, responseLogin, btsUser, displayReservations, toggleReservationView, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
-
+  
+  const { toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, showForgotForm, toggleForgot, profileClick, responseLogin, displayReservations, toggleReservationView, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
+  
   const { isStaff, isAdmin, isDriver } = btsUser.userDetails
+  
+console.log('toggleLoggedIn ==>>==>> ', toggleLoggedIn );  
 
-  let futureClass = 'border'
+let futureClass = 'border'
   let pastClass = 'border'
   if (props.displayFuture){
     futureClass = 'border border-success'
@@ -71,7 +78,7 @@ const LoginView = (props) => {
                 <div className='col-12 text-center'>
                   <button type="button" className="btn detail-btn mr-2" ref={myRef} data-toggle="tooltip" data-placement="bottom" 
                     title="It's ok to reserve and ride without being signed into an account. Accounts just make it so you can manage your current reservations, view your past shows, etc."
-                    onClick={()=> {props.toggleLoggedIn(false); props.profileClick()}}>
+                    onClick={()=>{navigate('/')}}>
                     <strong>Continue as Guest</strong>
                   </button>
                   <button type="button" className="btn detail-btn ml-2"

@@ -5,13 +5,13 @@ import { Link } from 'react-router-dom';
 import StripeCheckout from 'react-stripe-checkout';
 
 const fetchUrl = `${process.env.REACT_APP_API_URL}`;
-const token = `${process.env.REACT_APP_STRIPE_PUBLIC || 'pk_live_WZRwtpLAFcufugeQKbtwKobm' || 'pk_test_J0CdRMCGmBlrlOiGKnGgUEwT'} `;
+const stripePublic = `${process.env.REACT_APP_STRIPE_PUBLIC}`;
 
 export const Product = ({ product }) => {
 
     console.log('Product ==>>==>> ', product);
     return (
-      <div className="store-grid">
+      <div className="shop-grid">
         <div className="card container-border-orange m-4 w-50">
           <div className="card-body">
             <h5 className="card-header mb-2 ">{product.name}</h5>
@@ -35,17 +35,18 @@ export const Product = ({ product }) => {
     
     const [email, setEmail] = useState('');
 
-    const buyNow = async (product) => {
+    const buyNow = async (token) => {
+      token.product = product
       console.log('buy now clicked ==>>==>> ', token);
       try {
-        const response = await fetch(`${fetchUrl}/store`, {
+        const response = await fetch(`${fetchUrl}/purchases`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            token,
-            email,
+            token
+
           }),
         });
   
@@ -72,19 +73,17 @@ export const Product = ({ product }) => {
               <h5 className="card-header mb-2 ">{product.name}</h5>
               <h6 className="card-subtitle mb-2 text-muted">${product.price}</h6>
               <p className="card-text">{product.description}</p>
-              <button type="button" className="btn btn-primary" onClick={()=>{buyNow(product)}}>Buy Now</button>
               <div>
-                <h1>Purchase Season Pass</h1>
                 <label>
                   Email:
                   <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 </label>
                 <StripeCheckout
-                  stripeKey="YOUR_STRIPE_PUBLIC_KEY"
+                  stripeKey={stripePublic}
                   token={buyNow}
-                  amount={9999}
-                  name="Season Pass"
-                  description="One season pass for $99.99"
+                  amount={product.price * 100}
+                  name={product.name}
+                  description={`${product.description} 2023 for $${product.price}`}
                   billingAddress
                   zipCode
                 />

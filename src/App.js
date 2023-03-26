@@ -5,7 +5,7 @@ import ReactGA from 'react-ga';
 import { sha256 } from 'js-sha256';
 
 // Pages
-import StorePage from './Pages/StorePage';
+import ShopPage from './Pages/ShopPage';
 import LayoutPage from './Pages/LayoutPage';
 import VerifyPage from './Pages/VerifyPage';
 import ResetPage from './Pages/ResetPage';
@@ -14,6 +14,7 @@ import {ProductDetail} from './Components/Products/Product'
 // Components
 import Header from './Components/Header';
 import LoginView from './Components/LoginView/LoginView';
+import { useStore } from './Store';
 
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
@@ -22,24 +23,16 @@ const fetchUrl = `${process.env.REACT_APP_API_URL}`;
 const verifyEmailUrl = `${fetchUrl}/users/confirm-email`;
 
 const App = (props) => {
+  const {btsUser, setBtsUser, displayLoadingScreen, setDisplayLoadingScreen, headerHidden, setHideHeader} = useStore();
 
   const [adminView, setAdminView] = useState(false);
-  const [btsUser, setBtsUser] = useState({
-    isLoggedIn: false,
-    userID: '',
-    name: '',
-    email: '',
-    picture: '',
-    userDetails: {},
-  });
+
   const [assignedParties, setAssignedParties] = useState([]);
   const [displayDetailCartView, setDisplayDetailCartView] = useState(false);
   const [displayEditReservation, setDisplayEditReservation] = useState(false);
   const [displayEditSuccess, setDisplayEditSuccess] = useState(false);
   const [displayExternalShowDetails, setDisplayExternalShowDetails] = useState(false);
   const [displayFuture, setDisplayFuture] = useState(false);
-  const [displayHeader, setDisplayHeader] = useState(true);
-  const [displayLoadingScreen, setDisplayLoadingScreen] = useState(true);
   const [displayLoginView, setDisplayLoginView] = useState(false);
   const [displayPast, setDisplayPast] = useState(false);
   const [displayQuantity, setDisplayQuantity] = useState(false);
@@ -141,10 +134,12 @@ const App = (props) => {
   }
 
   const onLoad = () => {
-    setDisplayLoadingScreen(false)
+    setDisplayLoadingScreen(false);
+    setHideHeader(false);
   }
 
   const profileClick = () => {
+    console.log('profileClick ==>>==>> ' );
     setDisplayLoginView((prevState) => !prevState);
 
     if (adminView) {
@@ -407,14 +402,11 @@ const App = (props) => {
   return (
     <Router>
       <div>
-        {!displayLoadingScreen ? (
+        {!headerHidden ? (
           <Header
             getReservations={getReservations}
-            btsUser={btsUser}
             profileClick={profileClick}
             adminView={adminView}
-            setDisplayHeader={setDisplayHeader}
-            displayLoadingScreen={displayLoadingScreen}
           />
         ) : (
           ''
@@ -422,8 +414,6 @@ const App = (props) => {
         <Routes>
           <Route exact path="/" element={
           <LayoutPage
-            displayLoadingScreen={displayLoadingScreen}
-            setDisplayLoadingScreen={setDisplayLoadingScreen}
             btsUser={btsUser}
           />} />
           <Route exact path="/login" element={
@@ -447,7 +437,6 @@ const App = (props) => {
               showsExpandClick={showsExpandClick}
               responseLogin={responseLogin}
               continueAsGuest={continueAsGuest}
-              btsUser={btsUser}
               toggleAdminView={toggleAdminView}
               expandReservationDetailsClick={expandReservationDetailsClick}
               reservationDetail={reservationDetail}
@@ -464,7 +453,7 @@ const App = (props) => {
               toggleEditSuccess={toggleEditSuccess}
           />
           } />
-          <Route exact path="/store" element={<StorePage />} />
+          <Route exact path="/shop" element={<ShopPage />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route
             path="/verify/:token"
@@ -491,7 +480,6 @@ const App = (props) => {
           <Route element={
             <LayoutPage
               displayLoadingScreen={displayLoadingScreen}
-              setDisplayLoadingScreen={setDisplayLoadingScreen}
               btsUser={btsUser}
            />} />
         </Routes>

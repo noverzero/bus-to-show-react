@@ -19,7 +19,8 @@
     "react-scripts": "^2.1.5",
     "react-stripe-checkout": "^2.6.3",
     "stripe-checkout": "^1.0.9",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "zustand": "^4.3.6"
   },
   "scripts": {
     "start": "react-dotenv && react-scripts start",
