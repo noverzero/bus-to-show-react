@@ -11,7 +11,13 @@ import { useNavigate } from 'react-router-dom';
 
 
 const LoginView = (props) => {
-  const {btsUser, setBtsUser} = useStore();
+  const {
+    btsUser,
+    setBtsUser,
+    showForgotForm,
+    toggleShowForgotForm
+  } = useStore();
+
 
   const myRef = useRef(null);
   const navigate = useNavigate()
@@ -20,12 +26,10 @@ const LoginView = (props) => {
     window.$(myRef.current).tooltip();
   }, []);
   
-  const { toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, showForgotForm, toggleForgot, profileClick, responseLogin, displayReservations, toggleReservationView, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
+  const { toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, profileClick, responseLogin, displayReservations, toggleReservationView, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
   
   const { isStaff, isAdmin, isDriver } = btsUser.userDetails
   
-console.log('toggleLoggedIn ==>>==>> ', toggleLoggedIn );  
-
 let futureClass = 'border'
   let pastClass = 'border'
   if (props.displayFuture){
@@ -35,11 +39,9 @@ let futureClass = 'border'
     pastClass = 'border border-success'
     futureClass = 'border bg-light'
   }
-
   if(showForgotForm){
     return (
       <ForgotForm
-        toggleForgot={toggleForgot} 
       />
     )
   } else {
@@ -86,7 +88,7 @@ let futureClass = 'border'
                     <strong>Register</strong>
                   </button>
                   <button type="button" className="btn bts-white-bg"
-                    onClick={()=> {toggleForgot()}}>
+                    onClick={()=> {toggleShowForgotForm(true)}}>
                     <strong>Forgot / Reset </strong>
                   </button>
                 </div>
@@ -238,7 +240,7 @@ let futureClass = 'border'
                     <strong>Register</strong>
                   </button>
                   <button type="button" className="btn bts-white-bg"
-                    onClick={()=> {toggleForgot()}}>
+                    onClick={()=> {toggleShowForgotForm(true)}}>
                     <strong>Forgot / Reset </strong>
                   </button>
                 </div>

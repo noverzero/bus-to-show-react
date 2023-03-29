@@ -96,7 +96,6 @@ class LayoutPage extends Component {
     reservationToEditId: null,
     reservationEditsToSend: [],
     showBios: false,
-    showForgotForm: false,
     showRegisterForm: false,
     startTimer: false,
     ticketTimer: null,
@@ -104,6 +103,7 @@ class LayoutPage extends Component {
     ticketQuantity: null,
     totalCost: 0,
     userReservations: [],
+    isUseSeasonPassChecked: false,
     validated: false,
     validatedElements: {
       fName: null,
@@ -577,10 +577,6 @@ class LayoutPage extends Component {
 
   }
 
-  toggleForgot = () => {
-    const showForgotForm = !this.state.showForgotForm
-    this.setState({showForgotForm: showForgotForm})
-  }
 
   // Tab Functions
   tabClicked = event => {
@@ -865,8 +861,17 @@ class LayoutPage extends Component {
   // Cart Functions
   handleCheck = () => {
     const newState = { ...this.state }
-    newState.checked = true
-    this.setState({ checked: newState.checked })
+    if(newState.checked === true){
+      console.log('handleCheck ==>>==>> ', this.state.checked );
+      this.updatePurchaseField({target: {id: 'willCallFirstName', value: ''}})
+      this.updatePurchaseField({target: {id: 'willCallLastName', value: ''}})
+
+    }
+    newState.checked = !newState.checked
+    this.setState({ 
+      checked: newState.checked,
+
+    })
   }
 
   purchase = async (err) => {
@@ -914,12 +919,22 @@ class LayoutPage extends Component {
   }
 
   updatePurchaseField = event => {
+    console.log('event.target.id ==>>==>> ', event.target.id);
+    console.log('event.target.value ==>>==>> ', event.target.value);
+
     const newState = { ...this.state }
     const updateField = event.target.id
     const value = event.target.value
     const newValidElems = newState.validatedElements
     const invalidFields = newState.invalidFields
     let discountCode = ''
+    if(updateField === 'useSeasonPass'){
+      console.log('1 this.state.isisUseSeasonPassChecked ==>>==>> ', this.state.isUseSeasonPassChecked, newState.isUseSeasonPassChecked);
+      newState.isUseSeasonPassChecked = !newState.isUseSeasonPassChecked
+      this.setState({isUseSeasonPassChecked: newState.isUseSeasonPassChecked})
+      console.log('2 this.state.isisUseSeasonPassChecked ==>>==>> ', this.state.isUseSeasonPassChecked, newState.isUseSeasonPassChecked);
+      return
+    }
 
     const phoneNumber = (inputtxt) => {
       var phoneno = /^\(?[(]([0-9]{3})\)?[) ]([0-9]{3})[-]([0-9]{4})$/
@@ -1019,6 +1034,7 @@ class LayoutPage extends Component {
         })
       }
   }
+  //end updatePurchaseField
 
   invalidOnSubmit = (e) => {
     let validElems = {...this.state.validatedElements}
@@ -1274,6 +1290,7 @@ class LayoutPage extends Component {
                             invalidFields={this.state.invalidFields}
                             invalidOnSubmit={this.invalidOnSubmit}
                             inCart={this.state.inCart}
+                            isUseSeasonPassChecked={this.state.isUseSeasonPassChecked}
                             lastDepartureTime={this.state.lastDepartureTime}
                             makePurchase={this.makePurchase}
                             pickupLocations={this.state.pickupLocations}

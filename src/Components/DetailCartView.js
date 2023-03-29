@@ -63,6 +63,7 @@ const DetailCartView = (props) => {
                   inCart={props.inCart}
                   invalidFields={props.invalidFields}
                   invalidOnSubmit={props.invalidOnSubmit}
+                  isUseSeasonPassChecked={props.isUseSeasonPassChecked}
                   lastDepartureTime={props.lastDepartureTime}
                   makePurchase={props.makePurchase}
                   pickupLocationId={props.pickupLocationId}

@@ -47,8 +47,6 @@ const App = (props) => {
   
 
   const [showRegisterForm, setShowRegisterForm] = useState(false);
-  const [showForgotForm, setShowForgotForm] = useState(false);
-
 
   const [isVerified, setIsVerified] = useState(false);
   const [isCalled, setIsCalled] = useState(false);
@@ -272,11 +270,6 @@ const App = (props) => {
   const toggleEditSuccess=()=>{
     setDisplayEditSuccess(!displayEditSuccess);
   }
-
-  const toggleForgot = () => {
-    const showForgotForm = !showForgotForm;
-    setShowForgotForm(showForgotForm);
-  } 
   
   const toggleFuturePast = (e) => {
     if(e.target.id==='future'){
@@ -427,8 +420,6 @@ const App = (props) => {
               toggleRegister={toggleRegister}
               requestRegistration={requestRegistration}
               registerResponse={registerResponse}
-              showForgotForm={showForgotForm}
-              toggleForgot={toggleForgot}
               profileClick={profileClick}
               toggleReservationView={toggleReservationView}
               userReservations={userReservations}

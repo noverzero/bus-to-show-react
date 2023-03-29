@@ -19,4 +19,10 @@ export const useStore = create((set) => ({
 
   headerHidden: false,
   setHideHeader: (bool) => set((state) => ({ headerHidden: bool })),
+
+  isCheckedUseSeasonPass: false, 
+  toggleIsCheckedUseSeasonPass: (bool) => set((state) => ({ headerHidden: bool })),
+
+  showForgotForm: false,
+  toggleShowForgotForm: (bool) => set((state) => ({ showForgotForm: bool })),
 }))
