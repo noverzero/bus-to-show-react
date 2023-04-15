@@ -55,32 +55,4 @@ const ShopPage = () => {
 }
 
 
-
-// const Product = ({ product }) => {
-//   return (
-//     <div>
-//       <h2>{product.name}</h2>
-//       <p>{product.description}</p>
-//       <p>${product.price}</p>
-//     </div>
-//   );
-// }
-
-
-
-// export default ShopPage;
-
-
-
-// const ShopPage = (props) => {
-//   const navigate = useNavigate();
-
-
-
-//     return(
-
-
-//     )
-// }
-
 export default ShopPage

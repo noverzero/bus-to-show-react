@@ -3,8 +3,8 @@ import { create } from 'zustand'
 export const useStore = create((set) => ({
   btsUser: {
     isLoggedIn: false,
-    userID: '',
-    name: '',
+    userID: '1',
+    name: 'guest',
     email: '',
     picture: '',
     userDetails: {},
@@ -23,6 +23,12 @@ export const useStore = create((set) => ({
   isCheckedUseSeasonPass: false, 
   toggleIsCheckedUseSeasonPass: (bool) => set((state) => ({ headerHidden: bool })),
 
+  selectedDevent: {},
+  setSelectedDevent: (devent) => set((state) => ({ selectedDevent: devent })),
+
   showForgotForm: false,
   toggleShowForgotForm: (bool) => set((state) => ({ showForgotForm: bool })),
+
+  passStatus: {},
+  setPassStatus: (status) => set((state) => ({ passStatus: status })),
 }))

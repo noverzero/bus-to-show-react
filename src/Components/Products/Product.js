@@ -8,8 +8,6 @@ const fetchUrl = `${process.env.REACT_APP_API_URL}`;
 const stripePublic = `${process.env.REACT_APP_STRIPE_PUBLIC}`;
 
 export const Product = ({ product }) => {
-
-    console.log('Product ==>>==>> ', product);
     return (
       <div className="shop-grid">
         <div className="card container-border-orange m-4 w-50">

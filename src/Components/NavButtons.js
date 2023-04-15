@@ -26,8 +26,11 @@ const NavButtons = (props) => {
         <div
           className= "border-0 p-2 mr-2">
           <div>
+              {false ?
               <button className="btn detail-btn mr-2 btn-widener" onClick={()=>{navigate('/shop')}}>Season Passes
               </button>
+              : ""
+              }
           </div>
     </div>
   </div>

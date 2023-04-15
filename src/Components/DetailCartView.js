@@ -55,6 +55,7 @@ const DetailCartView = (props) => {
                   closeAlert={props.closeAlert}
                   discountApplied={props.discountApplied}
                   displayConfirmRemove={props.displayConfirmRemove}
+                  displayShow={props.displayShow}
                   displayWarning={props.displayWarning}
                   findDiscountCode={props.findDiscountCode}
                   firstBusLoad={props.firstBusLoad}

@@ -18,7 +18,7 @@ import DetailCartView from '../Components/DetailCartView'
 import BannerRotator from '../Components/BannerRotator'
 import NavButtons from '../Components/NavButtons'
 import ReactGA from 'react-ga';
-import {useStore} from '../Store'
+import { useStore } from '../Store'
 
 ReactGA.initialize('UA-17782248-2');
 ReactGA.pageview('/app');
@@ -123,7 +123,7 @@ class LayoutPage extends Component {
     console.log('storeState ==>>==>> ', storeState);
 
     await this.getVerify()
- 
+
     const response = await fetch(`${fetchUrl}/events`)
     let allShows = await response.json()
 
@@ -159,7 +159,7 @@ class LayoutPage extends Component {
 
   getVerify = async () => {
     const response = await fetch(`${fetchUrl}/api`)
-    const json =  await response.json()
+    const json = await response.json()
     //document.cookie = `token=; expires=Wed, 21 Oct 2015 07:28:00 GMT`
     document.cookie = `token=${json.token}; secure`
   }
@@ -185,7 +185,7 @@ class LayoutPage extends Component {
     })
 
     let result = await response.json()
-    result = result.sort( (a, b) => {
+    result = result.sort((a, b) => {
       return a.id - b.id
     })
     return result
@@ -204,18 +204,18 @@ class LayoutPage extends Component {
 
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
   selectPickupLocationId = async (event, timer) => {
-    console.log('selectPickupLocationId event.target.value' , event.target.value)
+    console.log('selectPickupLocationId event.target.value', event.target.value)
     const newState = { ...this.state }
     const oldPickup = parseInt(newState.pickupPartyId)
-    if(!timer){
+    if (!timer) {
       this.clearTicketsInCart(oldPickup, newState.ticketQuantity)
       newState.ticketQuantity = 0
       this.ticketTimer(false)
-      this.setState({ticketQuantity: newState.ticketQuantity})
+      this.setState({ ticketQuantity: newState.ticketQuantity })
     }
 
     newState.pickupPartyId = parseInt(event.target.value)
-    if (event.target.value === "Select a Departure Option..."){
+    if (event.target.value === "Select a Departure Option...") {
       newState.displayQuantity = false
       newState.ticketsAvailable = null
       newState.ticketQuantity = 0
@@ -304,19 +304,19 @@ class LayoutPage extends Component {
       }
     })
     const reservations = await currentReservations.json()
-    const activeReservations = reservations.filter(rezzie=>rezzie.status < 3 )
+    const activeReservations = reservations.filter(rezzie => rezzie.status < 3)
     const availableTickets = parseInt(matchedParty.capacity) - parseInt(activeReservations.length) - parseInt(matchedParty.inCart)
-      return availableTickets
+    return availableTickets
   }
 
   selectTicketQuantity = (event) => {
     this.ticketTimer(false)
     const newState = { ...this.state }
     let oldQty = 0
-    if (parseInt(newState.ticketQuantity) > 0){
+    if (parseInt(newState.ticketQuantity) > 0) {
       console.log('newState.ticketQuantity', newState.ticketQuantity)
       oldQty = parseInt(newState.ticketQuantity)
-    } else { console.log('newState.ticketQuantity else', newState.ticketQuantity)}
+    } else { console.log('newState.ticketQuantity else', newState.ticketQuantity) }
     const pickupPartyId = parseInt(newState.pickupPartyId)
 
     oldQty > 0 && this.clearTicketsInCart(pickupPartyId, oldQty)
@@ -332,7 +332,7 @@ class LayoutPage extends Component {
       totalCost: newState.totalCost
     })
     this.addTicketsInCart(pickupPartyId, newState.ticketQuantity)
-     this.ticketTimer(true, 120000, false) // production
+    this.ticketTimer(true, 120000, false) // production
     //this.ticketTimer(true, 30000, false) // testing
     window.addEventListener("beforeunload", this.clearCartOnClose)
   }
@@ -354,7 +354,7 @@ class LayoutPage extends Component {
     }
   }
 
-  expandReservationDetailsClick = (e) =>{
+  expandReservationDetailsClick = (e) => {
     const newState = { ...this.state }
     newState.displayUserReservationSummary = true
     newState.reservationDetail = newState.userReservations.find(show => (parseInt(show.eventsId) === parseInt(e.target.id)))
@@ -368,27 +368,28 @@ class LayoutPage extends Component {
   }
 
   findDiscountCode = async (applyOrRelease) => {
-    const discountCode = this.state.discountCode
+    console.log('discountCode ==>>==>> ', this.state.discountCode);
+    const discountCode = this.state.discountCode || useStore.getState().passStatus.discountCode
     const ticketQuantity = applyOrRelease !== 'release' ? this.state.ticketQuantity : (this.state.ticketQuantity * -1)
     const eventId = this.state.displayShow.id
-    const totalPrice = applyOrRelease !== 'release' ?  this.state.totalCost : ''
+    const totalPrice = applyOrRelease !== 'release' ? this.state.totalCost : ''
     const response = await fetch(`${fetchUrl}/discount_codes`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          discountCode: discountCode,
-          ticketQuantity: ticketQuantity,
-          totalPrice: totalPrice,
-          eventId: eventId
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      method: 'PATCH',
+      body: JSON.stringify({
+        discountCode: discountCode,
+        ticketQuantity: ticketQuantity,
+        totalPrice: totalPrice,
+        eventId: eventId
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     })
     const json = await response.json()
     console.log('discount response ===> ', json)
-    if(json.length){
+    if (json.length) {
       //we have a valid afterDiscountObj, let's apply it!
-      const newState = {...this.state}
+      const newState = { ...this.state }
       newState.totalCost = Number(json[0].totalPriceAfterDiscount).toFixed(2)
       newState.afterDiscountObj = json[0]
       newState.afterDiscountObj.totalPriceAfterDiscount = Number(json[0].totalPriceAfterDiscount.toFixed(2))
@@ -423,15 +424,15 @@ class LayoutPage extends Component {
     newState.displayFuture = true
     newState.displayPast = false
     newState.displayUserReservationSummary = true
-    if(!newState.reservationDetail){
+    if (!newState.reservationDetail) {
       newState.displayReservations = !newState.displayReservations
     }
-    if(e.target.id==='dashboard' || e.target.id==='summary'){
+    if (e.target.id === 'dashboard' || e.target.id === 'summary') {
       newState.displayReservationDetail = false
       newState.reservationDetail = null
       newState.displayUserReservationSummary = false
     }
-    if(e.target.id === 'detail' || e.target.id === 'edit'){
+    if (e.target.id === 'detail' || e.target.id === 'edit') {
       newState.displayReservations = true
       newState.displayEditReservation = false
       newState.displayReservationDetail = true
@@ -443,7 +444,7 @@ class LayoutPage extends Component {
       displayUserReservationSummary: newState.displayUserReservationSummary,
       displayReservationDetail: newState.displayReservationDetail,
       displayFuture: newState.displayFuture,
-      displayPast:newState.displayPast,
+      displayPast: newState.displayPast,
       displayEditReservation: newState.displayEditReservation
     })
   }
@@ -452,20 +453,20 @@ class LayoutPage extends Component {
 
   toggleFuturePast = (e) => {
     const newState = { ...this.state }
-    if(e.target.id==='future'){
+    if (e.target.id === 'future') {
       newState.displayPast = false
       newState.displayFuture = true
-    } else if(e.target.id==='past'){
+    } else if (e.target.id === 'past') {
       newState.displayPast = true
       newState.displayFuture = false
     }
-      this.setState({
-        displayPast: newState.displayPast,
-        displayFuture: newState.displayFuture
-      } )
+    this.setState({
+      displayPast: newState.displayPast,
+      displayFuture: newState.displayFuture
+    })
   }
 
-  toggleEditReservation = (e) =>{
+  toggleEditReservation = (e) => {
     const newState = { ...this.state }
     newState.displayEditReservation = !newState.displayEditReservation
     newState.reservationToEditId = parseInt(e.target.id)
@@ -476,31 +477,31 @@ class LayoutPage extends Component {
   }
 
   reservationEditField = (e) => {
-      this.setState({
-        ...this.state,
-          willCallEdits: {
-          ...this.state.willCallEdits,
-          [e.target.name]: e.target.value,
-          id: e.target.id
-        }
+    this.setState({
+      ...this.state,
+      willCallEdits: {
+        ...this.state.willCallEdits,
+        [e.target.name]: e.target.value,
+        id: e.target.id
+      }
     })
   }
 
   submitReservationForm = (e) => {
     e.preventDefault()
-    let newRETS = [ ...this.state.reservationEditsToSend ]
+    let newRETS = [...this.state.reservationEditsToSend]
     let newDisplayEditSuccess = this.state.displayEditSuccess
     newDisplayEditSuccess = !newDisplayEditSuccess
     newRETS.push(this.state.willCallEdits)
     this.setState({
       reservationEditsToSend: newRETS,
-      displayEditSuccess:newDisplayEditSuccess
+      displayEditSuccess: newDisplayEditSuccess
     })
     this.handleEditSend(newRETS)
   }
 
-  handleEditSend= async(newRETS)=>{
-    newRETS.map(async(reservation)=>{
+  handleEditSend = async (newRETS) => {
+    newRETS.map(async (reservation) => {
       const editReservationResponse = await fetch(`${fetchUrl}/reservations`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -512,19 +513,19 @@ class LayoutPage extends Component {
           'Content-Type': 'application/json'
         }
       })
-      .catch()
+        .catch()
       // const json = await editReservationResponse.json()
-      const e = {target: {id: "edit"}}
+      const e = { target: { id: "edit" } }
       await this.toggleReservationView(e)
-      if(editReservationResponse.status === 200){
+      if (editReservationResponse.status === 200) {
       }
     })
-}
+  }
 
-  toggleEditSuccess=()=>{
-    let newStateDisplayEditSuccess = {...this.state.displayEditSuccess}
-    newStateDisplayEditSuccess=!newStateDisplayEditSuccess
-    this.setState({displayEditSuccess: newStateDisplayEditSuccess})
+  toggleEditSuccess = () => {
+    let newStateDisplayEditSuccess = { ...this.state.displayEditSuccess }
+    newStateDisplayEditSuccess = !newStateDisplayEditSuccess
+    this.setState({ displayEditSuccess: newStateDisplayEditSuccess })
   }
 
   profileClick = () => {
@@ -551,20 +552,20 @@ class LayoutPage extends Component {
     const usersInfo = await fetch(`${fetchUrl}/users`, {
       method: 'POST',
       body: JSON.stringify({
-          firstName: request.firstName,
-          lastName: request.lastName,
-          email: request.email,
-          hshPwd: password
+        firstName: request.firstName,
+        lastName: request.lastName,
+        email: request.email,
+        hshPwd: password
       }),
       headers: {
-          'Content-Type': 'application/json'
+        'Content-Type': 'application/json'
       }
     })
     const userObj = await usersInfo.json()
     console.log('registration response ====== >> >>> ', userObj)
-    const newState = {... this.state}
+    const newState = { ... this.state }
     newState.registerResponse = userObj
-    this.setState({registerResponse: newState.registerResponse})
+    this.setState({ registerResponse: newState.registerResponse })
 
     //{message: 'account already exists', code: '202', email: 'dustin@undefinedindustries.com'}
 
@@ -573,7 +574,7 @@ class LayoutPage extends Component {
   toggleRegister = () => {
     const newState = { ...this.state }
     newState.showRegisterForm = !newState.showRegisterForm;
-    this.setState({showRegisterForm: newState.showRegisterForm})
+    this.setState({ showRegisterForm: newState.showRegisterForm })
 
   }
 
@@ -643,7 +644,7 @@ class LayoutPage extends Component {
       pickupPartyId: newState.pickupPartyId
     })
     const clickedShow = newState.userShows.find(show => (parseInt(show.id) === parseInt(event.target.id)))
-    if(clickedShow.external){
+    if (clickedShow.external) {
       newState.displayShowDetails = false
       newState.displayExternalShowDetails = true
       newState.displayShowList = false
@@ -770,34 +771,34 @@ class LayoutPage extends Component {
     }
     newState.startTimer = true
     this.setState(newState)
-     this.ticketTimer(true, 360000, true) // production
+    this.ticketTimer(true, 360000, true) // production
     //this.ticketTimer(true, 30000, true) // testing
   }
 
-// functions to handle setting and clearing of timer and incart qtys
+  // functions to handle setting and clearing of timer and incart qtys
   ticketTimer = (timerOn, time, addedToCart) => {
-    let newState = {...this.state}
+    let newState = { ...this.state }
     const pickupPartyId = parseInt(newState.pickupPartyId)
     let event = { target: { value: pickupPartyId } }
     if (timerOn) {
-      console.log('ticketTimer a', timerOn, time, addedToCart )
+      console.log('ticketTimer a', timerOn, time, addedToCart)
       const newTicketTimer = addedToCart ?
-          setTimeout(() => {
-            console.log('ticketTimer b', timerOn, time, addedToCart )
-            this.confirmedRemove()
-          }, time)
+        setTimeout(() => {
+          console.log('ticketTimer b', timerOn, time, addedToCart)
+          this.confirmedRemove()
+        }, time)
         :
-          setTimeout(() => {
-            //this.confirmedRemove();
-            console.log('ticketTimer c', timerOn, time, addedToCart )
-            this.selectPickupLocationId(event, true)
-          }, time)
+        setTimeout(() => {
+          //this.confirmedRemove();
+          console.log('ticketTimer c', timerOn, time, addedToCart)
+          this.selectPickupLocationId(event, true)
+        }, time)
 
       newState.ticketTimer = newTicketTimer
       this.setState({ ticketTimer: newState.ticketTimer })
     }
     else {
-      console.log('ticketTimer d', timerOn, time, addedToCart )
+      console.log('ticketTimer d', timerOn, time, addedToCart)
       clearTimeout(this.state.ticketTimer)
       newState.ticketTimer = null
       this.setState({ ticketTimer: newState.ticketTimer })
@@ -806,7 +807,7 @@ class LayoutPage extends Component {
 
   addTicketsInCart = async (pickupPartyId, ticketQty) => {
     console.log('addTicketsInCart fired')
-    if (pickupPartyId && ticketQty){
+    if (pickupPartyId && ticketQty) {
       let timeStamp = new Date()
       console.log('timeStamp', timeStamp)
       await fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
@@ -824,7 +825,7 @@ class LayoutPage extends Component {
 
   clearTicketsInCart = async (pickupPartyId, ticketQty) => {
     //let newState = {...this.state}
-    if (pickupPartyId && ticketQty){
+    if (pickupPartyId && ticketQty) {
       console.log('clearing ticketQty', ticketQty)
       let timeStamp = new Date()
       await fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
@@ -861,14 +862,14 @@ class LayoutPage extends Component {
   // Cart Functions
   handleCheck = () => {
     const newState = { ...this.state }
-    if(newState.checked === true){
-      console.log('handleCheck ==>>==>> ', this.state.checked );
-      this.updatePurchaseField({target: {id: 'willCallFirstName', value: ''}})
-      this.updatePurchaseField({target: {id: 'willCallLastName', value: ''}})
+    if (newState.checked === true) {
+      console.log('handleCheck ==>>==>> ', this.state.checked);
+      this.updatePurchaseField({ target: { id: 'willCallFirstName', value: '' } })
+      this.updatePurchaseField({ target: { id: 'willCallLastName', value: '' } })
 
     }
     newState.checked = !newState.checked
-    this.setState({ 
+    this.setState({
       checked: newState.checked,
 
     })
@@ -880,9 +881,9 @@ class LayoutPage extends Component {
     if (err) {
       console.log('purchase error', err)
       await this.ticketTimer(false)
-       await this.ticketTimer(true, 360000, true) // production
-       //await this.ticketTimer(true, 30000, true) //testing
-      return this.setState({purchaseFailed: true})
+      await this.ticketTimer(true, 360000, true) // production
+      //await this.ticketTimer(true, 30000, true) //testing
+      return this.setState({ purchaseFailed: true })
     }
     const cartObj = this.state.cartToSend
     cartObj.discountCode = this.state.afterDiscountObj.id
@@ -896,7 +897,7 @@ class LayoutPage extends Component {
     })
     const json = await response.json()
     await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
-    this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [], ticketQuantity: null, discountApplied: false, afterDiscountObj: {discountCodeId: null, totalSavings: 0} })
+    this.setState({ purchaseSuccessful: true, purchasePending: false, inCart: [], ticketQuantity: null, discountApplied: false, afterDiscountObj: { discountCodeId: null, totalSavings: 0 } })
     window.removeEventListener("beforeunload", this.clearCartOnClose)
   }
 
@@ -914,7 +915,7 @@ class LayoutPage extends Component {
     })
     const json = await response.json()
     await this.clearTicketsInCart(json.pickupPartiesId, cartObj.ticketQuantity)
-    this.setState({ purchaseSuccessful: true, purchaseFailed: false, purchasePending: false, displayQuantity: false, inCart: [], ticketQuantity: null, discountApplied: false, afterDiscountObj: {discountCodeId: null, totalSavings: 0} })
+    this.setState({ purchaseSuccessful: true, purchaseFailed: false, purchasePending: false, displayQuantity: false, inCart: [], ticketQuantity: null, discountApplied: false, afterDiscountObj: { discountCodeId: null, totalSavings: 0 } })
     window.removeEventListener("beforeunload", this.clearCartOnClose)
   }
 
@@ -928,22 +929,31 @@ class LayoutPage extends Component {
     const newValidElems = newState.validatedElements
     const invalidFields = newState.invalidFields
     let discountCode = ''
-    if(updateField === 'useSeasonPass'){
+    if (updateField === 'useSeasonPass') {
       console.log('1 this.state.isisUseSeasonPassChecked ==>>==>> ', this.state.isUseSeasonPassChecked, newState.isUseSeasonPassChecked);
       newState.isUseSeasonPassChecked = !newState.isUseSeasonPassChecked
-      this.setState({isUseSeasonPassChecked: newState.isUseSeasonPassChecked})
+      this.setState({ isUseSeasonPassChecked: newState.isUseSeasonPassChecked })
       console.log('2 this.state.isisUseSeasonPassChecked ==>>==>> ', this.state.isUseSeasonPassChecked, newState.isUseSeasonPassChecked);
+      if (newState.isUseSeasonPassChecked) {
+        discountCode = useStore.getState().passStatus.discountCode
+        this.setState({ discountCode: discountCode })
+        console.log('this.state.discountCode ==>>==>> ', this.state.discountCode);
+        this.findDiscountCode('apply')
+      } else if (!newState.isUseSeasonPassChecked) {
+        this.setState({ discountCode: '' })
+        this.findDiscountCode('release')
+      }
       return
     }
 
     const phoneNumber = (inputtxt) => {
       var phoneno = /^\(?[(]([0-9]{3})\)?[) ]([0-9]{3})[-]([0-9]{4})$/
-      if(inputtxt.match(phoneno)) return true
-      else if (inputtxt.length > 12 || inputtxt.length < 12 ) return false
+      if (inputtxt.match(phoneno)) return true
+      else if (inputtxt.length > 12 || inputtxt.length < 12) return false
       else return false
     }
 
-    switch (updateField){
+    switch (updateField) {
       case 'email':
         if (Validator.isEmail(value) && !Validator.isEmpty(value)) {
           newValidElems.email = value
@@ -958,7 +968,7 @@ class LayoutPage extends Component {
           invalidFields.invalidFirstName = false
         } else {
           newValidElems.firstName = null
-        }break;
+        } break;
       case 'lastName':
         if (Validator.isAlpha(value) && !Validator.isEmpty(value)) {
           newValidElems.lastName = value
@@ -998,9 +1008,9 @@ class LayoutPage extends Component {
 
     // // Populates cartToSend
     if (newValidElems.firstName
-    && newValidElems.lastName
-    && newValidElems.email
-    && newValidElems.orderedByPhone) {
+      && newValidElems.lastName
+      && newValidElems.email
+      && newValidElems.orderedByPhone) {
       newState.validated = true
       newState.cartToSend = {
         firstName: newValidElems.firstName,
@@ -1024,21 +1034,21 @@ class LayoutPage extends Component {
       })
     }
     else if (!newValidElems.firstName ||
-            !newValidElems.lastName ||
-            !newValidElems.email ||
-            !newValidElems.orderedByPhone) {
-        newState.validated = false
-        this.setState({
-          validated : newState.validated,
-          validatedElements: newValidElems
-        })
-      }
+      !newValidElems.lastName ||
+      !newValidElems.email ||
+      !newValidElems.orderedByPhone) {
+      newState.validated = false
+      this.setState({
+        validated: newState.validated,
+        validatedElements: newValidElems
+      })
+    }
   }
   //end updatePurchaseField
 
   invalidOnSubmit = (e) => {
-    let validElems = {...this.state.validatedElements}
-    let invalidFields = {...this.state.invalidFields}
+    let validElems = { ...this.state.validatedElements }
+    let invalidFields = { ...this.state.invalidFields }
 
     invalidFields.invalidFirstName = validElems.firstName ? false : true
     invalidFields.invalidLastName = validElems.lastName ? false : true
@@ -1139,7 +1149,7 @@ class LayoutPage extends Component {
     newState.purchasePending = true
     newState.purchaseFailed = false
     newState.discountApplied = false
-    newState.afterDiscountObj= {discountCodeId: null, totalSavings: 0}
+    newState.afterDiscountObj = { discountCodeId: null, totalSavings: 0 }
 
     this.setState({
       purchaseFailed: newState.purchaseFailed,
@@ -1177,8 +1187,8 @@ class LayoutPage extends Component {
     const newFuelDataArr = await previousFuelDataArr.concat(fuelDataArr).flat()
     continuationString = await `continuation=${continuation}&`
 
-    if(fuelData.pagination.has_more_items && val <5 ){
-      return await this.getEventbriteData(continuationString, val+=1, newFuelDataArr)
+    if (fuelData.pagination.has_more_items && val < 5) {
+      return await this.getEventbriteData(continuationString, val += 1, newFuelDataArr)
     } else {
       return newFuelDataArr
     }
@@ -1192,32 +1202,32 @@ class LayoutPage extends Component {
 
   getHeadliners = async () => {
     await this.getEventbriteData('', 1, [])
-    .then((eventsArr)=> {
-    let newEventsArr = []
-    for(let ii = 0; ii < eventsArr.length; ii++){
-      newEventsArr[ii] = {}
-      let ticketClasses = []
-      ticketClasses = eventsArr[ii].ticket_classes
+      .then((eventsArr) => {
+        let newEventsArr = []
+        for (let ii = 0; ii < eventsArr.length; ii++) {
+          newEventsArr[ii] = {}
+          let ticketClasses = []
+          ticketClasses = eventsArr[ii].ticket_classes
 
-        let eventTotal = 0
-        let departures = {}
-        if (ticketClasses){
-          for(let jj = 0; jj < ticketClasses.length; jj++){
-            eventTotal += ticketClasses[jj].quantity_sold
-            departures[ticketClasses[jj].name] = ticketClasses[jj].quantity_sold
+          let eventTotal = 0
+          let departures = {}
+          if (ticketClasses) {
+            for (let jj = 0; jj < ticketClasses.length; jj++) {
+              eventTotal += ticketClasses[jj].quantity_sold
+              departures[ticketClasses[jj].name] = ticketClasses[jj].quantity_sold
+            }
           }
+          newEventsArr[ii].headliner = eventsArr[ii].name.text.substring((0), eventsArr[ii].name.text.indexOf("*") - 1)
+          newEventsArr[ii].date = eventsArr[ii].start.local.substring(0, 10)
+          newEventsArr[ii].venue = eventsArr[ii].name.text.substring((eventsArr[ii].name.text.lastIndexOf("*") + 5), eventsArr[ii].name.text.lastIndexOf("(") - 1)
+          newEventsArr[ii].totalSales = eventTotal
+          newEventsArr[ii].departures = departures
         }
-      newEventsArr[ii].headliner = eventsArr[ii].name.text.substring((0), eventsArr[ii].name.text.indexOf("*")-1)
-      newEventsArr[ii].date = eventsArr[ii].start.local.substring(0, 10)
-      newEventsArr[ii].venue =  eventsArr[ii].name.text.substring((eventsArr[ii].name.text.lastIndexOf("*")+5), eventsArr[ii].name.text.lastIndexOf("(")-1)
-      newEventsArr[ii].totalSales = eventTotal
-      newEventsArr[ii].departures = departures
-    }
-    const newState = { ...this.state }
-    newState.oldStuff = newEventsArr
-    this.setState({oldStuff: newState.oldStuff})
-    return newEventsArr
-  })
+        const newState = { ...this.state }
+        newState.oldStuff = newEventsArr
+        this.setState({ oldStuff: newState.oldStuff })
+        return newEventsArr
+      })
   }
 
   postOldData = async () => {
@@ -1231,8 +1241,8 @@ class LayoutPage extends Component {
           <div>
             {this.displayLoadingScreen && !useStore.getState().btsUser.isLoggedIn ?
               <Loading
-              handleBus={this.handleBus} />
-                :
+                handleBus={this.handleBus} />
+              :
               <div>
 
 
@@ -1246,143 +1256,143 @@ class LayoutPage extends Component {
                   />
                   :
                   this.state.displayAboutus ?
-                  <Aboutus
-                    dismissBios={this.dismissBios}
-                    readBios={this.readBios}
-                    displayBios={this.state.displayBios}
-                    hideAboutus={this.hideAboutus}
-                  />
-                  :
-                  this.state.userShows ?
-                    <React.Fragment>
-                      <div className='content-section pt-4'>
-                        <div className='col-md-6 float-right'>
-                        {this.state.displayShow ? '' :
-                          <BannerRotator displayShow={this.state.displayShow} />}
-                        {this.state.displayCart || this.state.displayShow || this.state.displayExternalShowDetails ?
-                          <div>
-                          <DetailCartView
-                            addToCart={this.addToCart}
-                            afterDiscountObj={this.state.afterDiscountObj}
-                            assignedParties={this.state.assignedParties}
-                            backToCalendar={this.backToCalendar}
-                            cartToSend={this.state.cartToSend}
-                            checked={this.state.checked}
-                            closeAlert={this.closeAlert}
-                            comp={this.comp}
-                            confirmedRemove={this.confirmedRemove}
-                            discountApplied={this.state.discountApplied}
-                            displayAddBtn={this.state.displayAddBtn}
-                            displayBorder={this.state.displayBorder}
-                            displayCart={this.state.displayCart}
-                            displayConfirmRemove={this.state.displayConfirmRemove}
-                            displayExternalShowDetails={this.state.displayExternalShowDetails}
-                            displayQuantity={this.state.displayQuantity}
-                            displayShow={this.state.displayShow}
-                            displaySuccess={this.state.displaySuccess}
-                            displayViewCartBtn={this.state.displayViewCartBtn}
-                            displayWarning={this.state.displayWarning}
-                            filterString={this.state.filterString}
-                            findDiscountCode={this.findDiscountCode}
-                            firstBusLoad={this.state.firstBusLoad}
-                            getPickupParty={this.getPickupParty}
-                            handleCheck={this.handleCheck}
-                            invalidFields={this.state.invalidFields}
-                            invalidOnSubmit={this.invalidOnSubmit}
-                            inCart={this.state.inCart}
-                            isUseSeasonPassChecked={this.state.isUseSeasonPassChecked}
-                            lastDepartureTime={this.state.lastDepartureTime}
-                            makePurchase={this.makePurchase}
-                            pickupLocations={this.state.pickupLocations}
-                            pickupLocationId={this.state.pickupLocationId}
-                            pickupPartyId={this.state.pickupPartyId}
-                            pickupParties={this.state.pickupParties}
-                            purchase={this.purchase}
-                            purchaseClick={this.purchaseClick}
-                            purchaseFailed={this.state.purchaseFailed}
-                            purchasePending={this.state.purchasePending}
-                            purchaseSuccessful={this.state.purchaseSuccessful}
-                            removeFromCart={this.removeFromCart}
-                            returnToShows={this.returnToShows}
-                            selectPickupLocationId={this.selectPickupLocationId}
-                            selectTicketQuantity={this.selectTicketQuantity}
-                            shows={this.state.userShows}
-                            showsExpandClick={this.showsExpandClick}
-                            showsInCart={this.state.inCart}
-                            startTimer={this.state.startTimer}
-                            tabClicked={this.tabClicked}
-                            ticketsAvailable={this.state.ticketsAvailable}
-                            ticketTimer={this.ticketTimer}
-                            ticketQuantity={this.state.ticketQuantity}
-                            timeLeftInCart={this.state.timeLeftInCart}
-                            totalCost={this.state.totalCost}
-                            updateDiscountCode={this.updateDiscountCode}
-                            updatePurchaseField={this.updatePurchaseField}
-                            validated={this.state.validated}
-                            validatedElements={this.state.validatedElements}
-                          />
-                          </div>
-                          :
-                          <div>
-                            <SponsorBox
-                              showAboutus={this.showAboutus}
-                              displayAboutus={this.state.displayAboutus}
-                            />
-                          <NavButtons/>
+                    <Aboutus
+                      dismissBios={this.dismissBios}
+                      readBios={this.readBios}
+                      displayBios={this.state.displayBios}
+                      hideAboutus={this.hideAboutus}
+                    />
+                    :
+                    this.state.userShows ?
+                      <React.Fragment>
+                        <div className='content-section pt-4'>
+                          <div className='col-md-6 float-right'>
+                            {this.state.displayShow ? '' :
+                              <BannerRotator displayShow={this.state.displayShow} />}
+                            {this.state.displayCart || this.state.displayShow || this.state.displayExternalShowDetails ?
+                              <div>
+                                <DetailCartView
+                                  addToCart={this.addToCart}
+                                  afterDiscountObj={this.state.afterDiscountObj}
+                                  assignedParties={this.state.assignedParties}
+                                  backToCalendar={this.backToCalendar}
+                                  cartToSend={this.state.cartToSend}
+                                  checked={this.state.checked}
+                                  closeAlert={this.closeAlert}
+                                  comp={this.comp}
+                                  confirmedRemove={this.confirmedRemove}
+                                  discountApplied={this.state.discountApplied}
+                                  displayAddBtn={this.state.displayAddBtn}
+                                  displayBorder={this.state.displayBorder}
+                                  displayCart={this.state.displayCart}
+                                  displayConfirmRemove={this.state.displayConfirmRemove}
+                                  displayExternalShowDetails={this.state.displayExternalShowDetails}
+                                  displayQuantity={this.state.displayQuantity}
+                                  displayShow={this.state.displayShow}
+                                  displaySuccess={this.state.displaySuccess}
+                                  displayViewCartBtn={this.state.displayViewCartBtn}
+                                  displayWarning={this.state.displayWarning}
+                                  filterString={this.state.filterString}
+                                  findDiscountCode={this.findDiscountCode}
+                                  firstBusLoad={this.state.firstBusLoad}
+                                  getPickupParty={this.getPickupParty}
+                                  handleCheck={this.handleCheck}
+                                  invalidFields={this.state.invalidFields}
+                                  invalidOnSubmit={this.invalidOnSubmit}
+                                  inCart={this.state.inCart}
+                                  isUseSeasonPassChecked={this.state.isUseSeasonPassChecked}
+                                  lastDepartureTime={this.state.lastDepartureTime}
+                                  makePurchase={this.makePurchase}
+                                  pickupLocations={this.state.pickupLocations}
+                                  pickupLocationId={this.state.pickupLocationId}
+                                  pickupPartyId={this.state.pickupPartyId}
+                                  pickupParties={this.state.pickupParties}
+                                  purchase={this.purchase}
+                                  purchaseClick={this.purchaseClick}
+                                  purchaseFailed={this.state.purchaseFailed}
+                                  purchasePending={this.state.purchasePending}
+                                  purchaseSuccessful={this.state.purchaseSuccessful}
+                                  removeFromCart={this.removeFromCart}
+                                  returnToShows={this.returnToShows}
+                                  selectPickupLocationId={this.selectPickupLocationId}
+                                  selectTicketQuantity={this.selectTicketQuantity}
+                                  shows={this.state.userShows}
+                                  showsExpandClick={this.showsExpandClick}
+                                  showsInCart={this.state.inCart}
+                                  startTimer={this.state.startTimer}
+                                  tabClicked={this.tabClicked}
+                                  ticketsAvailable={this.state.ticketsAvailable}
+                                  ticketTimer={this.ticketTimer}
+                                  ticketQuantity={this.state.ticketQuantity}
+                                  timeLeftInCart={this.state.timeLeftInCart}
+                                  totalCost={this.state.totalCost}
+                                  updateDiscountCode={this.updateDiscountCode}
+                                  updatePurchaseField={this.updatePurchaseField}
+                                  validated={this.state.validated}
+                                  validatedElements={this.state.validatedElements}
+                                />
+                              </div>
+                              :
+                              <div>
+                                <SponsorBox
+                                  showAboutus={this.showAboutus}
+                                  displayAboutus={this.state.displayAboutus}
+                                />
+                                <NavButtons />
 
-                          </div>
-                            
+                              </div>
+
                             }
-                      </div>
-                        <MediaQuery maxWidth={799}>
-                        <div className='col-md-6 float-left'>
-                        {this.state.displayExternalShowDetails || this.state.displayDetailCartView ?
-                          ""
-                        :
-                        <ShowList
-                          confirmedRemove={this.confirmedRemove}
-                          displayShow={this.state.displayShow}
-                          filterString={this.state.filterString}
-                          handleWarning={this.handleWarning}
-                          inCart={this.state.inCart}
-                          searchShows={this.searchShows}
-                          shows={this.state.userShows}
-                          showsExpandClick={this.showsExpandClick}
-                          sortByArtist={this.sortByArtist}
-                          sortByDate={this.sortByDate}
-                          sortedByArtist={this.state.artistIcon}
-                          sortedByDate={this.state.dateIcon}
-                          tabClicked={this.tabClicked}
-                          ticketsAvailable={this.state.ticketsAvailable} />
-                      }
-                        </div>
-                      </MediaQuery>
-                      <MediaQuery minWidth={800}>
-                        <ShowList
-                          confirmedRemove={this.confirmedRemove}
-                          displayShow={this.state.displayShow}
-                          filterString={this.state.filterString}
-                          handleWarning={this.handleWarning}
-                          inCart={this.state.inCart}
-                          searchShows={this.searchShows}
-                          shows={this.state.userShows}
-                          showsExpandClick={this.showsExpandClick}
-                          sortByArtist={this.sortByArtist}
-                          sortByDate={this.sortByDate}
-                          sortedByArtist={this.state.artistIcon}
-                          sortedByDate={this.state.dateIcon}
-                          tabClicked={this.tabClicked}
-                          ticketsAvailable={this.state.ticketsAvailable} />
-                      </MediaQuery>
+                          </div>
+                          <MediaQuery maxWidth={799}>
+                            <div className='col-md-6 float-left'>
+                              {this.state.displayExternalShowDetails || this.state.displayDetailCartView ?
+                                ""
+                                :
+                                <ShowList
+                                  confirmedRemove={this.confirmedRemove}
+                                  displayShow={this.state.displayShow}
+                                  filterString={this.state.filterString}
+                                  handleWarning={this.handleWarning}
+                                  inCart={this.state.inCart}
+                                  searchShows={this.searchShows}
+                                  shows={this.state.userShows}
+                                  showsExpandClick={this.showsExpandClick}
+                                  sortByArtist={this.sortByArtist}
+                                  sortByDate={this.sortByDate}
+                                  sortedByArtist={this.state.artistIcon}
+                                  sortedByDate={this.state.dateIcon}
+                                  tabClicked={this.tabClicked}
+                                  ticketsAvailable={this.state.ticketsAvailable} />
+                              }
+                            </div>
+                          </MediaQuery>
+                          <MediaQuery minWidth={800}>
+                            <ShowList
+                              confirmedRemove={this.confirmedRemove}
+                              displayShow={this.state.displayShow}
+                              filterString={this.state.filterString}
+                              handleWarning={this.handleWarning}
+                              inCart={this.state.inCart}
+                              searchShows={this.searchShows}
+                              shows={this.state.userShows}
+                              showsExpandClick={this.showsExpandClick}
+                              sortByArtist={this.sortByArtist}
+                              sortByDate={this.sortByDate}
+                              sortedByArtist={this.state.artistIcon}
+                              sortedByDate={this.state.dateIcon}
+                              tabClicked={this.tabClicked}
+                              ticketsAvailable={this.state.ticketsAvailable} />
+                          </MediaQuery>
 
-                    </div>
-                  </React.Fragment>
-                  :
-                <Loading
-                  responseLogin={this.responseLogin}
-                />
-              }
-            </div>
+                        </div>
+                      </React.Fragment>
+                      :
+                      <Loading
+                        responseLogin={this.responseLogin}
+                      />
+                }
+              </div>
             }
           </div>
         </div>

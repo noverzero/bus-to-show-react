@@ -22,7 +22,6 @@ const Header = (props) => {
   }, []);
 
   const navToDashboard = () => {
-    console.log('was navToDashboard actually clicked?')
     navigate('/', { state: { from: '/login'} })
   }
   

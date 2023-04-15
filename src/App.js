@@ -137,7 +137,6 @@ const App = (props) => {
   }
 
   const profileClick = () => {
-    console.log('profileClick ==>>==>> ' );
     setDisplayLoginView((prevState) => !prevState);
 
     if (adminView) {
@@ -173,7 +172,6 @@ const App = (props) => {
   }
 
   const responseLogin = async (loginInfo) => {
-    console.log('responseLogin loginInfo ====== ', loginInfo)
     const {email, password} = loginInfo
     const hashedPassword = sha256(password);
     
@@ -191,23 +189,23 @@ const App = (props) => {
     
     if (userObj && userObj.token) {
       localStorage.setItem('jwt', userObj.token);
-      console.log('btsUser Before ==>>==>> ', btsUser);   
-      
-      console.log('login response from API === ', userObj)
       setBtsUser({
-          ...btsUser,
+        /*
+          email: "dustin@undefinedindustries.com",
+          id:105,
+          isAdmin:true,
+          token:"eyJhbGciOiJIUzI,
+        */
           isLoggedIn: true,
           userID: userObj.id,
           email:userObj.email,
           userDetails: {
             isAdmin: userObj.isAdmin,
-            isStaff: userObj.isStaff
+            isStaff: userObj.isStaff || false
           },
           userDetails:userObj
-        }
-      ); 
+      }); 
 
-      toggleLoggedIn(true);
       onLoad();
     }
 
@@ -282,7 +280,6 @@ const App = (props) => {
   }
 
   const toggleLoggedIn = (boolean) => {
-    console.log('toggleLoggedIn clicked ---' , boolean);
     if (boolean === false){
       setBtsUser({
           isLoggedIn: false,
@@ -297,12 +294,6 @@ const App = (props) => {
           },
         })
         localStorage.setItem('jwt', '')
-      } else {
-        setBtsUser(
-          {...btsUser,
-            isLoggedIn: boolean,
-          }
-        )
       }
     }
     
@@ -375,7 +366,6 @@ const App = (props) => {
               },
               userDetails:userObj
         })
-        toggleLoggedIn(true)
         onLoad()
       } else {
         toggleLoggedIn(false)
@@ -384,7 +374,6 @@ const App = (props) => {
   
     }
     checkAuth()
-    console.log('props.location 1==>>==>> ', props)
     const getPickupLocations = async () => {
       const pickups =  await fetch(`${fetchUrl}/pickup_locations`) 
       setPickupLocations(pickups.json())
