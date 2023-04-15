@@ -1,6 +1,7 @@
 import React from 'react';
 import StripeCheckout from 'react-stripe-checkout'
 import env from "react-dotenv";
+const stripePublic = `${process.env.REACT_APP_STRIPE_PUBLIC}`;
 
 
 const fetchUrl = `${process.env.REACT_APP_API_URL}`
@@ -57,8 +58,7 @@ export default class Checkout extends React.Component {
           :
         <StripeCheckout
           token={this.onToken}
-          stripeKey="pk_test_J0CdRMCGmBlrlOiGKnGgUEwT"
-          //stripeKey="pk_live_WZRwtpLAFcufugeQKbtwKobm"
+          stripeKey={stripePublic}
           name='Bus To Show'
           description='Receipt will be emailed after purchase'
           email={email}
