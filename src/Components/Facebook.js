@@ -1,5 +1,4 @@
 import React from 'react';
-import FacebookLogin from 'react-facebook-login';
 
 export default class FacebookButton extends React.Component {
 
@@ -39,16 +38,7 @@ export default class FacebookButton extends React.Component {
         <div>
           <div className="row p-2">
             <div className='col-12 text-center'>
-              <FacebookLogin
-                appId="244004823142378"
-                autoLoad={true}
-                fields="name,email,picture"
-                state="randomstring"
-                //onClick={this.componentClicked}
-                callback={this.props.responseFacebook}
-                //cssClass="my-facebook-button-class"
-                icon="fab fa-facebook-square"
-              />
+              
             </div>
           </div>
           <div className="row p-2">

@@ -411,6 +411,12 @@ justify-content: flex-end;
 height: 100%;
 }
 
+.shop-grid {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  justify-content: center;
+  }
 
 .show-list-flex {
 display: flex;
@@ -422,6 +428,9 @@ p {
 font-size: 14px;
 }
 
+.btn-widener {
+  width: 12vw;
+}
 .detail-btn {
 background: #ffffff;
 border-color: #ff420f;

@@ -41,7 +41,6 @@ const ShowList = (props) => {
                 {props.shows ?
                   <div>
                     <Show
-                      addBorder={props.addBorder}
                       confirmedRemove={props.confirmedRemove}
                       displayShow={props.displayShow}
                       filterString={props.filterString}

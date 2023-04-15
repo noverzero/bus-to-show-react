@@ -1,26 +1,36 @@
 import React, { useRef , useEffect} from 'react'
 import '../../App.css'
-import Facebook from '../Facebook';
 import MediaQuery from 'react-responsive'
 import ReservationsView from '../ReservationsView/ReservationsView'
 import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
 import RegisterUserToast from './RegisterUserToast';
 import ForgotForm from './ForgotForm';
+import { useStore } from '../../Store';
+import { useNavigate } from 'react-router-dom';
+
 
 const LoginView = (props) => {
+  const {
+    btsUser,
+    setBtsUser,
+    showForgotForm,
+    toggleShowForgotForm
+  } = useStore();
+
 
   const myRef = useRef(null);
-
+  const navigate = useNavigate()
+  
   useEffect(() => {
     window.$(myRef.current).tooltip();
   }, []);
-
-  const { userDashboard, toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, showForgotForm, toggleForgot, userDetails, profileClick, responseLogin, facebook, displayReservations, toggleReservationView, addBorder, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
-
-  const { isStaff, isAdmin, isDriver } = facebook.userDetails
-
-  let futureClass = 'border'
+  
+  const { toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, profileClick, responseLogin, displayReservations, toggleReservationView, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
+  
+  const { isStaff, isAdmin, isDriver } = btsUser.userDetails
+  
+let futureClass = 'border'
   let pastClass = 'border'
   if (props.displayFuture){
     futureClass = 'border border-success'
@@ -29,11 +39,9 @@ const LoginView = (props) => {
     pastClass = 'border border-success'
     futureClass = 'border bg-light'
   }
-
   if(showForgotForm){
     return (
       <ForgotForm
-        toggleForgot={toggleForgot} 
       />
     )
   } else {
@@ -49,18 +57,16 @@ const LoginView = (props) => {
       <MediaQuery minWidth={800}>
         <div className="w-25 mx-auto">
           <div className='row p-2 mb-4'>
-            {!facebook.isLoggedIn && !showRegisterForm? 
+            {!btsUser.isLoggedIn && !showRegisterForm? 
             <>
             <div className='row'>
               <div className='col-12 text-center'>
                 <LoginForm 
-                  userDashboard={userDashboard}
                   toggleLoggedIn={toggleLoggedIn}
-                  userDetails={userDetails}
                   profileClick={profileClick}
                   responseLogin={responseLogin}
                   continueAsGuest={continueAsGuest}
-                  facebook={facebook}
+                  btsUser={btsUser}
                 />
               <div className='row'>
               <div className='col-12 text-center'>
@@ -74,7 +80,7 @@ const LoginView = (props) => {
                 <div className='col-12 text-center'>
                   <button type="button" className="btn detail-btn mr-2" ref={myRef} data-toggle="tooltip" data-placement="bottom" 
                     title="It's ok to reserve and ride without being signed into an account. Accounts just make it so you can manage your current reservations, view your past shows, etc."
-                    onClick={()=> {props.toggleLoggedIn(false); props.profileClick()}}>
+                    onClick={()=>{navigate('/')}}>
                     <strong>Continue as Guest</strong>
                   </button>
                   <button type="button" className="btn detail-btn ml-2"
@@ -82,7 +88,7 @@ const LoginView = (props) => {
                     <strong>Register</strong>
                   </button>
                   <button type="button" className="btn bts-white-bg"
-                    onClick={()=> {toggleForgot()}}>
+                    onClick={()=> {toggleShowForgotForm(true)}}>
                     <strong>Forgot / Reset </strong>
                   </button>
                 </div>
@@ -112,7 +118,7 @@ const LoginView = (props) => {
             }
           </div>
           <div className='row'>
-            {facebook.isLoggedIn ?
+            {btsUser.isLoggedIn ?
             <div className='col-12 text-center'>
               {displayReservations ?
               <div>
@@ -163,7 +169,6 @@ const LoginView = (props) => {
                     displayFuture={props.displayFuture}
                     displayPast={props.displayPast}
                     userReservations={userReservations}
-                    addBorder={addBorder}
                     displayShow={displayShow}
                     filterString={filterString}
                     showsExpandClick={showsExpandClick}
@@ -204,18 +209,16 @@ const LoginView = (props) => {
         </MediaQuery>
         <MediaQuery maxWidth={799}>
           <div className='row p-2 mb-4'>
-            {!facebook.isLoggedIn && !showRegisterForm? 
+            {!btsUser.isLoggedIn && !showRegisterForm? 
             <>
             <div className='row'>
               <div className='col-12 text-center'>
                 <LoginForm 
-                  userDashboard={userDashboard}
                   toggleLoggedIn={toggleLoggedIn}
-                  userDetails={userDetails}
                   profileClick={profileClick}
                   responseLogin={responseLogin}
                   continueAsGuest={continueAsGuest}
-                  facebook={facebook}
+                  btsUser={btsUser}
                 />
               <div className='row'>
               <div className='col-12 text-center'>
@@ -237,7 +240,7 @@ const LoginView = (props) => {
                     <strong>Register</strong>
                   </button>
                   <button type="button" className="btn bts-white-bg"
-                    onClick={()=> {toggleForgot()}}>
+                    onClick={()=> {toggleShowForgotForm(true)}}>
                     <strong>Forgot / Reset </strong>
                   </button>
                 </div>
@@ -267,7 +270,7 @@ const LoginView = (props) => {
             }
           </div>
           <div className='row'>
-            {facebook.isLoggedIn ?
+            {btsUser.isLoggedIn ?
             <div className='col-12 text-center'>
               {displayReservations ?
               <div>
@@ -318,7 +321,6 @@ const LoginView = (props) => {
                     displayFuture={props.displayFuture}
                     displayPast={props.displayPast}
                     userReservations={userReservations}
-                    addBorder={addBorder}
                     displayShow={displayShow}
                     filterString={filterString}
                     showsExpandClick={showsExpandClick}

@@ -1,11 +1,14 @@
-import React from 'react'
+import React, {useState, useEffect}  from 'react'
 import '../../App.css'
 import CartItem from './CartItem'
 import Checkout from './Stripe_Checkout'
 import MediaQuery from 'react-responsive'
 import logo from '../../Images/Logos/bts-logo-gray.png'
+import {useStore} from '../../Store'
+
 
 const Cart = (props) => {
+  const {btsUser, passStatus, setPassStatus} = useStore();
 
   let cTSendId = props.cartToSend && props.cartToSend.eventId
 
@@ -14,6 +17,25 @@ const Cart = (props) => {
   let savings = Number(props.afterDiscountObj.totalSavings)
   let costAfterSavings = Number(props.afterDiscountObj.totalPriceAfterDiscount)
   let finalTotalCost = costAfterSavings
+
+  useEffect(async () => {
+    //check API to see if user season pass has been used for this show.
+    //if not, set discountCode to match user's season pass code.
+    //if so, disable use season pass checkBox
+
+   
+    const checkSeasonPassEventStatus = async () => {
+      const response = await  fetch(`${process.env.REACT_APP_API_URL}/discount_codes/${btsUser.userID}/${props.displayShow.id}`)
+      let result = await response.json()
+      setPassStatus(result)
+      return result;
+    }
+
+    if(btsUser.isLoggedIn) await checkSeasonPassEventStatus()
+
+    
+
+  }, []);
 
   const maskPhoneInput = (e) => {
     var part = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
@@ -79,7 +101,7 @@ const Cart = (props) => {
                     <div className="alert alert-primary" role="alert"> Purchase Pending... </div>
                     :
                     (props.purchasePending && props.purchaseFailed ?
-                      <div className="alert alert-danger" role="alert"> Payment Declined, Please Try Another Card </div> : '')}
+                      <div className="alert alert-danger" role="alert"> Payment Declined, Please Try Another Card or Something. </div> : '')}
                     {props.displayConfirmRemove ? <div className="alert alert-danger" role="alert">
                       Are you sure you want to remove item from cart?
                     <button onClick={props.confirmedRemove} type="button" className="btn btn-danger ml-1">Remove</button>
@@ -170,27 +192,57 @@ const Cart = (props) => {
                               required />
                           </div>
                         </div>
-
+                        <div className="form-row">
+                          <div className="col-md-8 mb-3">
+                            {//checkbox for Use Season Pass to purchase tickets
+                            }
+                            { passStatus && passStatus.message === 'Season pass discount code is available.' ?  
+                            <div className="form-check">
+                              <input
+                                type={'checkbox'} 
+                                disabled={props.checked}
+                                className="form-check-input" 
+                                id="useSeasonPass"
+                                onChange={props.updatePurchaseField} />
+                              <label className="form-check-label" htmlFor="useSeasonPass">Use Season Pass</label>
+                            </div>
+                            : 
+                            <div></div>
+                          }
+                          </div>
+                        </div>
+                      
                         {/* Ternary to display will call name fields or button to show fields */}
                         {props.checked ?
-                          <div className="form-row">
-                            <div className="col-md-4 mb-3">
-                              <label htmlFor="willCallFirstName">Will Call First Name</label>
-                              <input
-                                onChange={props.updatePurchaseField}
-                                type="text"
-                                className='form-control'
-                                id="willCallFirstName"
-                                placeholder="First Name" />
-                            </div>
-                            <div className="col-md-4 mb-3">
-                              <label htmlFor="willCallLastName">Will Call Last Name</label>
-                              <input
-                                onChange={props.updatePurchaseField}
-                                type="text"
-                                className='form-control'
-                                id="willCallLastName"
-                                placeholder="Last Name" />
+                        //close button with onClick to remove will call name fields and set props.checked to false
+                          <div>
+                            <div className="form-row">
+                              <div className="col-md-4 mb-3">
+                                <button
+                                  onClick={props.handleCheck}
+                                  type="button" 
+                                  className="btn btn-outline-primary">Close</button>
+                              </div>
+                            </div> 
+                            <div className="form-row">
+                              <div className="col-md-4 mb-3">
+                                <label htmlFor="willCallFirstName">Will Call First Name</label>
+                                <input
+                                  onChange={props.updatePurchaseField}
+                                  type="text"
+                                  className='form-control'
+                                  id="willCallFirstName"
+                                  placeholder="First Name" />
+                              </div>
+                              <div className="col-md-4 mb-3">
+                                <label htmlFor="willCallLastName">Will Call Last Name</label>
+                                <input
+                                  onChange={props.updatePurchaseField}
+                                  type="text"
+                                  className='form-control'
+                                  id="willCallLastName"
+                                  placeholder="Last Name" />
+                              </div>
                             </div>
                           </div>
                           :
@@ -199,6 +251,7 @@ const Cart = (props) => {
                               <button
                                 onClick={props.handleCheck}
                                 type="button"
+                                disabled={props.isUseSeasonPassChecked}
                                 className="btn btn-outline-primary">Reserving for someone else?</button>
                             </div>
                           </div>}

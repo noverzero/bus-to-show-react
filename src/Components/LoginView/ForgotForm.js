@@ -1,36 +1,42 @@
 import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import env from 'react-dotenv'
 import MediaQuery from 'react-responsive'
+import { useStore } from '../../Store';
+
 
 const fetchUrl = `${process.env.REACT_APP_API_URL}`
 
 
 const ForgotForm = (props) => {
+    const {showForgotForm, toggleShowForgotForm} = useStore();
 
-  const [values, setValues] = useState({
-    email: '',
-    emailError: '',
-  });
 
-const [forgotResponse, setForgotResponse] = useState(null);
+    const navigate = useNavigate()
 
-const requestPasswordReset = async (email) => {
-    const body = {
-        username: email,
-        reset: true,
-    }
+    const [values, setValues] = useState({
+        email: '',
+        emailError: '',
+    });
 
-    const usersInfo = await fetch(`${fetchUrl}/users/send-reset`, {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-    const userObj = await usersInfo.json()
-    setForgotResponse(userObj)
-};
+    const [forgotResponse, setForgotResponse] = useState(null);
+
+    const requestPasswordReset = async (email) => {
+        const body = {
+            username: email,
+            reset: true,
+        }
+
+        const usersInfo = await fetch(`${fetchUrl}/users/send-reset`, {
+                method: 'POST',
+                body: JSON.stringify(body),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+        const userObj = await usersInfo.json()
+        setForgotResponse(userObj)
+    };
 
   const handleChange = (event) => {
     setValues({
@@ -154,7 +160,7 @@ const requestPasswordReset = async (email) => {
                     </form>
                 </div>
             </div>
-            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={() => {props.toggleForgot()}}>Back to Login</div>
+            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={() => {toggleShowForgotForm(false)}}>Back to Login</div>
         </div>
             </MediaQuery>
             <MediaQuery maxWidth={799}>
@@ -178,7 +184,7 @@ const requestPasswordReset = async (email) => {
                     </form>
                 </div>
             </div>
-            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={() => {props.toggleForgot()}}>Back to Login</div>
+            <div className="btn btn-block-admin detail-btn my-2 col-12" onClick={() => {toggleShowForgotForm(false)}}>Back to Login</div>
             </MediaQuery>
         </div>
         
@@ -186,4 +192,4 @@ const requestPasswordReset = async (email) => {
   }
 };
 
-export default withRouter(ForgotForm);
+export default ForgotForm;

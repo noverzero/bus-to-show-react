@@ -8,23 +8,22 @@
     "font-awesome": "^4.7.0",
     "js-sha256": "^0.9.0",
     "moment": "^2.24.0",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "react-dotenv": "^0.1.3",
-    "react-facebook-login": "^4.1.1",
-    "react-ga": "^2.5.7",
-    "react-google-login": "^5.0.2",
+    "react-ga": "^3.3.1",
     "react-native-elements": "^1.0.0",
     "react-responsive": "^6.1.1",
     "react-reveal": "^1.2.2",
-    "react-router-dom": "^4.3.1",
+    "react-router-dom": "^6.8.2",
     "react-scripts": "^2.1.5",
     "react-stripe-checkout": "^2.6.3",
     "stripe-checkout": "^1.0.9",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "zustand": "^4.3.6"
   },
   "scripts": {
-    "start": "react-dotenv && react-scripts start", 
+    "start": "react-dotenv && react-scripts start",
     "build": "react-dotenv && react-scripts build",
     "serve": "react-dotenv && serve build",
     "test": "react-scripts test",
@@ -41,7 +40,8 @@
   ],
   "react-dotenv": {
     "whitelist": [
-      "API_URL"
+      "API_URL",
+      "STRIPE_PUBLIC"
     ]
   }
 }
