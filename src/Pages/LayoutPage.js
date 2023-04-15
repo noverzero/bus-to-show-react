@@ -120,7 +120,6 @@ class LayoutPage extends Component {
 
   async componentDidMount() {
     const storeState = useStore.getState()
-    console.log('storeState ==>>==>> ', storeState);
 
     await this.getVerify()
 
@@ -204,7 +203,6 @@ class LayoutPage extends Component {
 
   //status: active.  where: called in showDetails.  why:  requires selection of location before corresponding times and quantities are displayed.
   selectPickupLocationId = async (event, timer) => {
-    console.log('selectPickupLocationId event.target.value', event.target.value)
     const newState = { ...this.state }
     const oldPickup = parseInt(newState.pickupPartyId)
     if (!timer) {
@@ -243,7 +241,6 @@ class LayoutPage extends Component {
     }
 
     else if (parseInt(event.target.value) !== oldPickup) {
-      console.log('when does (parseInt(event.target.value) !== newState.pickupPartyId)?')
       newState.ticketQuantity = 0
       newState.displayQuantity = false
       newState.displayAddBtn = false
@@ -314,9 +311,8 @@ class LayoutPage extends Component {
     const newState = { ...this.state }
     let oldQty = 0
     if (parseInt(newState.ticketQuantity) > 0) {
-      console.log('newState.ticketQuantity', newState.ticketQuantity)
       oldQty = parseInt(newState.ticketQuantity)
-    } else { console.log('newState.ticketQuantity else', newState.ticketQuantity) }
+    } else {  }
     const pickupPartyId = parseInt(newState.pickupPartyId)
 
     oldQty > 0 && this.clearTicketsInCart(pickupPartyId, oldQty)
@@ -368,7 +364,6 @@ class LayoutPage extends Component {
   }
 
   findDiscountCode = async (applyOrRelease) => {
-    console.log('discountCode ==>>==>> ', this.state.discountCode);
     const discountCode = this.state.discountCode || useStore.getState().passStatus.discountCode
     const ticketQuantity = applyOrRelease !== 'release' ? this.state.ticketQuantity : (this.state.ticketQuantity * -1)
     const eventId = this.state.displayShow.id
@@ -386,7 +381,6 @@ class LayoutPage extends Component {
       }
     })
     const json = await response.json()
-    console.log('discount response ===> ', json)
     if (json.length) {
       //we have a valid afterDiscountObj, let's apply it!
       const newState = { ...this.state }
@@ -399,7 +393,6 @@ class LayoutPage extends Component {
         afterDiscountObj: newState.afterDiscountObj,
         discountApplied: newState.discountApplied
       })
-      console.log('this.state.discountApplied =>', this.state.discountApplied)
     }
 
   }
@@ -547,7 +540,6 @@ class LayoutPage extends Component {
 
 
   requestRegistration = async (request) => {
-    console.log('request details ---- >>>> ', request)
     const password = sha256(request.password)
     const usersInfo = await fetch(`${fetchUrl}/users`, {
       method: 'POST',
@@ -562,7 +554,6 @@ class LayoutPage extends Component {
       }
     })
     const userObj = await usersInfo.json()
-    console.log('registration response ====== >> >>> ', userObj)
     const newState = { ... this.state }
     newState.registerResponse = userObj
     this.setState({ registerResponse: newState.registerResponse })
@@ -806,10 +797,8 @@ class LayoutPage extends Component {
   }
 
   addTicketsInCart = async (pickupPartyId, ticketQty) => {
-    console.log('addTicketsInCart fired')
     if (pickupPartyId && ticketQty) {
       let timeStamp = new Date()
-      console.log('timeStamp', timeStamp)
       await fetch(`${fetchUrl}/pickup_parties/${pickupPartyId}/cartQty`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -863,7 +852,6 @@ class LayoutPage extends Component {
   handleCheck = () => {
     const newState = { ...this.state }
     if (newState.checked === true) {
-      console.log('handleCheck ==>>==>> ', this.state.checked);
       this.updatePurchaseField({ target: { id: 'willCallFirstName', value: '' } })
       this.updatePurchaseField({ target: { id: 'willCallLastName', value: '' } })
 
@@ -876,7 +864,6 @@ class LayoutPage extends Component {
   }
 
   purchase = async (err) => {
-    console.log('purchase fired!')
     this.ticketTimer(false)
     if (err) {
       console.log('purchase error', err)
@@ -920,8 +907,7 @@ class LayoutPage extends Component {
   }
 
   updatePurchaseField = event => {
-    console.log('event.target.id ==>>==>> ', event.target.id);
-    console.log('event.target.value ==>>==>> ', event.target.value);
+
 
     const newState = { ...this.state }
     const updateField = event.target.id
@@ -930,14 +916,11 @@ class LayoutPage extends Component {
     const invalidFields = newState.invalidFields
     let discountCode = ''
     if (updateField === 'useSeasonPass') {
-      console.log('1 this.state.isisUseSeasonPassChecked ==>>==>> ', this.state.isUseSeasonPassChecked, newState.isUseSeasonPassChecked);
       newState.isUseSeasonPassChecked = !newState.isUseSeasonPassChecked
       this.setState({ isUseSeasonPassChecked: newState.isUseSeasonPassChecked })
-      console.log('2 this.state.isisUseSeasonPassChecked ==>>==>> ', this.state.isUseSeasonPassChecked, newState.isUseSeasonPassChecked);
       if (newState.isUseSeasonPassChecked) {
         discountCode = useStore.getState().passStatus.discountCode
         this.setState({ discountCode: discountCode })
-        console.log('this.state.discountCode ==>>==>> ', this.state.discountCode);
         this.findDiscountCode('apply')
       } else if (!newState.isUseSeasonPassChecked) {
         this.setState({ discountCode: '' })
