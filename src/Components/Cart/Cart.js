@@ -18,7 +18,7 @@ const Cart = (props) => {
   let costAfterSavings = Number(props.afterDiscountObj.totalPriceAfterDiscount)
   let finalTotalCost = costAfterSavings
 
-  useEffect(async () => {
+  useEffect(() => {
     //check API to see if user season pass has been used for this show.
     //if not, set discountCode to match user's season pass code.
     //if so, disable use season pass checkBox
@@ -31,7 +31,7 @@ const Cart = (props) => {
       return result;
     }
 
-    if(btsUser.isLoggedIn) await checkSeasonPassEventStatus()
+    if(btsUser.isLoggedIn) checkSeasonPassEventStatus()
 
     
 

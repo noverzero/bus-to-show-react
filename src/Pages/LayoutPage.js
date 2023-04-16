@@ -908,7 +908,6 @@ class LayoutPage extends Component {
 
   updatePurchaseField = event => {
 
-
     const newState = { ...this.state }
     const updateField = event.target.id
     const value = event.target.value
