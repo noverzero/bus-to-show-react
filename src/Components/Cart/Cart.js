@@ -199,7 +199,8 @@ const Cart = (props) => {
                             {//checkbox for Use Season Pass to purchase tickets
                             }
                             { passStatus && passStatus.message === 'Season pass discount code is available.' ?  
-                            <div className="form-check">
+                            <div className="form-check" ref={myRef} data-toggle="tooltip" data-placement="bottom" title={props.checked ? "To enable season pass, clear and close the Reserving for Someone Else fields." 
+                            : "Use your season pass to purchase tickets."}>
                               <input
                                 type={'checkbox'} 
                                 disabled={props.checked}
@@ -254,7 +255,9 @@ const Cart = (props) => {
                                 onClick={props.handleCheck}
                                 type="button"
                                 disabled={props.isUseSeasonPassChecked}
-                                ref={myRef} data-toggle="tooltip" data-placement="bottom" title="Season Pass holder must be the one to pick up any order when Season pass credit is used."
+                                ref={myRef} data-toggle="tooltip" data-placement="bottom" title={!props.isUseSeasonPassChecked ?
+                                  "If you want to enter the name of another person who is authorized be to to claim these tickets." : ""
+                                }
                                 className="btn btn-outline-primary">Reserving for someone else?</button>
                             </div>
                           </div>}
