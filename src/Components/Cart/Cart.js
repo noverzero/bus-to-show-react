@@ -1,4 +1,4 @@
-import React, {useState, useEffect}  from 'react'
+import React, {useState, useEffect, useRef}  from 'react'
 import '../../App.css'
 import CartItem from './CartItem'
 import Checkout from './Stripe_Checkout'
@@ -9,6 +9,8 @@ import {useStore} from '../../Store'
 
 const Cart = (props) => {
   const {btsUser, passStatus, setPassStatus} = useStore();
+  const myRef = useRef(null);
+
 
   let cTSendId = props.cartToSend && props.cartToSend.eventId
 
@@ -252,6 +254,7 @@ const Cart = (props) => {
                                 onClick={props.handleCheck}
                                 type="button"
                                 disabled={props.isUseSeasonPassChecked}
+                                ref={myRef} data-toggle="tooltip" data-placement="bottom" title="Season Pass holder must be the one to pick up any order when Season pass credit is used."
                                 className="btn btn-outline-primary">Reserving for someone else?</button>
                             </div>
                           </div>}
