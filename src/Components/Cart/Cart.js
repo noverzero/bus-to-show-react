@@ -1,4 +1,4 @@
-import React, {useState, useEffect}  from 'react'
+import React, {useState, useEffect, useRef}  from 'react'
 import '../../App.css'
 import CartItem from './CartItem'
 import Checkout from './Stripe_Checkout'
@@ -9,6 +9,8 @@ import {useStore} from '../../Store'
 
 const Cart = (props) => {
   const {btsUser, passStatus, setPassStatus} = useStore();
+  const myRef = useRef(null);
+
 
   let cTSendId = props.cartToSend && props.cartToSend.eventId
 
@@ -18,7 +20,7 @@ const Cart = (props) => {
   let costAfterSavings = Number(props.afterDiscountObj.totalPriceAfterDiscount)
   let finalTotalCost = costAfterSavings
 
-  useEffect(async () => {
+  useEffect(() => {
     //check API to see if user season pass has been used for this show.
     //if not, set discountCode to match user's season pass code.
     //if so, disable use season pass checkBox
@@ -31,7 +33,7 @@ const Cart = (props) => {
       return result;
     }
 
-    if(btsUser.isLoggedIn) await checkSeasonPassEventStatus()
+    if(btsUser.isLoggedIn) checkSeasonPassEventStatus()
 
     
 
@@ -197,7 +199,8 @@ const Cart = (props) => {
                             {//checkbox for Use Season Pass to purchase tickets
                             }
                             { passStatus && passStatus.message === 'Season pass discount code is available.' ?  
-                            <div className="form-check">
+                            <div className="form-check" ref={myRef} data-toggle="tooltip" data-placement="bottom" title={props.checked ? "To enable season pass, clear and close the Reserving for Someone Else fields." 
+                            : "Use your season pass to purchase tickets."}>
                               <input
                                 type={'checkbox'} 
                                 disabled={props.checked}
@@ -252,6 +255,9 @@ const Cart = (props) => {
                                 onClick={props.handleCheck}
                                 type="button"
                                 disabled={props.isUseSeasonPassChecked}
+                                ref={myRef} data-toggle="tooltip" data-placement="bottom" title={!props.isUseSeasonPassChecked ?
+                                  "If you want to enter the name of another person who is authorized be to to claim these tickets." : ""
+                                }
                                 className="btn btn-outline-primary">Reserving for someone else?</button>
                             </div>
                           </div>}

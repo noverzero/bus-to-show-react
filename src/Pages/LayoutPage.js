@@ -374,7 +374,8 @@ class LayoutPage extends Component {
         discountCode: discountCode,
         ticketQuantity: ticketQuantity,
         totalPrice: totalPrice,
-        eventId: eventId
+        eventId: eventId,
+        applyOrRelease: applyOrRelease
       }),
       headers: {
         'Content-Type': 'application/json'
@@ -908,7 +909,6 @@ class LayoutPage extends Component {
 
   updatePurchaseField = event => {
 
-
     const newState = { ...this.state }
     const updateField = event.target.id
     const value = event.target.value
@@ -1056,6 +1056,10 @@ class LayoutPage extends Component {
   }
 
   confirmedRemove = () => {
+    if (this.state.isUseSeasonPassChecked){
+      console.log('this.state.discountCode ==>>==>> ', this.state.discountCode);
+      this.findDiscountCode('release')
+    }
     const newState = { ...this.state }
 
     const pickupPartyId = parseInt(newState.pickupPartyId)
