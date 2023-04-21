@@ -15,7 +15,8 @@ const LoginView = (props) => {
     btsUser,
     setBtsUser,
     showForgotForm,
-    toggleShowForgotForm
+    toggleShowForgotForm,
+    userReservations
   } = useStore();
 
 
@@ -26,7 +27,7 @@ const LoginView = (props) => {
     window.$(myRef.current).tooltip();
   }, []);
   
-  const { toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, profileClick, responseLogin, displayReservations, toggleReservationView, displayShow, filterString, showsExpandClick, continueAsGuest, userReservations, toggleAdminView } = props
+  const { toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, profileClick, responseLogin, displayReservations, toggleReservationView, displayShow, filterString, showsExpandClick, continueAsGuest, toggleAdminView } = props
   
   const { isStaff, isAdmin, isDriver } = btsUser.userDetails
   

@@ -2,10 +2,19 @@ import React from 'react'
 import '../../App.css';
 import moment from 'moment'
 import EditReservation from './EditReservation'
+import { useStore } from '../../Store';
+
 
 const ShowReservation = (props) => {
+  const {
+    btsUser,
+    setBtsUser,
+    showForgotForm,
+    toggleShowForgotForm,
+    userReservations
+  } = useStore();
 
-  const createArrayOfEventIds = props.userReservations.map(show => show.eventsId ).sort()
+  const createArrayOfEventIds = userReservations.length > 0 ? userReservations.map(show => show.eventsId ).sort() : []
   let countObj = {}
   for(let ii = 0; ii < createArrayOfEventIds.length; ii++){
     let count = 1;
@@ -106,14 +115,14 @@ const ShowReservation = (props) => {
                 </div>
               </li>
             ) //end of userReservations.map function
-            :
-              <EditReservation
-                reservationDetail={props.reservationDetail}
-                userReservations={props.userReservations}
-                reservationEditField={props.reservationEditField}
-                submitReservationForm={props.submitReservationForm}
-                reservationToEditId={props.reservationToEditId}
-              />
+            : ''
+              // <EditReservation
+              //   reservationDetail={props.reservationDetail}
+              //   userReservations={props.userReservations}
+              //   reservationEditField={props.reservationEditField}
+              //   submitReservationForm={props.submitReservationForm}
+              //   reservationToEditId={props.reservationToEditId}
+              // />
             }
           </div>
         </div>

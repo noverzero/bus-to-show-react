@@ -31,4 +31,7 @@ export const useStore = create((set) => ({
 
   passStatus: {},
   setPassStatus: (status) => set((state) => ({ passStatus: status })),
+
+  userReservations: [],
+  setUserReservations: (reservations) => set((state) => ({ userReservations: reservations })),
 }))
