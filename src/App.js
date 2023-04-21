@@ -437,25 +437,25 @@ const App = (props) => {
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route
             path="/verify/:token"
-            element={(props) => (
+            element={React.createElement((props) => (
               <VerifyPage
                 verifyEmail={verifyEmail}
                 isVerified={isVerified}
                 isCalled={isCalled}
                 {...props}
               />
-            )}
+            ))}
           />
           <Route
             path="/reset/:token"
-            element={(props) => (
+            element={React.createElement((props) => (
               <ResetPage
                 verifyEmail={verifyEmail}
                 isVerified={isVerified}
                 isCalled={isCalled}
                 {...props}
               />
-            )}
+            ))}
           />
           <Route element={
             <LayoutPage

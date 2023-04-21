@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { sha256 } from 'js-sha256';
 import env from 'react-dotenv'
 import MediaQuery from 'react-responsive';
 
 const ResetPage = (props) => {
     const fetchUrl = `${process.env.REACT_APP_API_URL}`
-    const token = props.match.params.token;
+    const { token } = useParams();
     const [resetResponse, setResetResponse] = useState(null);
     const [resendResponse, setResendResponse] = useState(null);
     const [values, setValues] = useState({
