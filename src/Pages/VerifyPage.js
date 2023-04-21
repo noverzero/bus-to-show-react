@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { sha256 } from 'js-sha256';
 import env from 'react-dotenv';
 import MediaQuery from 'react-responsive';
@@ -7,7 +8,7 @@ const fetchUrl = `${process.env.REACT_APP_API_URL}`
 
 const VerifyPage = (props) => {
     const verifyEmailUrl = `${fetchUrl}/users/confirm-email`
-    const token = props.match.params.token;
+    const { token } = useParams();
     const [verifiedResponse, setVerifiedResponse] = useState(null);
     const [email, setEmail] = useState('');
     const [resentResponse, setResentResponse] = useState(null);
