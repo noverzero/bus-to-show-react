@@ -23,7 +23,7 @@ const fetchUrl = `${process.env.REACT_APP_API_URL}`;
 const verifyEmailUrl = `${fetchUrl}/users/confirm-email`;
 
 const App = (props) => {
-  const {btsUser, setBtsUser, displayLoadingScreen, setDisplayLoadingScreen, headerHidden, setHideHeader} = useStore();
+  const {btsUser, setBtsUser, displayLoadingScreen, setDisplayLoadingScreen, headerHidden, setHideHeader, userReservations, setUserReservations} = useStore();
 
   const [adminView, setAdminView] = useState(false);
 
@@ -56,7 +56,6 @@ const App = (props) => {
   const [reservationToEditId, setReservationToEditId] = useState(null);
   const [pickupPartyId, setPickupPartyId] = useState(null);
   const [pickupLocations, setPickupLocations] = useState([]);
-  const [userReservations, setUserReservations] = useState([]);
   const [userShows, setUserShows] = useState([]);
   const [willCallEdits, setWillCallEdits] = useState({})
 
@@ -99,7 +98,7 @@ const App = (props) => {
     const userId = btsUser.userDetails.id
     if (userId) {
       const reservations = await fetch(`${fetchUrl}/orders/${userId}`)
-      const userReservations = reservations.json()
+      const userReservations = await reservations.json()
       setUserReservations(userReservations)
     }
   }
