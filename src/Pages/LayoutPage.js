@@ -363,11 +363,12 @@ class LayoutPage extends Component {
     })
   }
 
-  findDiscountCode = async (applyOrRelease) => {
+  findDiscountCode = async (applyOrRelease = 'apply') => {
     const discountCode = this.state.discountCode || useStore.getState().passStatus.discountCode
     const ticketQuantity = applyOrRelease !== 'release' ? this.state.ticketQuantity : (this.state.ticketQuantity * -1)
     const eventId = this.state.displayShow.id
     const totalPrice = applyOrRelease !== 'release' ? this.state.totalCost : ''
+
     const response = await fetch(`${fetchUrl}/discount_codes`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -375,7 +376,7 @@ class LayoutPage extends Component {
         ticketQuantity: ticketQuantity,
         totalPrice: totalPrice,
         eventId: eventId,
-        applyOrRelease: applyOrRelease
+        applyOrRelease: applyOrRelease === 'release' ? 'release' : 'apply' 
       }),
       headers: {
         'Content-Type': 'application/json'
@@ -1057,7 +1058,6 @@ class LayoutPage extends Component {
 
   confirmedRemove = () => {
     if (this.state.isUseSeasonPassChecked){
-      console.log('this.state.discountCode ==>>==>> ', this.state.discountCode);
       this.findDiscountCode('release')
     }
     const newState = { ...this.state }
