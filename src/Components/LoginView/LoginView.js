@@ -26,9 +26,9 @@ const LoginView = (props) => {
   const navigate = useNavigate()
   
   useEffect(() => {
-    console.log(' reservationDetail ==>>==>> ', reservationDetail)
-    console.log('displayReservationDetail  ==>>==>> ', displayReservationDetail );
-    console.log('displayReservationDetail (from store) ==>>==>> ', displayReservationDetail );
+    // console.log(' reservationDetail ==>>==>> ', reservationDetail)
+    // console.log('displayReservationDetail  ==>>==>> ', displayReservationDetail );
+    // console.log('displayReservationDetail (from store) ==>>==>> ', displayReservationDetail );
     window.$(myRef.current).tooltip();
   }, [reservationDetail, displayReservationDetail]);
   

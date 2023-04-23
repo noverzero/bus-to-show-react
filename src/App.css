@@ -430,6 +430,9 @@ font-size: 14px;
 
 .btn-widener {
   width: 12vw;
+  height: 4rem;
+  padding-left: 4.5rem;
+  padding-right: 4.5rem
 }
 .detail-btn {
 background: #ffffff;

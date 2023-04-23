@@ -19,24 +19,76 @@ const NavButtons = (props) => {
   }, []);
 
   return (
-    <nav className='row align-items-left'>
-      <div className="col-sm-2 ml-3 mt-1 mr-4">
-      </div>
-      <div className="col-sm-2">
-        <div
-          className= "border-0 p-2 mr-2">
-          <div>
-              {false ?
-              <button className="btn detail-btn mr-2 btn-widener" onClick={()=>{navigate('/shop')}}>Season Passes
+    <nav className="row align-items-left">
+      <div className="ml-3 mt-1 mr-4"></div>
+      <div className="row">
+        <MediaQuery maxWidth={799}>
+        <div className="col-6 px-2 mb-2">
+            {true ? (
+              <button
+                className="btn detail-btn btn-widener btn-block"
+                onClick={() => {
+                  navigate('/faqs');
+                }}
+              >
+                FAQs
               </button>
-              : ""
-              }
+            ) : (
+              ''
+            )}
           </div>
-    </div>
-  </div>
-  </nav>
+          <div className="col-6 px-2 mb-2">
+            {false ? (
+              <button
+                className="btn detail-btn btn-widener btn-block"
+                onClick={() => {
+                  navigate('/shop');
+                }}
+              >
+                Season Passes
+              </button>
+            ) : (
+              ''
+            )}
+          </div>
 
-  )
-}
+        </MediaQuery>
+        <MediaQuery minWidth={800}>
+          <div className="row border-0 p-2 mr-2">
+          <div className="col px-2">
+              {true ? (
+                <button
+                  className="btn detail-btn btn-widener"
+                  onClick={() => {
+                    navigate('/faqs');
+                  }}
+                >
+                  FAQs
+                </button>
+              ) : (
+                ''
+              )}
+            </div>
+            <div className="col px-2">
+              {false ? (
+                <button
+                  className="btn detail-btn btn-widener"
+                  onClick={() => {
+                    navigate('/shop');
+                  }}
+                >
+                  Season Passes
+                </button>
+              ) : (
+                ''
+              )}
+            </div>
+          </div>
+        </MediaQuery>
+      </div>
+    </nav>
+  );
+};
+
 
 export default NavButtons;
