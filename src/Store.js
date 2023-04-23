@@ -34,4 +34,19 @@ export const useStore = create((set) => ({
 
   userReservations: [],
   setUserReservations: (reservations) => set((state) => ({ userReservations: reservations })),
+
+  displayUserReservationSummary: false,
+  setDisplayUserReservationSummary: (bool) => set((state) => ({ displayUserReservationSummary: bool })),
+
+  reservationDetail: null,
+  //userReservations.find(show => (parseInt(show.eventsId) === parseInt(e.target.id)))  <<-- pass this in as the reservationDetail
+  setReservationDetail: (reservation) => set((state) => ({ reservationDetail: reservation })),
+
+  displayReservationDetail: false,
+  setDisplayReservationDetail: (bool) => set((state) => ({ displayReservationDetail: bool })),
+
+  displayEditSuccess: false,
+  setDisplayEditSuccess: (bool) => set((state) => ({ displayEditSuccess: bool })),
+
+
 }))

@@ -23,26 +23,39 @@ const fetchUrl = `${process.env.REACT_APP_API_URL}`;
 const verifyEmailUrl = `${fetchUrl}/users/confirm-email`;
 
 const App = (props) => {
-  const {btsUser, setBtsUser, displayLoadingScreen, setDisplayLoadingScreen, headerHidden, setHideHeader, userReservations, setUserReservations} = useStore();
+  const {
+     btsUser,
+     setBtsUser,
+     displayLoadingScreen,
+     setDisplayLoadingScreen,
+     headerHidden,
+     setHideHeader,
+     userReservations,
+     setUserReservations,
+     displayEditSuccess,
+     setDisplayEditSuccess,
+     displayUserReservationSummary,
+     setDisplayUserReservationSummary,
+     reservationDetail,
+     setReservationDetail,
+     setDisplayReservationDetail,
+  } = useStore();
 
   const [adminView, setAdminView] = useState(false);
 
   const [assignedParties, setAssignedParties] = useState([]);
   const [displayDetailCartView, setDisplayDetailCartView] = useState(false);
   const [displayEditReservation, setDisplayEditReservation] = useState(false);
-  const [displayEditSuccess, setDisplayEditSuccess] = useState(false);
   const [displayExternalShowDetails, setDisplayExternalShowDetails] = useState(false);
   const [displayFuture, setDisplayFuture] = useState(false);
   const [displayLoginView, setDisplayLoginView] = useState(false);
   const [displayPast, setDisplayPast] = useState(false);
   const [displayQuantity, setDisplayQuantity] = useState(false);
-  const [displayReservationDetail, setDisplayReservationDetail] = useState(false);
   const [displayReservations, setDisplayReservations] = useState(false);
   const [displayShow, setDisplayShow] = useState(null);
   const [displayShowDetails, setDisplayShowDetails] = useState(null);
   const [displayShowList, setDisplayShowList] = useState(null);
   const [displaySuccess, setDisplaySuccess] = useState(false);
-  const [displayUserReservationSummary, setDisplayUserReservationSummary] = useState(false);
   const [filterString, setFilterString] = useState('')
   
 
@@ -51,7 +64,6 @@ const App = (props) => {
   const [isVerified, setIsVerified] = useState(false);
   const [isCalled, setIsCalled] = useState(false);
   const [registerResponse, setRegisterResponse] = useState({});
-  const [reservationDetail, setReservationDetail] = useState(null);
   const [reservationEditsToSend, setReservationEditsToSend] = useState([]);
   const [reservationToEditId, setReservationToEditId] = useState(null);
   const [pickupPartyId, setPickupPartyId] = useState(null);
@@ -72,11 +84,11 @@ const App = (props) => {
     )
   }
 
-  const expandReservationDetailsClick = (e) =>{
-    setDisplayUserReservationSummary(true);
-    setReservationDetail(userReservations.find(show => (parseInt(show.eventsId) === parseInt(e.target.id))))
-    setDisplayReservationDetail(true)
-  }
+  // const expandReservationDetailsClick = (e) =>{
+  //   setDisplayUserReservationSummary(true);
+  //   setReservationDetail(userReservations.find(show => (parseInt(show.eventsId) === parseInt(e.target.id))))
+  //   setDisplayReservationDetail(true)
+  // }
 
   const getPickupParties = async (eventId) => {
     const response = await fetch(`${fetchUrl}/pickup_parties/findParties`, {
@@ -105,6 +117,7 @@ const App = (props) => {
 
   const handleEditSend= async(newRETS)=>{
     newRETS.map(async(reservation)=>{
+      console.log('reservation inside handleEditSend ==>>==>> ', reservation );
       const editReservationResponse = await fetch(`${fetchUrl}/reservations`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -117,10 +130,14 @@ const App = (props) => {
         }
       })
       .catch()
-      // const json = await editReservationResponse.json()
+      const json = await editReservationResponse.json()
       const e = {target: {id: "edit"}}
       toggleReservationView(e)
-      if(editReservationResponse.status === 200){
+      console.log('editReservationResponse ==>>==>> ', json );
+      if(json.status === 200){
+        setDisplayEditSuccess(true)
+      } else {
+        setDisplayEditSuccess(false)
       }
     })
   }
@@ -247,9 +264,10 @@ const App = (props) => {
   }
 
   const submitReservationForm = (e) => {
+    console.log('submitReservationForm ==>>==>> ', e );
     e.preventDefault()
     let newRETS = [ ...reservationEditsToSend ]
-    setDisplayEditSuccess(!displayEditSuccess)
+    //setDisplayEditSuccess(!displayEditSuccess)
     newRETS.push(willCallEdits)
     setReservationEditsToSend(newRETS)
     handleEditSend(newRETS)
@@ -400,7 +418,6 @@ const App = (props) => {
           <Route exact path="/login" element={
             <LoginView
               displayLoadingScreen={displayLoadingScreen}
-              displayReservationDetail={displayReservationDetail}
               displayReservations={displayReservations}
               toggleLoggedIn={toggleLoggedIn}
               logout={logout}
@@ -417,8 +434,6 @@ const App = (props) => {
               responseLogin={responseLogin}
               continueAsGuest={continueAsGuest}
               toggleAdminView={toggleAdminView}
-              expandReservationDetailsClick={expandReservationDetailsClick}
-              reservationDetail={reservationDetail}
               toggleFuturePast={toggleFuturePast}
               displayFuture={displayFuture}
               displayPast={displayPast}
