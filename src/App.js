@@ -6,6 +6,7 @@ import { sha256 } from 'js-sha256';
 
 // Pages
 import ShopPage from './Pages/ShopPage';
+import FAQsPage from './Pages/FAQsPage';
 import LayoutPage from './Pages/LayoutPage';
 import VerifyPage from './Pages/VerifyPage';
 import ResetPage from './Pages/ResetPage';
@@ -448,6 +449,8 @@ const App = (props) => {
           />
           } />
           <Route exact path="/shop" element={<ShopPage />} />
+          <Route exact path="/faqs" element={<FAQsPage />} />
+
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route
             path="/verify/:token"
