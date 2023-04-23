@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import '../../App.css';
 import moment from 'moment'
 import EditReservation from './EditReservation'
@@ -11,8 +11,39 @@ const ShowReservation = (props) => {
     setBtsUser,
     showForgotForm,
     toggleShowForgotForm,
-    userReservations
+    userReservations,
+    displayUserReservationSummary,
+    setDisplayUserReservationSummary,
+    reservationDetail,
+    setReservationDetail,
+    displayReservationDetail,
+    setDisplayReservationDetail,
+    displayEditSuccess,
+    setDisplayEditSuccess
+
   } = useStore();
+
+  const [cancelTransferArray, setCancelTransferArray] = useState([]);
+
+  const selectForTransferOrCancel = (e) => {
+    const cancelTransferArrayCopy = [...cancelTransferArray];
+    // console.log('selectForTransferOrCancelb ==', e.target.id);
+    // console.log('e.target.checked ', e.target.checked);
+    // console.log('cancelTransferArray ==>>==>> ', cancelTransferArray);
+    if (e.target.checked) {
+      cancelTransferArrayCopy.push(e.target.id);
+      setCancelTransferArray(cancelTransferArrayCopy);
+    } else {
+      const index = cancelTransferArrayCopy.indexOf(e.target.id);
+      if (index > -1) {
+        cancelTransferArrayCopy.splice(index, 1);
+        setCancelTransferArray(cancelTransferArrayCopy);
+      } else {
+        console.log('attempting to uncheck an id that is not in the array');
+      }
+    }
+
+  }
 
   const createArrayOfEventIds = userReservations.length > 0 ? userReservations.map(show => show.eventsId ).sort() : []
   let countObj = {}
@@ -38,9 +69,25 @@ const ShowReservation = (props) => {
     return new Date(a.date).getTime() - new Date(b.date).getTime()
   })
 
+  useEffect(() => {
+    //console.log('wht is use effect up to? ==>>==>> ', cancelTransferArray);
+    if (reservationDetail) {
+      setDisplayUserReservationSummary(true);
+      setDisplayReservationDetail(true);
+    }
+  }, [reservationDetail, displayUserReservationSummary, displayReservationDetail, displayEditSuccess, cancelTransferArray]);
+
+  const expandReservationDetailsClick = (e) => {
+    const resDeet = userReservations.find(
+      (show) => parseInt(show.eventsId) === parseInt(e.target.id)
+    );
+    setReservationDetail(resDeet);
+    //console.log('yep expand was clicked inside the component ==>>==>> ', reservationDetail);
+  };
+
   return (
     <div className="">
-      {props.reservationDetail
+      {reservationDetail
       ? //If a reservaton summary has been selected, display reservation details ( if not, do nothing )
         <div>
           {!props.displayEditReservation
@@ -48,11 +95,11 @@ const ShowReservation = (props) => {
           <div>
             <h6><strong>Your Reservations For:</strong></h6>
             <h6 className="bts-white-bg">
-              <strong>DATE:</strong> {props.reservationDetail.date}<br/>
-              <strong>Event:</strong> {props.reservationDetail.headliner}<br/>
-              <strong>Venue:</strong> {props.reservationDetail.venue}
+              <strong>DATE:</strong> {reservationDetail.date}<br/>
+              <strong>Event:</strong> {reservationDetail.headliner}<br/>
+              <strong>Venue:</strong> {reservationDetail.venue}
             </h6>
-            {props.displayEditSuccess
+            {displayEditSuccess
             ?
               <div className="alert alert-success cart-item-font" role="alert">
                 <div className="row">
@@ -72,57 +119,68 @@ const ShowReservation = (props) => {
           <div className='Shows container mx-auto'>
             {// if user has not clicked edit on a reservation, display all reservations for the selected summary (otherwise, display EditReservation component)
             }
-            {!props.displayEditReservation ? props.userReservations.map((show, i) => show.eventsId === parseInt(props.reservationDetail.eventsId) &&
-              <li className="px-3 pt-2 list-item mx-auto shadow-sm" key={show.reservationsId} id={show.reservationsId}>
-                <div className="row border-top border-left border-right border-secondary bg-light p-2" id={show.id}>
-                  <div className="col-lg-12 mx-auto cart-item-font" id={show.id}>
+            {!props.displayEditReservation ? userReservations.map((show, i) => show.eventsId === parseInt(reservationDetail.eventsId) &&
+              <div className="row bg-light p-4 m-4" key={i}>
+                <li className="px-3 pt-2 list-item mx-auto" key={show.reservationsId} id={show.reservationsId}>
+                  <div className="row border-top border-left border-right border-secondary bg-light p-2" id={show.id}>
+                    <div className="col-lg-12 mx-auto cart-item-font" id={show.id}>
 
-                    <div className="row">
-                      Will Call Name: {show.willCallFirstName} {show.willCallLastName} <br/>
-                      {show.orderedByFirstName !== show.willCallFirstName || show.orderedByLastName !== show.willCallLastName // if ordered by name is different than will call name, display ordered by name also (if they are the same, do nothing)
+                      <div className="row">
+                        Will Call Name: {show.willCallFirstName} {show.willCallLastName} <br/>
+                        {show.orderedByFirstName !== show.willCallFirstName || show.orderedByLastName !== show.willCallLastName // if ordered by name is different than will call name, display ordered by name also (if they are the same, do nothing)
+                        ?
+                          <div>
+                            Ordered By: {show.orderedByFirstName} {show.orderedByLastName} <br/>
+                            (Either can check in w/ ID)
+                          </div>
+                        : ''
+                        }
+                      </div>
+
+                      <div className="row mx-auto" id={show.id}>
+                        Departing From: {show.locationName} <br />
+                        {show.streetAddress}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row border-left border-right border-bottom border-secondary bg-light mb-2">
+                    <div className="col-lg-12 text-center cart-item-font ">
+
+                      {show.firstBusLoadTime //if there is a firstBusLoad time in the database, then display it below (if there is not, do nothing)
                       ?
                         <div>
-                          Ordered By: {show.orderedByFirstName} {show.orderedByLastName} <br/>
-                          (Either can check in w/ ID)
+                          {`First bus loads around: ${moment(show.firstBusLoadTime, 'hhmm').format('hh:mm a')}`}
                         </div>
                       : ''
                       }
-                    </div>
-
-                    <div className="row mx-auto" id={show.id}>
-                      Departing From: {show.locationName} <br />
-                      {show.streetAddress}
-                    </div>
-                  </div>
-                </div>
-                <div className="row border-left border-right border-bottom border-secondary bg-light mb-2">
-                  <div className="col-lg-12 text-center cart-item-font ">
-
-                    {show.firstBusLoadTime //if there is a firstBusLoad time in the database, then display it below (if there is not, do nothing)
-                    ?
-                      <div>
-                        {`First bus loads around: ${moment(show.firstBusLoadTime, 'hhmm').format('hh:mm a')}`}
+                      <div className="red-text ">
+                          Last bus departs at: {moment(show.lastBusDepartureTime, 'hhmm').format('hh:mm a')}
                       </div>
-                    : ''
-                    }
-                    <div className="red-text ">
-                        Last bus departs at: {moment(show.lastBusDepartureTime, 'hhmm').format('hh:mm a')}
-                    </div>
-                    <div onClick={props.toggleEditReservation}>
-                      <i id={show.reservationsId} className="fas fa-edit fa-sm float-right pb-2"></i>
+                      <div className="mt-4" onClick={props.toggleEditReservation}>
+                        Change Rider or Will Call Name<i id={show.reservationsId} className="fas fa-edit fa-sm float-right pb-2"></i>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </li>
+                </li>
+                {/* <div className="form-check">
+                  <input
+                    type={'checkbox'} 
+                    className="form-check-input" 
+                    id={show.reservationsId}
+                    onChange={selectForTransferOrCancel}
+                      />
+                  <label className="form-check-label" htmlFor="editReservation">cancel or transfer</label>
+                </div> */}
+              </div>
             ) //end of userReservations.map function
-            : ''
-              // <EditReservation
-              //   reservationDetail={props.reservationDetail}
-              //   userReservations={props.userReservations}
-              //   reservationEditField={props.reservationEditField}
-              //   submitReservationForm={props.submitReservationForm}
-              //   reservationToEditId={props.reservationToEditId}
-              // />
+            : 
+              <EditReservation
+                reservationDetail={reservationDetail}
+                userReservations={props.userReservations}
+                reservationEditField={props.reservationEditField}
+                submitReservationForm={props.submitReservationForm}
+                reservationToEditId={props.reservationToEditId}
+              />
             }
           </div>
         </div>
@@ -130,7 +188,7 @@ const ShowReservation = (props) => {
       }
 
 
-      {!reservationSummaryArrSorted.length > 0 || props.reservationDetail  ? '' : //if user has no reservations, or user has selected a reservation summary to view details for, then do nothing here.  otherwise, print reservations.
+      {!reservationSummaryArrSorted.length > 0 || reservationDetail ? '' : //if user has no reservations, or user has selected a reservation summary to view details for, then do nothing here.  otherwise, print reservations.
         props.displayFuture
         ? reservationSummaryArrSorted.map((show, i) =>  new Date(show.date).getTime() >= Date.now() - 86400000 && //if future button has been clicked map through all reservations and display upcoming reservations (upcoming = display for 24hours after showdate)
           <li className="px-3 pt-2 mx-auto list-item text-center shadow-sm" key={i} id={show.id}>
@@ -145,7 +203,7 @@ const ShowReservation = (props) => {
             </div>
             <div className="row border-left border-right border-bottom border-success bg-light mb-2">
               <div className="col-lg-12 cart-item-font ">
-                <div className="btn detail-btn my-1 col-12" id={show.eventsId} onClick={props.expandReservationDetailsClick}>
+                <div className="btn detail-btn my-1 col-12" id={show.eventsId} onClick={expandReservationDetailsClick}>
                   <strong id={show.eventsId}>View Departure Details</strong>
                 </div>
               </div>

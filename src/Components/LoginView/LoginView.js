@@ -16,7 +16,9 @@ const LoginView = (props) => {
     setBtsUser,
     showForgotForm,
     toggleShowForgotForm,
-    userReservations
+    userReservations,
+    reservationDetail,
+    displayReservationDetail
   } = useStore();
 
 
@@ -24,8 +26,11 @@ const LoginView = (props) => {
   const navigate = useNavigate()
   
   useEffect(() => {
+    console.log(' reservationDetail ==>>==>> ', reservationDetail)
+    console.log('displayReservationDetail  ==>>==>> ', displayReservationDetail );
+    console.log('displayReservationDetail (from store) ==>>==>> ', displayReservationDetail );
     window.$(myRef.current).tooltip();
-  }, []);
+  }, [reservationDetail, displayReservationDetail]);
   
   const { toggleLoggedIn, toggleRegister, showRegisterForm, requestRegistration, registerResponse, profileClick, responseLogin, displayReservations, toggleReservationView, displayShow, filterString, showsExpandClick, continueAsGuest, toggleAdminView } = props
   
@@ -49,7 +54,7 @@ let futureClass = 'border'
 
     return (
       <div className='container-fluid'>
-      {!props.displayReservationDetail && props.displayUserReservationSummary
+      {!displayReservationDetail && props.displayUserReservationSummary
       ?
       <div className="alert alert-warning cart-item-font" role="alert">Note: This view only displays the reservations  made while logged in.  Reservations made while not logged in are not shown. Confirmation emails are sent to the email address entered at checkout regardless of whether or not you are logged in.
       </div>
@@ -123,14 +128,14 @@ let futureClass = 'border'
             <div className='col-12 text-center'>
               {displayReservations ?
               <div>
-                {props.displayReservationDetail && props.displayEditReservation
+                {displayReservationDetail && props.displayEditReservation
                 ?
                   <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="detail" >
                   Back to Reservation Detail View
                   </div>
                 :
                   <div>
-                  {props.displayReservationDetail && props.reservationDetail
+                  {displayReservationDetail && reservationDetail
                   ?
                     <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="summary" >
                     Back to Reservations Summary
@@ -143,7 +148,7 @@ let futureClass = 'border'
                   </div>
                 }
   
-                {!props.displayReservationDetail && props.displayUserReservationSummary ?
+                {!displayReservationDetail && props.displayUserReservationSummary ?
                 <div className="row">
                   <div className="col-12">
                   <div className="row" id="futurePast" onClick={props.toggleFuturePast}>
@@ -173,8 +178,6 @@ let futureClass = 'border'
                     displayShow={displayShow}
                     filterString={filterString}
                     showsExpandClick={showsExpandClick}
-                    expandReservationDetailsClick={props.expandReservationDetailsClick}
-                    reservationDetail={props.reservationDetail}
                     getEventDetails={props.getEventDetails}
                     toggleEditReservation={props.toggleEditReservation}
                     displayEditReservation={props.displayEditReservation}
@@ -275,14 +278,14 @@ let futureClass = 'border'
             <div className='col-12 text-center'>
               {displayReservations ?
               <div>
-                {props.displayReservationDetail && props.displayEditReservation
+                {displayReservationDetail && props.displayEditReservation
                 ?
                   <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="detail" >
                   Back to Reservation Detail View
                   </div>
                 :
                   <div>
-                  {props.displayReservationDetail && props.reservationDetail
+                  {displayReservationDetail && reservationDetail
                   ?
                     <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="summary" >
                     Back to Reservations Summary
@@ -295,7 +298,7 @@ let futureClass = 'border'
                   </div>
                 }
   
-                {!props.displayReservationDetail && props.displayUserReservationSummary ?
+                {!displayReservationDetail && props.displayUserReservationSummary ?
                 <div className="row">
                   <div className="col-12">
                   <div className="row" id="futurePast" onClick={props.toggleFuturePast}>
@@ -325,8 +328,6 @@ let futureClass = 'border'
                     displayShow={displayShow}
                     filterString={filterString}
                     showsExpandClick={showsExpandClick}
-                    expandReservationDetailsClick={props.expandReservationDetailsClick}
-                    reservationDetail={props.reservationDetail}
                     getEventDetails={props.getEventDetails}
                     toggleEditReservation={props.toggleEditReservation}
                     displayEditReservation={props.displayEditReservation}
