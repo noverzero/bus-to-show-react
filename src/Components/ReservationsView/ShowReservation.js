@@ -19,17 +19,27 @@ const ShowReservation = (props) => {
     displayReservationDetail,
     setDisplayReservationDetail,
     displayEditSuccess,
-    setDisplayEditSuccess
+    setDisplayEditSuccess,
+    displayEditReservation,
+    setDisplayEditReservation
 
   } = useStore();
 
   const [cancelTransferArray, setCancelTransferArray] = useState([]);
+  const [reservationToEditId, setReservationToEditId] = useState(null);
+
+  
+  const toggleEditReservation = (e) =>{
+    console.log(' toggleEditReservation e.target.id ==', e.target.id);
+    setDisplayEditReservation(!displayEditReservation)
+    setReservationToEditId(parseInt(e.target.id))
+    setCancelTransferArray([]);
+  }
 
   const selectForTransferOrCancel = (e) => {
     const cancelTransferArrayCopy = [...cancelTransferArray];
-    // console.log('selectForTransferOrCancelb ==', e.target.id);
-    // console.log('e.target.checked ', e.target.checked);
-    // console.log('cancelTransferArray ==>>==>> ', cancelTransferArray);
+    console.log('selectForTransferOrCancelb ==', e.target.id);
+    console.log('e.target.checked ', e.target.checked);
     if (e.target.checked) {
       cancelTransferArrayCopy.push(e.target.id);
       setCancelTransferArray(cancelTransferArrayCopy);
@@ -42,6 +52,7 @@ const ShowReservation = (props) => {
         console.log('attempting to uncheck an id that is not in the array');
       }
     }
+    console.log('cancelTransferArrayCopy ==>>==>> ', cancelTransferArrayCopy);
 
   }
 
@@ -75,7 +86,7 @@ const ShowReservation = (props) => {
       setDisplayUserReservationSummary(true);
       setDisplayReservationDetail(true);
     }
-  }, [reservationDetail, displayUserReservationSummary, displayReservationDetail, displayEditSuccess, cancelTransferArray]);
+  }, [reservationDetail, displayUserReservationSummary, displayReservationDetail, displayEditReservation, displayEditSuccess, cancelTransferArray]);
 
   const expandReservationDetailsClick = (e) => {
     const resDeet = userReservations.find(
@@ -90,7 +101,7 @@ const ShowReservation = (props) => {
       {reservationDetail
       ? //If a reservaton summary has been selected, display reservation details ( if not, do nothing )
         <div>
-          {!props.displayEditReservation
+          {!displayEditReservation
           ?
           <div>
             <h6><strong>Your Reservations For:</strong></h6>
@@ -119,7 +130,20 @@ const ShowReservation = (props) => {
           <div className='Shows container mx-auto'>
             {// if user has not clicked edit on a reservation, display all reservations for the selected summary (otherwise, display EditReservation component)
             }
-            {!props.displayEditReservation ? userReservations.map((show, i) => show.eventsId === parseInt(reservationDetail.eventsId) &&
+            {!displayEditReservation &&
+            <div>
+              <div> selected {cancelTransferArray.length} / {userReservations.filter((show, i) => show.eventsId === parseInt(reservationDetail.eventsId)).length} reservations </div>
+              {cancelTransferArray > 0 && 
+                <div className="row">
+                  <div className="col-12">
+                    <button>Cancel </button> or <button>Transfer</button> selected reservations
+                  </div>
+                </div>
+              }
+            </div>
+            }
+
+            {!displayEditReservation ? userReservations.map((show, i) => show.eventsId === parseInt(reservationDetail.eventsId) &&
               <div className="row bg-light p-4 m-4" key={i}>
                 <li className="px-3 pt-2 list-item mx-auto" key={show.reservationsId} id={show.reservationsId}>
                   <div className="row border-top border-left border-right border-secondary bg-light p-2" id={show.id}>
@@ -156,21 +180,21 @@ const ShowReservation = (props) => {
                       <div className="red-text ">
                           Last bus departs at: {moment(show.lastBusDepartureTime, 'hhmm').format('hh:mm a')}
                       </div>
-                      <div className="mt-4" onClick={props.toggleEditReservation}>
+                      <div className="mt-4" onClick={toggleEditReservation}>
                         Change Rider or Will Call Name<i id={show.reservationsId} className="fas fa-edit fa-sm float-right pb-2"></i>
                       </div>
                     </div>
                   </div>
                 </li>
-                {/* <div className="form-check">
+                <div className="form-check">
                   <input
                     type={'checkbox'} 
                     className="form-check-input" 
                     id={show.reservationsId}
                     onChange={selectForTransferOrCancel}
                       />
-                  <label className="form-check-label" htmlFor="editReservation">cancel or transfer</label>
-                </div> */}
+                  <label className="form-check-label" htmlFor="editReservation">cancel or transfer to another event</label>
+                </div>
               </div>
             ) //end of userReservations.map function
             : 
@@ -179,7 +203,7 @@ const ShowReservation = (props) => {
                 userReservations={props.userReservations}
                 reservationEditField={props.reservationEditField}
                 submitReservationForm={props.submitReservationForm}
-                reservationToEditId={props.reservationToEditId}
+                reservationToEditId={reservationToEditId}
               />
             }
           </div>

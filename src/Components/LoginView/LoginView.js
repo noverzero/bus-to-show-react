@@ -18,7 +18,8 @@ const LoginView = (props) => {
     toggleShowForgotForm,
     userReservations,
     reservationDetail,
-    displayReservationDetail
+    displayReservationDetail,
+    displayEditReservation,
   } = useStore();
 
 
@@ -128,7 +129,7 @@ let futureClass = 'border'
             <div className='col-12 text-center'>
               {displayReservations ?
               <div>
-                {displayReservationDetail && props.displayEditReservation
+                {displayReservationDetail && displayEditReservation
                 ?
                   <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="detail" >
                   Back to Reservation Detail View
@@ -179,11 +180,8 @@ let futureClass = 'border'
                     filterString={filterString}
                     showsExpandClick={showsExpandClick}
                     getEventDetails={props.getEventDetails}
-                    toggleEditReservation={props.toggleEditReservation}
-                    displayEditReservation={props.displayEditReservation}
                     reservationEditField={props.reservationEditField}
                     submitReservationForm={props.submitReservationForm}
-                    reservationToEditId={props.reservationToEditId}
                     displayEditSuccess={props.displayEditSuccess}
                     toggleEditSuccess={props.toggleEditSuccess}
                   />
@@ -278,7 +276,7 @@ let futureClass = 'border'
             <div className='col-12 text-center'>
               {displayReservations ?
               <div>
-                {displayReservationDetail && props.displayEditReservation
+                {displayReservationDetail && displayEditReservation
                 ?
                   <div onClick={toggleReservationView} className="btn btn-block-admin detail-btn my-2 col-12" id="detail" >
                   Back to Reservation Detail View
@@ -329,11 +327,8 @@ let futureClass = 'border'
                     filterString={filterString}
                     showsExpandClick={showsExpandClick}
                     getEventDetails={props.getEventDetails}
-                    toggleEditReservation={props.toggleEditReservation}
-                    displayEditReservation={props.displayEditReservation}
                     reservationEditField={props.reservationEditField}
                     submitReservationForm={props.submitReservationForm}
-                    reservationToEditId={props.reservationToEditId}
                     displayEditSuccess={props.displayEditSuccess}
                     toggleEditSuccess={props.toggleEditSuccess}
                   />

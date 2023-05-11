@@ -48,5 +48,8 @@ export const useStore = create((set) => ({
   displayEditSuccess: false,
   setDisplayEditSuccess: (bool) => set((state) => ({ displayEditSuccess: bool })),
 
+  displayEditReservation: false,
+  setDisplayEditReservation: (bool) => set((state) => ({ displayEditReservation: bool })),
+
 
 }))
