@@ -27,6 +27,7 @@ const ShowReservation = (props) => {
 
   const [cancelTransferArray, setCancelTransferArray] = useState([]);
   const [reservationToEditId, setReservationToEditId] = useState(null);
+  const [displayCancelWarning, setDisplayCancelWarning] = useState(false);
 
   
   const toggleEditReservation = (e) =>{
@@ -80,13 +81,38 @@ const ShowReservation = (props) => {
     return new Date(a.date).getTime() - new Date(b.date).getTime()
   })
 
+  const cancelSelectedReservations = () => {
+    console.log('cancelSelectedReservations clicked ==>>==>> ', cancelTransferArray);
+    setDisplayCancelWarning(true);
+  }
+
+  const transferSelectedReservations = () => {
+    console.log('transferSelectedReservations clicked ==>>==>> ', cancelTransferArray);
+    setDisplayCancelWarning(false);
+  }
+
+  const refundMinusProcessing = () => {
+    console.log('refundMinusProcessing clicked ==>>==>> ', cancelTransferArray);
+  }
+
+  const cancelAndGiveCredit = () => {
+    console.log('cancelAndGiveCredit clicked ==>>==>> ', cancelTransferArray);
+  }
+
+  const neverMindKeepReservations = () => {
+    setDisplayCancelWarning(false);
+    setCancelTransferArray([]);
+  }
+
+  
+
   useEffect(() => {
-    //console.log('wht is use effect up to? ==>>==>> ', cancelTransferArray);
+    console.log('wht is use effect up to? ==>>==>> ', cancelTransferArray, displayCancelWarning);
     if (reservationDetail) {
       setDisplayUserReservationSummary(true);
       setDisplayReservationDetail(true);
     }
-  }, [reservationDetail, displayUserReservationSummary, displayReservationDetail, displayEditReservation, displayEditSuccess, cancelTransferArray]);
+  }, [reservationDetail, displayCancelWarning, displayUserReservationSummary, displayReservationDetail, displayEditReservation, displayEditSuccess, cancelTransferArray]);
 
   const expandReservationDetailsClick = (e) => {
     const resDeet = userReservations.find(
@@ -133,10 +159,24 @@ const ShowReservation = (props) => {
             {!displayEditReservation &&
             <div>
               <div> selected {cancelTransferArray.length} / {userReservations.filter((show, i) => show.eventsId === parseInt(reservationDetail.eventsId)).length} reservations </div>
-              {cancelTransferArray > 0 && 
+              { 
+                displayCancelWarning ?
+                 <div className="alert alert-danger m-4" role="alert">
+                      Heads up!  You are about to cancel {cancelTransferArray.length} of your {userReservations.filter((show, i) => show.eventsId === parseInt(reservationDetail.eventsId)).length} reservations for this show.  
+                    <button onClick={refundMinusProcessing} type="button" className="btn btn-danger ml-1">Cancel and refund (minus processing fees) </button>
+                      <button onClick={cancelAndGiveCredit} type="button" className="btn btn-outline-secondary m-2">Cancel and send me a code for {cancelTransferArray.length} future spots </button>
+                      <button onClick={transferSelectedReservations} type="button" className="btn btn-outline-secondary m-2">Transfer these spots to another event or pick-up if available </button>
+                      <button onClick={neverMindKeepReservations} type="button" className="btn btn-outline-secondary m-2">Never mind. Keep my reservations.</button>
+
+                    </div> : 
+                    <div></div>
+              }
+              {cancelTransferArray.length > 0 &&
                 <div className="row">
                   <div className="col-12">
-                    <button>Cancel </button> or <button>Transfer</button> selected reservations
+                  <div onClick={cancelSelectedReservations} className="btn btn-block-admin my-2 col-4" id="cancelSelectedReservations" >
+                    Cancel
+                    </div> or <button>Transfer</button> selected reservations
                   </div>
                 </div>
               }
@@ -192,6 +232,8 @@ const ShowReservation = (props) => {
                     className="form-check-input" 
                     id={show.reservationsId}
                     onChange={selectForTransferOrCancel}
+                    checked={cancelTransferArray.includes(show.reservationsId.toString())}
+
                       />
                   <label className="form-check-label" htmlFor="editReservation">cancel or transfer to another event</label>
                 </div>
