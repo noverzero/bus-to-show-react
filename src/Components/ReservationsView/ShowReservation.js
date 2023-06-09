@@ -177,7 +177,8 @@ const ShowReservation = (props) => {
             }
             {!displayEditReservation &&
             <div>
-              <div> selected {cancelTransferArray.length} / {reservationSummaryArrSorted.filter((show, i) => show.eventsId === parseInt(reservationDetail.eventsId)).length} reservations </div>
+              {// <div> selected {cancelTransferArray.length} / {reservationSummaryArrSorted.filter((show, i) => show.eventsId === parseInt(reservationDetail.eventsId)).length} reservations </div>
+              }
               { 
                 displayCancelWarning ?
                  <div className="alert alert-danger m-4" role="alert">
@@ -245,7 +246,7 @@ const ShowReservation = (props) => {
                     </div>
                   </div>
                 </li>
-                <div className="form-check">
+                {/* {<div className="form-check">
                   <input
                     type={'checkbox'} 
                     className="form-check-input" 
@@ -255,7 +256,7 @@ const ShowReservation = (props) => {
 
                       />
                   <label className="form-check-label" htmlFor="editReservation">cancel or transfer to another event</label>
-                </div>
+                </div>} */}
               </div>
             ) //end of userReservations.map function
             : 
