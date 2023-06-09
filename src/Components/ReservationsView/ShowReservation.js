@@ -4,6 +4,7 @@ import moment from 'moment'
 import EditReservation from './EditReservation'
 import { useStore } from '../../Store';
 
+const fetchUrl = `${process.env.REACT_APP_API_URL}`;
 
 const ShowReservation = (props) => {
   const {
@@ -28,6 +29,31 @@ const ShowReservation = (props) => {
   const [cancelTransferArray, setCancelTransferArray] = useState([]);
   const [reservationToEditId, setReservationToEditId] = useState(null);
   const [displayCancelWarning, setDisplayCancelWarning] = useState(false);
+
+  const createArrayOfEventIds = userReservations.length > 0 ? userReservations.map(show => show.status != '3' && show.eventsId ).sort() : []
+  let countObj = {}
+  for(let ii = 0; ii < createArrayOfEventIds.length; ii++){
+    let count = 1;
+    for(let jj = 0; jj < createArrayOfEventIds.length; jj++){
+      if(createArrayOfEventIds[ii] == createArrayOfEventIds[jj])
+          countObj[createArrayOfEventIds[ii]] = count++;
+      }
+    }
+
+  const reservationSummaryArr = []
+  for (let property1 in countObj){
+    for (let ii = 0; ii < props.userReservations.length; ii++){
+      if(props.userReservations[ii].eventsId == property1 && props.userReservations[ii].status != '3'){
+        console.log('props.userReservations[ii].status ==>>==>> ', props.userReservations[ii].status);
+        props.userReservations[ii].ticketQuantity = countObj[props.userReservations[ii].eventsId]
+        reservationSummaryArr.push(props.userReservations[ii])
+          break
+      }
+    }
+  }
+  const reservationSummaryArrSorted = reservationSummaryArr.sort((a, b) => {
+    return new Date(a.date).getTime() - new Date(b.date).getTime()
+  })
 
   
   const toggleEditReservation = (e) =>{
@@ -57,30 +83,6 @@ const ShowReservation = (props) => {
 
   }
 
-  const createArrayOfEventIds = userReservations.length > 0 ? userReservations.map(show => show.eventsId ).sort() : []
-  let countObj = {}
-  for(let ii = 0; ii < createArrayOfEventIds.length; ii++){
-    let count = 1;
-    for(let jj = 0; jj < createArrayOfEventIds.length; jj++){
-      if(createArrayOfEventIds[ii] == createArrayOfEventIds[jj])
-          countObj[createArrayOfEventIds[ii]] = count++;
-      }
-    }
-
-  const reservationSummaryArr = []
-  for (let property1 in countObj){
-    for (let ii = 0; ii < props.userReservations.length; ii++){
-      if(props.userReservations[ii].eventsId == property1){
-        props.userReservations[ii].ticketQuantity = countObj[props.userReservations[ii].eventsId]
-          reservationSummaryArr.push(props.userReservations[ii])
-          break
-      }
-    }
-  }
-  const reservationSummaryArrSorted = reservationSummaryArr.sort((a, b) => {
-    return new Date(a.date).getTime() - new Date(b.date).getTime()
-  })
-
   const cancelSelectedReservations = () => {
     console.log('cancelSelectedReservations clicked ==>>==>> ', cancelTransferArray);
     setDisplayCancelWarning(true);
@@ -91,8 +93,24 @@ const ShowReservation = (props) => {
     setDisplayCancelWarning(false);
   }
 
-  const refundMinusProcessing = () => {
-    console.log('refundMinusProcessing clicked ==>>==>> ', cancelTransferArray);
+  const refundMinusProcessing = async () => {
+    console.log('refundMinusProcessing fetchUrl ==>>==>> ', fetchUrl);
+     const jwtToken = localStorage.getItem('jwt')
+     if(!jwtToken){
+       return
+     }
+     const response = await fetch(`${fetchUrl}/reservations/refund_minus_processing`, { method: 'PATCH', 
+         headers: {
+           'Content-Type': 'application/json',
+           'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+         },
+         withCredentials: true,
+         body: JSON.stringify({ cancelTransferArray })
+      })
+
+      const json = await response.json()
+      console.log('refundMinusProcessing json ==>>==>> ', json);
+  
   }
 
   const cancelAndGiveCredit = () => {
@@ -112,6 +130,7 @@ const ShowReservation = (props) => {
       setDisplayUserReservationSummary(true);
       setDisplayReservationDetail(true);
     }
+
   }, [reservationDetail, displayCancelWarning, displayUserReservationSummary, displayReservationDetail, displayEditReservation, displayEditSuccess, cancelTransferArray]);
 
   const expandReservationDetailsClick = (e) => {
@@ -158,7 +177,7 @@ const ShowReservation = (props) => {
             }
             {!displayEditReservation &&
             <div>
-              <div> selected {cancelTransferArray.length} / {userReservations.filter((show, i) => show.eventsId === parseInt(reservationDetail.eventsId)).length} reservations </div>
+              <div> selected {cancelTransferArray.length} / {reservationSummaryArrSorted.filter((show, i) => show.eventsId === parseInt(reservationDetail.eventsId)).length} reservations </div>
               { 
                 displayCancelWarning ?
                  <div className="alert alert-danger m-4" role="alert">
@@ -183,7 +202,7 @@ const ShowReservation = (props) => {
             </div>
             }
 
-            {!displayEditReservation ? userReservations.map((show, i) => show.eventsId === parseInt(reservationDetail.eventsId) &&
+            {!displayEditReservation ? reservationSummaryArrSorted.map((show, i) => show.eventsId === parseInt(reservationDetail.eventsId) &&
               <div className="row bg-light p-4 m-4" key={i}>
                 <li className="px-3 pt-2 list-item mx-auto" key={show.reservationsId} id={show.reservationsId}>
                   <div className="row border-top border-left border-right border-secondary bg-light p-2" id={show.id}>
@@ -220,7 +239,7 @@ const ShowReservation = (props) => {
                       <div className="red-text ">
                           Last bus departs at: {moment(show.lastBusDepartureTime, 'hhmm').format('hh:mm a')}
                       </div>
-                      <div className="mt-4" onClick={toggleEditReservation}>
+                      <div className="mt-4" id={show.reservationsId} onClick={toggleEditReservation}>
                         Change Rider or Will Call Name<i id={show.reservationsId} className="fas fa-edit fa-sm float-right pb-2"></i>
                       </div>
                     </div>
