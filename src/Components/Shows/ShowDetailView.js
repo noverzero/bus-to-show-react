@@ -15,6 +15,7 @@ const ShowDetailView = (props) => {
     }
   }
 
+  console.log('show ==>>==>> ', show);
 
 
   let basePrice;
@@ -122,7 +123,7 @@ const ShowDetailView = (props) => {
                         <h5>
                           <span className='badge badge-secondary align-left'>
                             <div>${basePrice} per ticket</div>
-                            <div>+ ${(basePrice * .1).toFixed(2)} processing fee</div>
+                            <div>+ ${show.id == 40300786 ? 0.00 : (basePrice * .1).toFixed(2)} processing fee</div>
                           </span>
                         </h5>
 

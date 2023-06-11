@@ -40,13 +40,13 @@ const App = (props) => {
      reservationDetail,
      setReservationDetail,
      setDisplayReservationDetail,
+     setDisplayEditReservation,
   } = useStore();
 
   const [adminView, setAdminView] = useState(false);
 
   const [assignedParties, setAssignedParties] = useState([]);
   const [displayDetailCartView, setDisplayDetailCartView] = useState(false);
-  const [displayEditReservation, setDisplayEditReservation] = useState(false);
   const [displayExternalShowDetails, setDisplayExternalShowDetails] = useState(false);
   const [displayFuture, setDisplayFuture] = useState(false);
   const [displayLoginView, setDisplayLoginView] = useState(false);
@@ -66,7 +66,6 @@ const App = (props) => {
   const [isCalled, setIsCalled] = useState(false);
   const [registerResponse, setRegisterResponse] = useState({});
   const [reservationEditsToSend, setReservationEditsToSend] = useState([]);
-  const [reservationToEditId, setReservationToEditId] = useState(null);
   const [pickupPartyId, setPickupPartyId] = useState(null);
   const [pickupLocations, setPickupLocations] = useState([]);
   const [userShows, setUserShows] = useState([]);
@@ -278,10 +277,6 @@ const App = (props) => {
     setAdminView(!adminView);
   }
 
-  const toggleEditReservation = (e) =>{
-    setDisplayEditReservation(!displayEditReservation)
-    setReservationToEditId(parseInt(e.target.id))
-  }
 
   const toggleEditSuccess=()=>{
     setDisplayEditSuccess(!displayEditSuccess);
@@ -439,11 +434,8 @@ const App = (props) => {
               displayFuture={displayFuture}
               displayPast={displayPast}
               displayUserReservationSummary={displayUserReservationSummary}
-              toggleEditReservation={toggleEditReservation}
-              displayEditReservation={displayEditReservation}
               reservationEditField={reservationEditField}
               submitReservationForm={submitReservationForm}
-              reservationToEditId={reservationToEditId}
               displayEditSuccess={displayEditSuccess}
               toggleEditSuccess={toggleEditSuccess}
           />

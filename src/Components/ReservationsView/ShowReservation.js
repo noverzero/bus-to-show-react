@@ -4,6 +4,7 @@ import moment from 'moment'
 import EditReservation from './EditReservation'
 import { useStore } from '../../Store';
 
+const fetchUrl = `${process.env.REACT_APP_API_URL}`;
 
 const ShowReservation = (props) => {
   const {
@@ -19,33 +20,17 @@ const ShowReservation = (props) => {
     displayReservationDetail,
     setDisplayReservationDetail,
     displayEditSuccess,
-    setDisplayEditSuccess
+    setDisplayEditSuccess,
+    displayEditReservation,
+    setDisplayEditReservation
 
   } = useStore();
 
   const [cancelTransferArray, setCancelTransferArray] = useState([]);
+  const [reservationToEditId, setReservationToEditId] = useState(null);
+  const [displayCancelWarning, setDisplayCancelWarning] = useState(false);
 
-  const selectForTransferOrCancel = (e) => {
-    const cancelTransferArrayCopy = [...cancelTransferArray];
-    // console.log('selectForTransferOrCancelb ==', e.target.id);
-    // console.log('e.target.checked ', e.target.checked);
-    // console.log('cancelTransferArray ==>>==>> ', cancelTransferArray);
-    if (e.target.checked) {
-      cancelTransferArrayCopy.push(e.target.id);
-      setCancelTransferArray(cancelTransferArrayCopy);
-    } else {
-      const index = cancelTransferArrayCopy.indexOf(e.target.id);
-      if (index > -1) {
-        cancelTransferArrayCopy.splice(index, 1);
-        setCancelTransferArray(cancelTransferArrayCopy);
-      } else {
-        console.log('attempting to uncheck an id that is not in the array');
-      }
-    }
-
-  }
-
-  const createArrayOfEventIds = userReservations.length > 0 ? userReservations.map(show => show.eventsId ).sort() : []
+  const createArrayOfEventIds = userReservations.length > 0 ? userReservations.map(show => show.status != '3' && show.eventsId ).sort() : []
   let countObj = {}
   for(let ii = 0; ii < createArrayOfEventIds.length; ii++){
     let count = 1;
@@ -58,9 +43,10 @@ const ShowReservation = (props) => {
   const reservationSummaryArr = []
   for (let property1 in countObj){
     for (let ii = 0; ii < props.userReservations.length; ii++){
-      if(props.userReservations[ii].eventsId == property1){
+      if(props.userReservations[ii].eventsId == property1 && props.userReservations[ii].status != '3'){
+        console.log('props.userReservations[ii].status ==>>==>> ', props.userReservations[ii].status);
         props.userReservations[ii].ticketQuantity = countObj[props.userReservations[ii].eventsId]
-          reservationSummaryArr.push(props.userReservations[ii])
+        reservationSummaryArr.push(props.userReservations[ii])
           break
       }
     }
@@ -69,13 +55,83 @@ const ShowReservation = (props) => {
     return new Date(a.date).getTime() - new Date(b.date).getTime()
   })
 
+  
+  const toggleEditReservation = (e) =>{
+    console.log(' toggleEditReservation e.target.id ==', e.target.id);
+    setDisplayEditReservation(!displayEditReservation)
+    setReservationToEditId(parseInt(e.target.id))
+    setCancelTransferArray([]);
+  }
+
+  const selectForTransferOrCancel = (e) => {
+    const cancelTransferArrayCopy = [...cancelTransferArray];
+    console.log('selectForTransferOrCancelb ==', e.target.id);
+    console.log('e.target.checked ', e.target.checked);
+    if (e.target.checked) {
+      cancelTransferArrayCopy.push(e.target.id);
+      setCancelTransferArray(cancelTransferArrayCopy);
+    } else {
+      const index = cancelTransferArrayCopy.indexOf(e.target.id);
+      if (index > -1) {
+        cancelTransferArrayCopy.splice(index, 1);
+        setCancelTransferArray(cancelTransferArrayCopy);
+      } else {
+        console.log('attempting to uncheck an id that is not in the array');
+      }
+    }
+    console.log('cancelTransferArrayCopy ==>>==>> ', cancelTransferArrayCopy);
+
+  }
+
+  const cancelSelectedReservations = () => {
+    console.log('cancelSelectedReservations clicked ==>>==>> ', cancelTransferArray);
+    setDisplayCancelWarning(true);
+  }
+
+  const transferSelectedReservations = () => {
+    console.log('transferSelectedReservations clicked ==>>==>> ', cancelTransferArray);
+    setDisplayCancelWarning(false);
+  }
+
+  const refundMinusProcessing = async () => {
+    console.log('refundMinusProcessing fetchUrl ==>>==>> ', fetchUrl);
+     const jwtToken = localStorage.getItem('jwt')
+     if(!jwtToken){
+       return
+     }
+     const response = await fetch(`${fetchUrl}/reservations/refund_minus_processing`, { method: 'PATCH', 
+         headers: {
+           'Content-Type': 'application/json',
+           'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+         },
+         withCredentials: true,
+         body: JSON.stringify({ cancelTransferArray })
+      })
+
+      const json = await response.json()
+      console.log('refundMinusProcessing json ==>>==>> ', json);
+  
+  }
+
+  const cancelAndGiveCredit = () => {
+    console.log('cancelAndGiveCredit clicked ==>>==>> ', cancelTransferArray);
+  }
+
+  const neverMindKeepReservations = () => {
+    setDisplayCancelWarning(false);
+    setCancelTransferArray([]);
+  }
+
+  
+
   useEffect(() => {
-    //console.log('wht is use effect up to? ==>>==>> ', cancelTransferArray);
+    console.log('wht is use effect up to? ==>>==>> ', cancelTransferArray, displayCancelWarning);
     if (reservationDetail) {
       setDisplayUserReservationSummary(true);
       setDisplayReservationDetail(true);
     }
-  }, [reservationDetail, displayUserReservationSummary, displayReservationDetail, displayEditSuccess, cancelTransferArray]);
+
+  }, [reservationDetail, displayCancelWarning, displayUserReservationSummary, displayReservationDetail, displayEditReservation, displayEditSuccess, cancelTransferArray]);
 
   const expandReservationDetailsClick = (e) => {
     const resDeet = userReservations.find(
@@ -90,7 +146,7 @@ const ShowReservation = (props) => {
       {reservationDetail
       ? //If a reservaton summary has been selected, display reservation details ( if not, do nothing )
         <div>
-          {!props.displayEditReservation
+          {!displayEditReservation
           ?
           <div>
             <h6><strong>Your Reservations For:</strong></h6>
@@ -119,7 +175,35 @@ const ShowReservation = (props) => {
           <div className='Shows container mx-auto'>
             {// if user has not clicked edit on a reservation, display all reservations for the selected summary (otherwise, display EditReservation component)
             }
-            {!props.displayEditReservation ? userReservations.map((show, i) => show.eventsId === parseInt(reservationDetail.eventsId) &&
+            {!displayEditReservation &&
+            <div>
+              {// <div> selected {cancelTransferArray.length} / {reservationSummaryArrSorted.filter((show, i) => show.eventsId === parseInt(reservationDetail.eventsId)).length} reservations </div>
+              }
+              { 
+                displayCancelWarning ?
+                 <div className="alert alert-danger m-4" role="alert">
+                      Heads up!  You are about to cancel {cancelTransferArray.length} of your {userReservations.filter((show, i) => show.eventsId === parseInt(reservationDetail.eventsId)).length} reservations for this show.  
+                    <button onClick={refundMinusProcessing} type="button" className="btn btn-danger ml-1">Cancel and refund (minus processing fees) </button>
+                      <button onClick={cancelAndGiveCredit} type="button" className="btn btn-outline-secondary m-2">Cancel and send me a code for {cancelTransferArray.length} future spots </button>
+                      <button onClick={transferSelectedReservations} type="button" className="btn btn-outline-secondary m-2">Transfer these spots to another event or pick-up if available </button>
+                      <button onClick={neverMindKeepReservations} type="button" className="btn btn-outline-secondary m-2">Never mind. Keep my reservations.</button>
+
+                    </div> : 
+                    <div></div>
+              }
+              {cancelTransferArray.length > 0 &&
+                <div className="row">
+                  <div className="col-12">
+                  <div onClick={cancelSelectedReservations} className="btn btn-block-admin my-2 col-4" id="cancelSelectedReservations" >
+                    Cancel
+                    </div> or <button>Transfer</button> selected reservations
+                  </div>
+                </div>
+              }
+            </div>
+            }
+
+            {!displayEditReservation ? reservationSummaryArrSorted.map((show, i) => show.eventsId === parseInt(reservationDetail.eventsId) &&
               <div className="row bg-light p-4 m-4" key={i}>
                 <li className="px-3 pt-2 list-item mx-auto" key={show.reservationsId} id={show.reservationsId}>
                   <div className="row border-top border-left border-right border-secondary bg-light p-2" id={show.id}>
@@ -156,21 +240,23 @@ const ShowReservation = (props) => {
                       <div className="red-text ">
                           Last bus departs at: {moment(show.lastBusDepartureTime, 'hhmm').format('hh:mm a')}
                       </div>
-                      <div className="mt-4" onClick={props.toggleEditReservation}>
+                      <div className="mt-4" id={show.reservationsId} onClick={toggleEditReservation}>
                         Change Rider or Will Call Name<i id={show.reservationsId} className="fas fa-edit fa-sm float-right pb-2"></i>
                       </div>
                     </div>
                   </div>
                 </li>
-                {/* <div className="form-check">
+                {/* {<div className="form-check">
                   <input
                     type={'checkbox'} 
                     className="form-check-input" 
                     id={show.reservationsId}
                     onChange={selectForTransferOrCancel}
+                    checked={cancelTransferArray.includes(show.reservationsId.toString())}
+
                       />
-                  <label className="form-check-label" htmlFor="editReservation">cancel or transfer</label>
-                </div> */}
+                  <label className="form-check-label" htmlFor="editReservation">cancel or transfer to another event</label>
+                </div>} */}
               </div>
             ) //end of userReservations.map function
             : 
@@ -179,7 +265,7 @@ const ShowReservation = (props) => {
                 userReservations={props.userReservations}
                 reservationEditField={props.reservationEditField}
                 submitReservationForm={props.submitReservationForm}
-                reservationToEditId={props.reservationToEditId}
+                reservationToEditId={reservationToEditId}
               />
             }
           </div>

@@ -321,7 +321,8 @@ class LayoutPage extends Component {
     const subTotal = (Number(newState.partyPrice) * Number(event.target.value)).toFixed(2)
     const total = ((Number(subTotal) * .1) + Number(subTotal)).toFixed(2)
     newState.ticketQuantity = ~~event.target.value
-    newState.totalCost = total
+
+    newState.totalCost = newState.displayShow.id == 40300786 ? Number(subTotal).toFixed(2) : total
     this.setState({
       displayAddBtn: newState.displayAddBtn,
       ticketQuantity: newState.ticketQuantity,
@@ -717,6 +718,7 @@ class LayoutPage extends Component {
     //const cost = ((this.state.totalCost * ticketQuantity) - totalSavings + processingFee)
     const cost = this.state.totalCost
     const sPickupId = parseInt(this.state.pickupLocationId)
+    console.log('sEventId ==>>==>> ', sEventId);
     const sEventId = parseInt(this.state.displayShow.id)
     const pickupParty = this.state.assignedParties.find(party => party.pickupLocationId === sPickupId && party.eventId === sEventId)
     const firstBusLoad = pickupParty.firstBusLoadTime
